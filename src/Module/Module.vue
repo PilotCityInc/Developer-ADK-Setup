@@ -2,7 +2,7 @@
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
     <div class="module__navbar">
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage == 'preview'"
         dark
         class="module__navbar-button"
@@ -11,8 +11,8 @@
         color="grey lighten-1"
         rounded
         >00:00:00</v-btn
-      >
-      <v-btn
+      > -->
+      <!-- <v-btn
         v-if="currentPage != 'preview'"
         class="module__navbar-button"
         outlined
@@ -20,9 +20,9 @@
         depressed
         @click="currentPage = 'preview'"
         >Preview</v-btn
-      >
+      > -->
 
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage == 'preview'"
         class="module__navbar-button"
         dark
@@ -31,9 +31,9 @@
         color="red"
         @click="currentPage = 'setup'"
         >Exit Preview</v-btn
-      >
+      > -->
 
-      <v-menu v-if="currentPage != 'preview'" offset-y left>
+      <!-- <v-menu v-if="currentPage != 'preview'" offset-y left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" small icon class="module__navbar-button" v-on="on">
             <v-icon color="grey lighten-1">mdi-cog</v-icon></v-btn
@@ -60,12 +60,12 @@
             swatches-max-height="100"
           ></v-color-picker>
         </v-card>
-      </v-menu>
+      </v-menu> -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
         <div class="module__image rounded-circle">
-          <v-icon light x-large :color="selectedColor">mdi-progress-question</v-icon>
+          <v-icon light x-large :color="selectedColor">mdi-rocket-outline</v-icon>
         </div>
         <div class="module__header text-md-h5 text-sm-subtitle-1 d-flex align-center">
           <input :value="moduleName" type="text" class="module__header-text" />
@@ -315,6 +315,11 @@ body {
 }
 
 .module {
+  // FOR SETUP PROGRAM ONLY
+  // &__container {
+  //   max-width: 825px;
+  // }
+
   &__trash {
     // justify-content: start;
     align-items: start;
@@ -383,9 +388,10 @@ export default {
 
   setup() {
     // ENTER ACTIVITY NAME BELOW
-    const moduleName = ref('Activity Name');
+    const moduleName = ref('Setup');
     const page = reactive({
-      subpages: ['Setup', 'Presets', 'Monitor'],
+      // subpages: ['Setup', 'Presets', 'Monitor'],
+      // subpages: ['Setup'],
       currentPage: 'Setup'
     });
     const getComponent = computed(() => {
