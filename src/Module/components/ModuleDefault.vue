@@ -1,6 +1,6 @@
 <template>
   <v-container class="module-default__container">
-    <div class="module-default__instructions">
+    <!-- <div class="module-default__instructions">
       <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
         <v-expansion-panel>
           <v-expansion-panel-header
@@ -26,13 +26,12 @@
             <Instruct readonly />
             <div @click="showInstructions = true">
               <div class="module-default__collapse-title">CLOSE</div>
-              <!-- <div class="hr"/> OPTIONAL -->
               <v-icon color="grey lighten-2" class="d-flex justify-center"> mdi-chevron-up </v-icon>
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-    </div>
+    </div> -->
 
     <v-progress-linear
       class="module-default__collapse-divider"
@@ -45,19 +44,120 @@
     <div class="module-edit__container">
       <!-- ENTER CONTENT HERE -->
       <!-- DESIGN YOUR ACTIVITY HERE / COMMENT OUT WHEN YOU'VE STARTED DESIGNING -->
-      <div class="module-default__none">Design your activity here</div>
+      <!-- <div class="module-default__none">Design your activity here</div> -->
+      <!-- BIRTHDATE -->
+      <v-menu
+        ref="menu"
+        :value="false"
+        transition="scale-transition"
+        :close-on-content-click="false"
+        offset-y
+        min-width="290px"
+        class="mt-5 mb-5"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <validation-provider v-slot="{ errors }" rules="required">
+            <v-text-field
+              v-model="date"
+              prepend-icon="mdi-calendar"
+              :error-messages="errors"
+              label="Birthdate"
+              outlined
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </validation-provider>
+        </template>
+        <v-date-picker
+          ref="picker"
+          v-model="date"
+          :max="new Date().toISOString().substr(0, 10)"
+          min="1950-01-01"
+          @input="menu = false"
+        ></v-date-picker>
+      </v-menu>
+      <!-- RESIDENCE -->
+      <v-autocomplete
+        class="mt-5 mb-5"
+        outlined
+        prepend-icon="mdi-google-maps"
+        label="Home Address"
+      ></v-autocomplete>
+      <br />
+      <br />
+      <!-- SKILLS REQUIRED TITLE -->
+      <span class="module-default__question-title mb-5"
+        >Do you know any of the required skills by the employer organizer?
+      </span>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>Operation of a drone</div>
+        </template>
+      </v-checkbox>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>JavaScript</div>
+        </template>
+      </v-checkbox>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>How to use Google Suite</div>
+        </template>
+      </v-checkbox>
+      <br />
+      <br />
+      <!-- TECH REQUIRED TITLE -->
+      <span class="module-default__question-title mb-5"
+        >Do you have access of any of the required technology or tools?
+      </span>
+      <!--TECH REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>DJI Mavic Pro</div>
+        </template>
+      </v-checkbox>
+      <!--TECH REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>Smartphone</div>
+        </template>
+      </v-checkbox>
+      <!--TECH REQUIRED 1 -->
+      <v-checkbox v-model="checkbox">
+        <template v-slot:label>
+          <div>DJI GO 4 App</div>
+        </template>
+      </v-checkbox>
+
+      <!-- PAID OR UNPAID -->
+      <br />
+      <br />
+      <span class="module-default__question-title">What compensation types are you open to?</span>
+      <v-checkbox hide-details label="Unpaid Experience"></v-checkbox>
+      <v-checkbox hide-details label="Paid"></v-checkbox>
+    </div>
+    <div class="module-default__license-button mt-12">
+      <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
+      <v-btn class="mr-2" x-large outlined depressed>Use</v-btn>
+      <v-btn class="ml-2" x-large dark depressed>Buy</v-btn>
+      <v-btn class="ml-2" x-large dark depressed>Redeem</v-btn>
+      <v-btn class="ml-2" x-large dark depressed>Get Sponsored</v-btn>
     </div>
   </v-container>
 </template>
 
 <script lang="ts">
 import { ref } from '@vue/composition-api';
-import Instruct from './ModuleInstruct.vue';
+// import Instruct from './ModuleInstruct.vue';
 
 export default {
   name: 'ModuleDefault',
   components: {
-    Instruct
+    // Instruct
   },
   apollo: {},
   data() {
@@ -76,6 +176,10 @@ export default {
 
 <style lang="scss">
 .module-default {
+  &__license-button {
+    text-align: center;
+  }
+
   &__none {
     border-radius: 5px;
     // border: 1px solid #dedede;
@@ -86,6 +190,14 @@ export default {
     color: #ffffff;
     font-size: 18px;
     padding-top: 35px;
+  }
+
+  &__question-title {
+    font-family: Raleway;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 30px;
+    // margin-top: 25px;
   }
 
   &__collapse-divider {

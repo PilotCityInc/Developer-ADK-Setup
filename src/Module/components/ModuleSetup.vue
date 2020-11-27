@@ -44,6 +44,10 @@
           </template>
         </v-file-input>
 
+        <div class="module-setup__question-title">
+          What age range will you accept as student participants?
+        </div>
+
         <v-range-slider
           :tick-labels="seasons"
           :value="[0, 10]"
@@ -414,6 +418,14 @@ export default {
 
 <style lang="scss">
 .module-setup {
+  &__question-title {
+    font-family: Raleway;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 30px;
+    text-align: center;
+    // margin-top: 25px;
+  }
   &__none {
     border-radius: 5px;
     // border: 1px solid #dedede;

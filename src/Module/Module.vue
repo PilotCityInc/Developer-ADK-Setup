@@ -6,32 +6,33 @@
         v-if="currentPage == 'preview'"
         dark
         class="module__navbar-button"
-        small
+        small 
         depressed
         color="grey lighten-1"
         rounded
         >00:00:00</v-btn
       > -->
-      <!-- <v-btn
+      <v-btn
         v-if="currentPage != 'preview'"
         class="module__navbar-button"
-        outlined
+        dark
         x-small
         depressed
+        color="purple"
         @click="currentPage = 'preview'"
-        >Preview</v-btn
-      > -->
+        >Employer View</v-btn
+      >
 
-      <!-- <v-btn
+      <v-btn
         v-if="currentPage == 'preview'"
         class="module__navbar-button"
         dark
         x-small
         depressed
-        color="red"
+        color="green"
         @click="currentPage = 'setup'"
-        >Exit Preview</v-btn
-      > -->
+        >Student View</v-btn
+      >
 
       <!-- <v-menu v-if="currentPage != 'preview'" offset-y left>
         <template v-slot:activator="{ on, attrs }">
@@ -388,7 +389,8 @@ export default {
 
   setup() {
     // ENTER ACTIVITY NAME BELOW
-    const moduleName = ref('Setup');
+    const moduleName = ref('Setup & Start');
+    // const moduleName = ref('Join');
     const page = reactive({
       // subpages: ['Setup', 'Presets', 'Monitor'],
       // subpages: ['Setup'],
