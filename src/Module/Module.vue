@@ -271,9 +271,10 @@ body {
 }
 </style>
 <script lang="ts">
-import { computed, reactive, ref, toRefs, defineComponent } from '@vue/composition-api';
+import { computed, reactive, ref, toRefs, defineComponent, PropType } from '@vue/composition-api';
 import '../styles/module.scss';
-// import { Collection } from 'mongodb';
+import { Binary, Collection, MinKey } from 'mongodb';
+import { integer } from 'vee-validate/dist/rules';
 import * as Module from './components';
 
 export default defineComponent({
@@ -285,21 +286,35 @@ export default defineComponent({
     'module-presets': Module.Presets,
     'module-preview': Module.Default
   },
-  //   props: {
-  // programCollection: {
-  //   required: true,
-  //   type: Object as PropType<Collection>
-  // },
-  // programId: {
-  //   require: true,
-  //   type: String
-  // }
-  //   },
-  setup() {
-    //
-    // props.programCollection.findOne({
-    //   _id: props.programId
-    // });
+  props: {
+    programCollection: {
+      required: true,
+      type: Object as PropType<Collection>
+    },
+    programId: {
+      required: true,
+      type: String
+    },
+    programDescription: {
+      require: true,
+      type: String
+    }
+    //   programCoverphoto: {
+    //     require: true,
+    //     type: Object
+    //   },
+    //   ageRange: {
+    //     require: true,
+    //     type: integer
+    //   },
+    //   ageRange1: {
+    //     require: true,
+    //     type: integer
+    //   }
+  },
+  /* async */ setup(/* props */) {
+    // MongoDB database log
+    // const programDoc = await props.programCollection.findOne({ _id: props.programId });
     // ENTER ACTIVITY NAME BELOW
     const moduleName = ref('Setup & Start');
     // const moduleName = ref('Join');
