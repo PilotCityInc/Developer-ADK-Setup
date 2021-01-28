@@ -2,16 +2,6 @@
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
     <div class="module__navbar">
-      <!-- <v-btn
-        v-if="currentPage == 'preview'"
-        dark
-        class="module__navbar-button"
-        small 
-        depressed
-        color="grey lighten-1"
-        rounded
-        >00:00:00</v-btn
-      > -->
       <v-btn
         v-if="currentPage != 'preview'"
         class="module__navbar-button"
@@ -33,35 +23,6 @@
         @click="currentPage = 'setup'"
         >Student View</v-btn
       >
-
-      <!-- <v-menu v-if="currentPage != 'preview'" offset-y left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" small icon class="module__navbar-button" v-on="on">
-            <v-icon color="grey lighten-1">mdi-cog</v-icon></v-btn
-          >
-        </template>
-        <v-card class="module__menu">
-          <v-btn color="white" class="module__settings-menu" tile depressed>
-            <v-icon left color="#404142">mdi-arrow-horizontal-lock </v-icon>Lock</v-btn
-          >
-          <v-divider></v-divider>
-          <v-btn color="white" class="module__settings-menu" tile depressed>
-            <v-icon left color="#ea6764">mdi-trash-can-outline </v-icon>Delete</v-btn
-          >
-          <v-divider></v-divider>
-          <v-color-picker
-            v-model="selectedColor"
-            disabled
-            dot-size="25"
-            hide-canvas
-            hide-inputs
-            hide-mode-switch
-            show-swatches
-            :swatches="pilotcityColors"
-            swatches-max-height="100"
-          ></v-color-picker>
-        </v-card>
-      </v-menu> -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
@@ -102,7 +63,7 @@
         </div>
         <div class="module__page">
           <keep-alive>
-            <component :is="getComponent" />
+            <component :is="getComponent" v-model="programDoc" />
           </keep-alive>
         </div>
       </div>
@@ -225,51 +186,10 @@
         </v-timeline>
       </v-container>
     </template>
-    <!-- TIMELINE END -->
+    TIMELINE END
   </v-container>
 </template>
-<style lang="scss">
-html,
-body {
-  font-family: 'Raleway';
-  font-size: 16px;
-  width: 100%;
-  height: 100%;
-}
 
-.v-timeline-item__divider {
-  align-items: start !important;
-}
-
-.module {
-  // FOR SETUP PROGRAM ONLY
-  // &__container {
-  //   max-width: 825px;
-  // }
-
-  &__trash {
-    // justify-content: start;
-    align-items: start;
-    // align-content: start;
-  }
-
-  &__header-chips {
-    padding-bottom: 15px;
-  }
-}
-
-.v-btn__content.module__chat-menu-button {
-  justify-content: left;
-  width: 100%;
-}
-.module__menu {
-  .v-color-picker {
-    &__controls {
-      display: none;
-    }
-  }
-}
-</style>
 <script lang="ts">
 import { computed, reactive, ref, toRefs, defineComponent } from '@vue/composition-api';
 import '../styles/module.scss';
@@ -285,22 +205,17 @@ export default defineComponent({
     'module-presets': Module.Presets,
     'module-preview': Module.Default
   },
-  //   props: {
-  // programCollection: {
-  //   required: true,
-  //   type: Object as PropType<Collection>
-  // },
-  // programId: {
-  //   require: true,
-  //   type: String
-  // }
-  //   },
-  setup() {
-    //
-    // props.programCollection.findOne({
-    //   _id: props.programId
-    // });
-    // ENTER ACTIVITY NAME BELOW
+  props: {
+    value: {
+      required: true,
+      type: Object
+    }
+  },
+  setup(props, ctx) {
+    const programDoc = computed({
+      get: () => props.value,
+      set: newVal => ctx.root.$emit('input', newVal)
+    });
     const moduleName = ref('Setup & Start');
     // const moduleName = ref('Join');
     const page = reactive({
@@ -370,3 +285,45 @@ export default defineComponent({
   }
 });
 </script>
+<style lang="scss">
+html,
+body {
+  font-family: 'Raleway';
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.v-timeline-item__divider {
+  align-items: start !important;
+}
+
+.module {
+  // FOR SETUP PROGRAM ONLY
+  // &__container {
+  //   max-width: 825px;
+  // }
+
+  &__trash {
+    // justify-content: start;
+    align-items: start;
+    // align-content: start;
+  }
+
+  &__header-chips {
+    padding-bottom: 15px;
+  }
+}
+
+.v-btn__content.module__chat-menu-button {
+  justify-content: left;
+  width: 100%;
+}
+.module__menu {
+  .v-color-picker {
+    &__controls {
+      display: none;
+    }
+  }
+}
+</style>
