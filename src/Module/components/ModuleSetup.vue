@@ -1,12 +1,6 @@
 <template>
   <v-container class="module-edit">
     <div class="module-edit__container">
-      <!-- NO SETUP NECESSARY / COMMENT OUT IF SETUP IS NECESSARY -->
-      <!-- <div class="module-setup__none">No setup necessary</div> -->
-      <!-- ENTER CONTENT HERE -->
-      <!-- <div class="module-setup__section-title">Step 1</div>
-      <div class="module-setup__section-title">Step 2</div>
-      <div class="module-setup__section-title">Step 3</div> -->
       <div>
         <v-text-field
           class="mt-5 mb-5"
@@ -59,9 +53,7 @@
           class="mt-10 mb-10"
         >
           <template v-slot:thumb-label="props">
-            <v-icon dark>
-              {{ season(props.value) }}
-            </v-icon>
+            <v-icon dark> </v-icon>
           </template>
         </v-range-slider>
 
@@ -83,14 +75,6 @@
           outlined
           class="module-setup__combobox mt-5 mb-5"
         >
-          <!-- <template v-slot:no-data>
-                  <v-list-item>
-                    <span class="subheading">Create</span>
-                    <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
-                      {{ search }}
-                    </v-chip>
-                  </v-list-item>
-                </template> -->
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
               v-if="item === Object(item)"
@@ -155,14 +139,6 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
-          <!-- <template v-slot:no-data>
-                  <v-list-item>
-                    <span class="subheading">Create</span>
-                    <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
-                      {{ search }}
-                    </v-chip>
-                  </v-list-item>
-                </template> -->
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
               v-if="item === Object(item)"
@@ -195,11 +171,6 @@
               {{ item.text }}
             </v-chip>
             <v-spacer></v-spacer>
-            <!-- <v-list-item-action @click.stop>
-                    <v-btn icon @click.stop.prevent="edit(index, item)">
-                      <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                    </v-btn>
-                  </v-list-item-action> -->
           </template>
         </v-combobox>
 
@@ -221,14 +192,6 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
-          <!-- <template v-slot:no-data>
-            <v-list-item>
-              <span class="subheading">Create</span>
-              <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
-                {{ search }}
-              </v-chip>
-            </v-list-item>
-          </template> -->
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
               v-if="item === Object(item)"
@@ -261,11 +224,6 @@
               {{ item.text }}
             </v-chip>
             <v-spacer></v-spacer>
-            <!-- <v-list-item-action @click.stop>
-                    <v-btn icon @click.stop.prevent="edit(index, item)">
-                      <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                    </v-btn>
-                  </v-list-item-action> -->
           </template>
         </v-combobox>
 
@@ -287,14 +245,6 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
-          <!-- <template v-slot:no-data>
-            <v-list-item>
-              <span class="subheading">Create</span>
-              <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>
-                {{ search }}
-              </v-chip>
-            </v-list-item>
-          </template> -->
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
               v-if="item === Object(item)"
@@ -345,75 +295,87 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs } from '@vue/composition-api';
+import { reactive, toRefs, defineComponent, computed } from '@vue/composition-api';
 // import gql from 'graphql-tag';
+import { range } from 'lodash';
 
-export default {
+export default defineComponent({
   name: 'ModuleSetup',
-  data: () => ({
-    files: [],
-    reward: [
-      { text: 'Paid Internship', color: 'purple' },
-      { text: 'Paid Fellowship', color: 'purple' },
-      { text: 'Paid Entrepreneur-in-Residence', color: 'purple' },
-      { text: 'Paid Apprenticeship', color: 'purple' },
-      { text: 'Unpaid Internship', color: 'pink' },
-      { text: 'Unpaid Fellowship', color: 'pink' },
-      { text: 'Unpaid Entrepreneur-in-Residence', color: 'pink' },
-      { text: 'Unpaid Apprenticeship', color: 'pink' }
-    ],
-    items: [
-      // { header: 'participant residency' },
-      {
-        text: 'San Leandro, CA',
-        color: 'blue'
-      },
-      {
-        text: 'San Lorenzo, CA',
-        color: 'blue'
-      },
-      {
-        text: 'San Francisco, CA',
-        color: 'blue'
-      },
-      {
-        text: 'San Diego, CA',
-        color: 'blue'
-      },
-      {
-        text: 'San Jose, CA',
-        color: 'blue'
-      },
-      {
-        text: 'San Luis Obispo, CA',
-        color: 'blue'
-      }
-    ],
-    seasons: ['12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'],
-    icons: [
-      'mdi-snowflake',
-      'mdi-leaf',
-      'mdi-fire',
-      'mdi-water',
-      'mdi-leaf',
-      'mdi-fire',
-      'mdi-water'
-    ],
-    search: null
-  }),
-
-  methods: {
-    season(val) {
-      return this.icons[val];
+  props: {
+    value: {
+      required: true,
+      type: Object
     }
   },
-  setup() {
-    const setup = reactive({});
+  setup(props, ctx) {
+    // Default Options
+    const options = reactive({
+      reward: [
+        { text: 'Paid Internship', color: 'purple' },
+        { text: 'Paid Fellowship', color: 'purple' },
+        { text: 'Paid Entrepreneur-in-Residence', color: 'purple' },
+        { text: 'Paid Apprenticeship', color: 'purple' },
+        { text: 'Unpaid Internship', color: 'pink' },
+        { text: 'Unpaid Fellowship', color: 'pink' },
+        { text: 'Unpaid Entrepreneur-in-Residence', color: 'pink' },
+        { text: 'Unpaid Apprenticeship', color: 'pink' }
+      ],
+      requiredResidency: [
+        // { header: 'participant residency' },
+        {
+          text: 'San Leandro, CA',
+          color: 'blue'
+        },
+        {
+          text: 'San Lorenzo, CA',
+          color: 'blue'
+        },
+        {
+          text: 'San Francisco, CA',
+          color: 'blue'
+        },
+        {
+          text: 'San Diego, CA',
+          color: 'blue'
+        },
+        {
+          text: 'San Jose, CA',
+          color: 'blue'
+        },
+        {
+          text: 'San Luis Obispo, CA',
+          color: 'blue'
+        }
+      ],
+      ages: range(12, 23)
+    });
+    // data binding
+    const programDoc = computed({
+      get: () => props.value,
+      set: newVal => ctx.root.$emit('input', newVal)
+    });
+    const dataProperties = [
+      'programName',
+      'programDesc',
+      'ageRange',
+      'requiredResidency',
+      'requiredSkills',
+      'requiredTech',
+      'rewards'
+    ];
+    const writeFields = dataProperties.map(prop => {
+      if (!programDoc.value[prop]) {
+        if (prop === 'programName' || prop === 'programDesc') return { [prop]: '' };
+        return { [prop]: [] };
+      }
+      return {};
+    });
+    programDoc.value = Object.assign({}, ...writeFields, programDoc);
     return {
-      ...toRefs(setup)
+      ...toRefs(options)
     };
   }
-};
+});
 </script>
 
 <style lang="scss">

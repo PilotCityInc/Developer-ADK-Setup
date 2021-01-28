@@ -292,29 +292,64 @@ export default defineComponent({
       type: Object as PropType<Collection>
     },
     programId: {
-      required: true,
+      required: false,
       type: String
     },
     programDescription: {
-      require: true,
+      require: false,
       type: String
-    }
-    //   programCoverphoto: {
-    //     require: true,
-    //     type: Object
-    //   },
-    //   ageRange: {
-    //     require: true,
-    //     type: integer
-    //   },
-    //   ageRange1: {
-    //     require: true,
-    //     type: integer
-    //   }
+    },
+    programCoverphoto: {
+      require: false,
+      type: Object
+      },
+      ageRange: {
+        require: false,
+        type: []
+      },
+      participantLocation: {
+        require: false, 
+        type: []
+      },
+      skillsRequired: {
+        require: false,
+        type: [] 
+      },
+      technologyRequired: {
+        require: false,
+        type: []
+      },
+      studentReward: {
+        require: false,
+        type: []
+      }
+
   },
-  /* async */ setup(/* props */) {
+  /* async */ setup(props) {
     // MongoDB database log
-    // const programDoc = await props.programCollection.findOne({ _id: props.programId });
+    const programDoc = /*await*/ props.programCollection.findOne({ _id: props.programId }, {projection: {adks: 1}});
+    
+    let programDescription = ref("")
+    let programCoverphoto = ref("")
+    let ageRange = ref([])
+    let participantLocation = ref([])
+    let skillsRequired = ref([])
+    let technologyRequired = ref([])
+    let studentReward = ref([])
+
+    let setupData = programDoc.adks.find((adk) => adk.name === "setup")
+    programDescription.value = setupData.programDescription
+    programCoverphoto.value = setupData.programCoverphoto
+    ageRange.value = setupData.ageRange
+    participantLocation.value = setupData.participantLocation
+    skillsRequired.value = setupData.skillsRequired
+    technologyRequired.value = setupData.technologyRequired
+    studentReward.value = setupData.studentReward
+
+    setupData.update({programDescription})
+
+
+
     // ENTER ACTIVITY NAME BELOW
     const moduleName = ref('Setup & Start');
     // const moduleName = ref('Join');
