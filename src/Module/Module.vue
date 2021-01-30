@@ -45,25 +45,10 @@
           buffer-value="100"
           stream
         />
-        <div v-if="currentPage != 'preview'" class="module__pagination">
-          <div v-for="page in subpages" :key="page" :class="{ active: currentPage == page }">
-            <div class="module__pagination-button--active" />
-            <v-btn
-              :ripple="false"
-              class="module__pagination-button"
-              elevation="0"
-              color="#ffffff"
-              height="40"
-              small
-              @click="currentPage = page"
-            >
-              {{ page }}
-            </v-btn>
-          </div>
-        </div>
+        <div v-if="currentPage != 'preview'" class="module__pagination"></div>
         <div class="module__page">
           <keep-alive>
-            <component :is="getComponent" v-model="programDoc" />
+            <component :is="getComponent" v-model="programDoc" @save="$emit('save')" />
           </keep-alive>
         </div>
       </div>
@@ -214,13 +199,13 @@ export default defineComponent({
   setup(props, ctx) {
     const programDoc = computed({
       get: () => props.value,
-      set: newVal => ctx.root.$emit('input', newVal)
+      set: newVal => {
+        ctx.emit('input', newVal);
+      }
     });
     const moduleName = ref('Setup & Start');
     // const moduleName = ref('Join');
     const page = reactive({
-      // subpages: ['Setup', 'Presets', 'Monitor'],
-      // subpages: ['Setup'],
       currentPage: 'Setup'
     });
     const getComponent = computed(() => {
@@ -280,7 +265,8 @@ export default defineComponent({
       getColor,
       ...toRefs(timelineData),
       timeline,
-      comment
+      comment,
+      programDoc
     };
   }
 });

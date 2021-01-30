@@ -18,7 +18,7 @@
           placeholder="Build projects for us, win internships with us"
         ></v-textarea>
         <!-- <v-file-input label="Upload cover photo" outlined></v-file-input> -->
-        <v-file-input
+        <!-- <v-file-input
           v-model="files"
           class="mt-5 mb-5"
           color="grey"
@@ -36,15 +36,15 @@
               +{{ files.length - 2 }} File(s)
             </span>
           </template>
-        </v-file-input>
+        </v-file-input> -->
 
         <div class="module-setup__question-title">
           What age range will you accept as student participants?
         </div>
 
         <v-range-slider
-          :tick-labels="seasons"
-          :value="[0, 10]"
+          v-model="programDoc.ageRange"
+          :tick-labels="ages"
           label="Age"
           min="0"
           max="10"
@@ -60,12 +60,10 @@
         <!-- LOCATION / CITY OF RESIDENCE -->
 
         <v-combobox
-          v-model="model2"
+          v-model="programDoc.requiredResidency"
+          :items="requiredResidencyOptions"
+          :search-input.sync="residencySearch"
           prepend-icon="mdi-map-check"
-          :filter="filter"
-          :hide-no-data="!search"
-          :items="items"
-          :search-input.sync="search"
           hide-selected
           label="Set required city or county of participant residence"
           multiple
@@ -75,61 +73,45 @@
           outlined
           class="module-setup__combobox mt-5 mb-5"
         >
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Press <kbd>enter</kbd> to add the residency "<strong>{{ residencySearch }}</strong
+                  >".
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
-              v-if="item === Object(item)"
               v-bind="attrs"
-              :color="`${item.color} lighten-2`"
               :input-value="selected"
               label
               small
-              dark
+              @click="parent.selectItem(item)"
             >
               <span class="pr-2">
-                {{ item.text }}
+                {{ item }}
               </span>
-              <v-icon small @click="parent.selectItem(item)"> mdi-close </v-icon>
+              <v-icon small> mdi-close </v-icon>
             </v-chip>
-          </template>
-
-          <template v-slot:item="{ index, item }">
-            <v-text-field
-              v-if="editing === item"
-              v-model="editing.text"
-              autofocus
-              flat
-              background-color="transparent"
-              hide-details
-              solo
-              @keyup.enter="edit(index, item)"
-            ></v-text-field>
-            <v-chip v-else :color="`${item.color} lighten-2`" dark label small>
-              {{ item.text }}
-            </v-chip>
-            <v-spacer></v-spacer>
-            <!-- <v-list-item-action @click.stop>
-                    <v-btn icon @click.stop.prevent="edit(index, item)">
-                      <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                    </v-btn>
-                  </v-list-item-action> -->
           </template>
         </v-combobox>
-        <v-img
+        <!-- <v-img
           class="pl-auto ml-auto module-setup__map-selected mb-5"
           :aspect-ratio="16 / 9"
           width="94%"
           src="https://f.hubspotusercontent00.net/hubfs/2480959/Screen%20Shot%202020-11-25%20at%2010.42.51%20PM.png"
-        ></v-img>
+        ></v-img> -->
 
-        <!-- LOCATION / CITY OF RESIDENCE -->
+        <!-- Required Skills -->
 
         <v-combobox
-          v-model="model2"
+          v-model="programDoc.requiredSkills"
+          :items="requiredSkillOptions"
+          :search-input="skillSearch"
           prepend-icon="mdi-head-snowflake-outline"
-          :filter="filter"
-          :hide-no-data="!search"
-          :items="items"
-          :search-input.sync="search"
           hide-selected
           label="List any skills required"
           multiple
@@ -139,50 +121,37 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Press <kbd>enter</kbd> to add the skill "<strong>{{ skillSearch }}</strong
+                  >".
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
-              v-if="item === Object(item)"
               v-bind="attrs"
-              :color="`${item.color} lighten-2`"
               :input-value="selected"
               label
               small
-              dark
+              @click="parent.selectItem(item)"
             >
               <span class="pr-2">
-                {{ item.text }}
+                {{ item }}
               </span>
-              <v-icon small @click="parent.selectItem(item)"> mdi-close </v-icon>
+              <v-icon small> mdi-close </v-icon>
             </v-chip>
-          </template>
-
-          <template v-slot:item="{ index, item }">
-            <v-text-field
-              v-if="editing === item"
-              v-model="editing.text"
-              autofocus
-              flat
-              background-color="transparent"
-              hide-details
-              solo
-              @keyup.enter="edit(index, item)"
-            ></v-text-field>
-            <v-chip v-else :color="`${item.color} lighten-2`" dark label small>
-              {{ item.text }}
-            </v-chip>
-            <v-spacer></v-spacer>
           </template>
         </v-combobox>
-
-        <!-- LOCATION / CITY OF RESIDENCE -->
-
+        <!-- Technology -->
         <v-combobox
-          v-model="model2"
+          v-model="programDoc.requiredTech"
+          :items="requiredTechOptions"
+          :search-input="techSearch"
           prepend-icon="mdi-monitor-cellphone"
-          :filter="filter"
-          :hide-no-data="!search"
-          :items="items"
-          :search-input.sync="search"
           hide-selected
           label="List any technology or tools required"
           multiple
@@ -192,50 +161,39 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Press <kbd>enter</kbd> to add "<strong>{{ techSearch }}</strong
+                  >" as required technology.
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
-              v-if="item === Object(item)"
               v-bind="attrs"
-              :color="`${item.color} lighten-2`"
               :input-value="selected"
               label
               small
-              dark
+              @click="parent.selectItem(item)"
             >
               <span class="pr-2">
-                {{ item.text }}
+                {{ item }}
               </span>
-              <v-icon small @click="parent.selectItem(item)"> mdi-close </v-icon>
+              <v-icon small> mdi-close </v-icon>
             </v-chip>
-          </template>
-
-          <template v-slot:item="{ index, item }">
-            <v-text-field
-              v-if="editing === item"
-              v-model="editing.text"
-              autofocus
-              flat
-              background-color="transparent"
-              hide-details
-              solo
-              @keyup.enter="edit(index, item)"
-            ></v-text-field>
-            <v-chip v-else :color="`${item.color} lighten-2`" dark label small>
-              {{ item.text }}
-            </v-chip>
-            <v-spacer></v-spacer>
           </template>
         </v-combobox>
 
         <!-- LOCATION / CITY OF RESIDENCE -->
 
         <v-combobox
-          v-model="model2"
+          v-model="programDoc.rewards"
+          :items="rewardOptions"
+          :search-input="rewardSearch"
           prepend-icon="mdi-trophy"
-          :filter="filter"
-          :hide-no-data="!search"
-          :items="reward"
-          :search-input.sync="search"
           hide-selected
           label="Reward for winning students"
           multiple
@@ -245,43 +203,29 @@
           outlined
           class="module-setup__combobox mt-12 mb-12"
         >
+          <template v-slot:no-data>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Press <kbd>enter</kbd> to add the reward "<strong>{{ rewardSearch }}</strong
+                  >".
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
           <template v-slot:selection="{ attrs, item, parent, selected }">
             <v-chip
-              v-if="item === Object(item)"
               v-bind="attrs"
-              :color="`${item.color} lighten-2`"
               :input-value="selected"
               label
               small
-              dark
+              @click="parent.selectItem(item)"
             >
               <span class="pr-2">
-                {{ item.text }}
+                {{ item }}
               </span>
-              <v-icon small @click="parent.selectItem(item)"> mdi-close </v-icon>
+              <v-icon small> mdi-close </v-icon>
             </v-chip>
-          </template>
-
-          <template v-slot:item="{ index, item }">
-            <v-text-field
-              v-if="editing === item"
-              v-model="editing.text"
-              autofocus
-              flat
-              background-color="transparent"
-              hide-details
-              solo
-              @keyup.enter="edit(index, item)"
-            ></v-text-field>
-            <v-chip v-else :color="`${item.color} lighten-2`" dark label small>
-              {{ item.text }}
-            </v-chip>
-            <v-spacer></v-spacer>
-            <!-- <v-list-item-action @click.stop>
-                    <v-btn icon @click.stop.prevent="edit(index, item)">
-                      <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                    </v-btn>
-                  </v-list-item-action> -->
           </template>
         </v-combobox>
       </div>
@@ -295,7 +239,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, defineComponent, computed } from '@vue/composition-api';
+import { reactive, toRefs, defineComponent, computed, onMounted } from '@vue/composition-api';
 // import gql from 'graphql-tag';
 import { range } from 'lodash';
 
@@ -320,39 +264,29 @@ export default defineComponent({
         { text: 'Unpaid Entrepreneur-in-Residence', color: 'pink' },
         { text: 'Unpaid Apprenticeship', color: 'pink' }
       ],
-      requiredResidency: [
-        // { header: 'participant residency' },
-        {
-          text: 'San Leandro, CA',
-          color: 'blue'
-        },
-        {
-          text: 'San Lorenzo, CA',
-          color: 'blue'
-        },
-        {
-          text: 'San Francisco, CA',
-          color: 'blue'
-        },
-        {
-          text: 'San Diego, CA',
-          color: 'blue'
-        },
-        {
-          text: 'San Jose, CA',
-          color: 'blue'
-        },
-        {
-          text: 'San Luis Obispo, CA',
-          color: 'blue'
-        }
+      requiredResidencyOptions: [
+        'San Leandro, CA',
+        'San Lorenzo, CA',
+        'San Francisco, CA',
+        'San Diego, CA',
+        'San Jose, CA',
+        'San Luis Obispo, CA'
       ],
-      ages: range(12, 23)
+      requiredTechOptions: [],
+      requiredSkillOptions: [],
+      rewardOptions: [],
+      ages: range(12, 23),
+      residencySearch: null,
+      skillSearch: null,
+      techSearch: null,
+      rewardSearch: null
     });
     // data binding
     const programDoc = computed({
       get: () => props.value,
-      set: newVal => ctx.root.$emit('input', newVal)
+      set: newVal => {
+        ctx.emit('input', newVal);
+      }
     });
     const dataProperties = [
       'programName',
@@ -366,13 +300,16 @@ export default defineComponent({
     const writeFields = dataProperties.map(prop => {
       if (!programDoc.value[prop]) {
         if (prop === 'programName' || prop === 'programDesc') return { [prop]: '' };
+        if (prop === 'ageRange') return { [prop]: [0, 10] };
+
         return { [prop]: [] };
       }
       return {};
     });
-    programDoc.value = Object.assign({}, ...writeFields, programDoc);
+    programDoc.value = Object.assign({}, ...writeFields, programDoc.value);
     return {
-      ...toRefs(options)
+      ...toRefs(options),
+      programDoc
     };
   }
 });
