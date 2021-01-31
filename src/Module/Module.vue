@@ -203,8 +203,6 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    const moduleName = ref('Setup & Start');
-    // const moduleName = ref('Join');
     const page = reactive({
       currentPage: 'Setup'
     });
