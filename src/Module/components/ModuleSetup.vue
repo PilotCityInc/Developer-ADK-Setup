@@ -424,6 +424,8 @@ export default defineComponent({
 
   &__license-button {
     text-align: center;
+    // display: flex;
+    // flex-direction: column;
   }
 
   &__section-title {
