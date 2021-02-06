@@ -171,7 +171,7 @@
         </v-timeline>
       </v-container>
     </template>
-    TIMELINE END
+    <!-- TIMELINE END -->
   </v-container>
 </template>
 
