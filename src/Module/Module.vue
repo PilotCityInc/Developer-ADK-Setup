@@ -48,7 +48,7 @@
         <div v-if="currentPage != 'preview'" class="module__pagination"></div>
         <div class="module__page">
           <keep-alive>
-            <component :is="getComponent" v-model="programDoc" @save="$emit('save')" />
+            <component :is="getComponent" v-model="programDoc" :license-program="licenseProgram" />
           </keep-alive>
         </div>
       </div>
@@ -171,12 +171,11 @@
         </v-timeline>
       </v-container>
     </template>
-    <!-- TIMELINE END -->
   </v-container>
 </template>
 
 <script lang="ts">
-import { computed, reactive, ref, toRefs, defineComponent } from '@vue/composition-api';
+import { computed, reactive, ref, toRefs, defineComponent, PropType } from '@vue/composition-api';
 import '../styles/module.scss';
 // import { Collection } from 'mongodb';
 import * as Module from './components';
@@ -193,7 +192,15 @@ export default defineComponent({
   props: {
     value: {
       required: true,
-      type: Object
+      type: Object as () => {
+        data: Record<string, any>; // Gives access to Document
+        update: () => Promise<any>; // Gives access to update Method
+        changeStream: any; // Gives access to mongodb Collection Changestream
+      }
+    },
+    licenseProgram: {
+      required: true,
+      type: Function as PropType<() => any>
     }
   },
   setup(props, ctx) {
@@ -203,6 +210,7 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
+    const moduleName = ref('Setup & Start');
     const page = reactive({
       currentPage: 'Setup'
     });

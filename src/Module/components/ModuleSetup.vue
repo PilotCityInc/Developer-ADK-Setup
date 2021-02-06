@@ -1,22 +1,30 @@
 <template>
   <v-container class="module-edit">
-    <div class="module-edit__container">
+    <validation-observer v-slot="{ invalid }" class="module-edit__container">
       <div>
-        <v-text-field
-          class="mt-5 mb-5"
-          prepend-icon="mdi-music-accidental-sharp"
-          outlined
-          label="Enter your program name"
-          placeholder="Lawrence Berkeley National Laboratory"
-        ></v-text-field>
-        <v-textarea
-          class="mt-5 mb-5"
-          outlined
-          three-line
-          label="Enter your program description"
-          prepend-icon="mdi-text-subject"
-          placeholder="Build projects for us, win internships with us"
-        ></v-textarea>
+        <validation-provider v-slot="{ errors }" slim rules="required">
+          <v-text-field
+            v-model="programDoc.data.programName"
+            :error-messages="errors"
+            class="mt-5 mb-5"
+            prepend-icon="mdi-music-accidental-sharp"
+            outlined
+            label="Enter your program name"
+            placeholder="Lawrence Berkeley National Laboratory"
+          ></v-text-field>
+        </validation-provider>
+        <validation-provider v-slot="{ errors }" slim rules="required">
+          <v-textarea
+            v-model="programDoc.data.programDesc"
+            :error-messages="errors"
+            class="mt-5 mb-5"
+            outlined
+            three-line
+            label="Enter your program description"
+            prepend-icon="mdi-text-subject"
+            placeholder="Build projects for us, win internships with us"
+          ></v-textarea>
+        </validation-provider>
         <!-- <v-file-input label="Upload cover photo" outlined></v-file-input> -->
         <!-- <v-file-input
           v-model="files"
@@ -43,61 +51,66 @@
         </div>
 
         <v-range-slider
-          v-model="programDoc.ageRange"
+          v-model="programDoc.data.ageRange"
           :tick-labels="ages"
           label="Age"
-          min="0"
-          max="10"
+          min="12"
+          max="22"
           ticks="always"
           tick-size="4"
           class="mt-10 mb-10"
         >
-          <template v-slot:thumb-label="props">
+          <template v-slot:thumb-label>
             <v-icon dark> </v-icon>
           </template>
         </v-range-slider>
 
         <!-- LOCATION / CITY OF RESIDENCE -->
 
-        <v-combobox
-          v-model="programDoc.requiredResidency"
-          :items="requiredResidencyOptions"
-          :search-input.sync="residencySearch"
-          prepend-icon="mdi-map-check"
-          hide-selected
-          label="Set required city or county of participant residence"
-          multiple
-          small-chips
-          hide-details
-          solo
-          outlined
-          class="module-setup__combobox mt-5 mb-5"
-        >
-          <template v-slot:no-data>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Press <kbd>enter</kbd> to add the residency "<strong>{{ residencySearch }}</strong
-                  >".
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-          <template v-slot:selection="{ attrs, item, parent, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              label
-              small
-              @click="parent.selectItem(item)"
-            >
-              <span class="pr-2">
-                {{ item }}
-              </span>
-              <v-icon small> mdi-close </v-icon>
-            </v-chip>
-          </template>
-        </v-combobox>
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="programDoc.data.requiredResidency"
+            :error-messages="errors"
+            :items="requiredResidencyOptions"
+            :search-input.sync="residencySearch"
+            prepend-icon="mdi-map-check"
+            hide-selected
+            label="Set required city or county of participant residence"
+            multiple
+            small-chips
+            hide-details
+            solo
+            outlined
+            class="module-setup__combobox mt-5 mb-5"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add the residency "<strong>{{
+                      residencySearch
+                    }}</strong
+                    >".
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
         <!-- <v-img
           class="pl-auto ml-auto module-setup__map-selected mb-5"
           :aspect-ratio="16 / 9"
@@ -107,139 +120,162 @@
 
         <!-- Required Skills -->
 
-        <v-combobox
-          v-model="programDoc.requiredSkills"
-          :items="requiredSkillOptions"
-          :search-input="skillSearch"
-          prepend-icon="mdi-head-snowflake-outline"
-          hide-selected
-          label="List any skills required"
-          multiple
-          small-chips
-          hide-details
-          solo
-          outlined
-          class="module-setup__combobox mt-12 mb-12"
-        >
-          <template v-slot:no-data>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Press <kbd>enter</kbd> to add the skill "<strong>{{ skillSearch }}</strong
-                  >".
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-          <template v-slot:selection="{ attrs, item, parent, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              label
-              small
-              @click="parent.selectItem(item)"
-            >
-              <span class="pr-2">
-                {{ item }}
-              </span>
-              <v-icon small> mdi-close </v-icon>
-            </v-chip>
-          </template>
-        </v-combobox>
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="programDoc.data.requiredSkills"
+            :error-messages="errors"
+            :items="requiredSkillOptions"
+            :search-input="skillSearch"
+            prepend-icon="mdi-head-snowflake-outline"
+            hide-selected
+            label="List any skills required"
+            multiple
+            small-chips
+            hide-details
+            solo
+            outlined
+            class="module-setup__combobox mt-12 mb-12"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add the skill "<strong>{{ skillSearch }}</strong
+                    >".
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
         <!-- Technology -->
-        <v-combobox
-          v-model="programDoc.requiredTech"
-          :items="requiredTechOptions"
-          :search-input="techSearch"
-          prepend-icon="mdi-monitor-cellphone"
-          hide-selected
-          label="List any technology or tools required"
-          multiple
-          small-chips
-          hide-details
-          solo
-          outlined
-          class="module-setup__combobox mt-12 mb-12"
-        >
-          <template v-slot:no-data>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Press <kbd>enter</kbd> to add "<strong>{{ techSearch }}</strong
-                  >" as required technology.
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-          <template v-slot:selection="{ attrs, item, parent, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              label
-              small
-              @click="parent.selectItem(item)"
-            >
-              <span class="pr-2">
-                {{ item }}
-              </span>
-              <v-icon small> mdi-close </v-icon>
-            </v-chip>
-          </template>
-        </v-combobox>
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="programDoc.data.requiredTech"
+            :items="requiredTechOptions"
+            :search-input="techSearch"
+            :error-messages="errors"
+            prepend-icon="mdi-monitor-cellphone"
+            hide-selected
+            label="List any technology or tools required"
+            multiple
+            small-chips
+            hide-details
+            solo
+            outlined
+            class="module-setup__combobox mt-12 mb-12"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add "<strong>{{ techSearch }}</strong
+                    >" as required technology.
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
 
         <!-- LOCATION / CITY OF RESIDENCE -->
 
-        <v-combobox
-          v-model="programDoc.rewards"
-          :items="rewardOptions"
-          :search-input="rewardSearch"
-          prepend-icon="mdi-trophy"
-          hide-selected
-          label="Reward for winning students"
-          multiple
-          small-chips
-          hide-details
-          solo
-          outlined
-          class="module-setup__combobox mt-12 mb-12"
-        >
-          <template v-slot:no-data>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Press <kbd>enter</kbd> to add the reward "<strong>{{ rewardSearch }}</strong
-                  >".
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-          <template v-slot:selection="{ attrs, item, parent, selected }">
-            <v-chip
-              v-bind="attrs"
-              :input-value="selected"
-              label
-              small
-              @click="parent.selectItem(item)"
-            >
-              <span class="pr-2">
-                {{ item }}
-              </span>
-              <v-icon small> mdi-close </v-icon>
-            </v-chip>
-          </template>
-        </v-combobox>
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="programDoc.data.rewards"
+            :items="rewardOptions"
+            :search-input="rewardSearch"
+            :error-messages="errors"
+            prepend-icon="mdi-trophy"
+            hide-selected
+            label="Reward for winning students"
+            multiple
+            small-chips
+            hide-details
+            solo
+            outlined
+            class="module-setup__combobox mt-12 mb-12"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add the reward "<strong>{{ rewardSearch }}</strong
+                    >".
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
       </div>
       <div class="module-setup__license-button mt-12">
         <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
-        <v-btn class="mr-2" x-large outlined depressed>Save</v-btn>
-        <v-btn class="ml-2" x-large dark depressed>License Program</v-btn>
+        <v-btn class="mr-2" x-large outlined depressed :loading="saveLoading" @click="saveProgram"
+          >Save</v-btn
+        >
+        <v-btn
+          class="ml-2"
+          x-large
+          :dark="!invalid"
+          depressed
+          :disabled="invalid"
+          :loading="licenseLoading"
+          @click="licenseFun"
+          >License Program</v-btn
+        >
+        <v-alert v-if="status.length" :type="status.includes('Saved') ? 'success' : 'error'">{{
+          status
+        }}</v-alert>
       </div>
-    </div>
+    </validation-observer>
   </v-container>
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, defineComponent, computed, onMounted } from '@vue/composition-api';
+import { reactive, toRefs, defineComponent, computed, ref, PropType } from '@vue/composition-api';
 // import gql from 'graphql-tag';
 import { range } from 'lodash';
 
@@ -248,7 +284,15 @@ export default defineComponent({
   props: {
     value: {
       required: true,
-      type: Object
+      type: Object as () => {
+        data: Record<string, any>; // Gives access to Document
+        update: () => Promise<any>; // Gives access to update Method
+        changeStream: any; // Gives access to mongodb Collection Changestream
+      }
+    },
+    licenseProgram: {
+      required: true,
+      type: Function as PropType<() => any>
     }
   },
   setup(props, ctx) {
@@ -298,18 +342,59 @@ export default defineComponent({
       'rewards'
     ];
     const writeFields = dataProperties.map(prop => {
-      if (!programDoc.value[prop]) {
+      if (!programDoc.value.data[prop]) {
         if (prop === 'programName' || prop === 'programDesc') return { [prop]: '' };
-        if (prop === 'ageRange') return { [prop]: [0, 10] };
+        if (prop === 'ageRange') return { [prop]: [12, 22] };
 
         return { [prop]: [] };
       }
       return {};
     });
-    programDoc.value = Object.assign({}, ...writeFields, programDoc.value);
+    programDoc.value = {
+      ...programDoc.value,
+      data: {
+        ...Object.assign({}, ...writeFields),
+        ...programDoc.value.data
+      }
+    };
+    // Save Function Handling
+    const status = ref('');
+    const saveData = reactive({
+      saveLoading: false
+    });
+    async function saveProgram() {
+      saveData.saveLoading = true;
+      try {
+        await programDoc.value.update();
+        status.value = 'Saved Successfully';
+      } catch (err) {
+        console.log(err);
+        status.value = `${'Something went wrong, try again later' + '\n'}${err}`;
+      }
+      saveData.saveLoading = false;
+    }
+    // Checkout Function Handling
+    const licenseData = reactive({
+      licenseLoading: false
+    });
+    async function licenseFun() {
+      licenseData.licenseLoading = true;
+      try {
+        await props.licenseProgram();
+        status.value = 'Saved Successfully, redirecting to checkout';
+      } catch (err) {
+        status.value = `Something went wrong, try again later\n ${err}`;
+      }
+      licenseData.licenseLoading = false;
+    }
     return {
       ...toRefs(options),
-      programDoc
+      programDoc,
+      ...toRefs(saveData),
+      saveProgram,
+      ...toRefs(licenseData),
+      licenseFun,
+      status
     };
   }
 });
