@@ -266,9 +266,12 @@
           @click="licenseFun"
           >License Program</v-btn
         >
-        <v-alert v-if="status.length" :type="status.includes('Saved') ? 'success' : 'error'">{{
-          status
-        }}</v-alert>
+        <v-alert
+          v-if="status.length"
+          class="mt-3"
+          :type="status.includes('Saved') ? 'success' : 'error'"
+          >{{ status }}</v-alert
+        >
       </div>
     </validation-observer>
   </v-container>
@@ -369,7 +372,7 @@ export default defineComponent({
         status.value = 'Saved Successfully';
       } catch (err) {
         console.log(err);
-        status.value = `${'Something went wrong, try again later \n'}${err}`;
+        status.value = `${'Something went wrong, try again later\n'}${err}`;
       }
       saveData.saveLoading = false;
     }
@@ -424,6 +427,8 @@ export default defineComponent({
 
   &__license-button {
     text-align: center;
+    // display: flex;
+    // flex-direction: column;
   }
 
   &__section-title {
