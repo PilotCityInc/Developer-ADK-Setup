@@ -75,7 +75,7 @@
             :search-input.sync="residencySearch"
             prepend-icon="mdi-map-check"
             hide-selected
-            label="Set required city or county of participant residence"
+            label="Residence from which city(s) or county(s) will be prioritized?"
             multiple
             small-chips
             hide-details
@@ -312,12 +312,22 @@ export default defineComponent({
         { text: 'Unpaid Apprenticeship', color: 'pink' }
       ],
       requiredResidencyOptions: [
+        'None',
+        'Alameda County, CA',
+        'San Mateo County, CA',
+        'Contra Costa County, CA',
+        'Marin County, CA',
+        'Santa Clara County, CA',
         'San Leandro, CA',
         'San Lorenzo, CA',
-        'San Francisco, CA',
-        'San Diego, CA',
-        'San Jose, CA',
-        'San Luis Obispo, CA'
+        'East Palo Alto, CA',
+        'Hayward, CA',
+        'Berkeley, CA',
+        'Albany, CA',
+        'Alameda, CA',
+        'Emeryville, CA',
+        'Piedmont, CA',
+        'Oakland, CA'
       ],
       requiredTechOptions: [],
       requiredSkillOptions: [],

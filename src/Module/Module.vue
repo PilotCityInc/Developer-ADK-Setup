@@ -2,7 +2,7 @@
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
     <div class="module__navbar">
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage != 'preview'"
         class="module__navbar-button"
         dark
@@ -22,7 +22,7 @@
         color="green"
         @click="currentPage = 'setup'"
         >Student View</v-btn
-      >
+      > -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
@@ -32,7 +32,7 @@
         <div class="module__header text-md-h5 text-sm-subtitle-1 d-flex align-center">
           <input :value="moduleName" type="text" class="module__header-text" />
           <v-chip-group class="module__header-chips"
-            ><v-chip disabled dark small>Preset Tags</v-chip>
+            ><v-chip disabled dark small color="white">Preset Tags</v-chip>
           </v-chip-group>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    const moduleName = ref('Setup & Start');
+    const moduleName = ref('Setup Program');
     const page = reactive({
       currentPage: 'Setup'
     });
