@@ -9,8 +9,8 @@
             class="mt-5 mb-5"
             prepend-icon="mdi-music-accidental-sharp"
             outlined
-            label="Enter your program name"
-            placeholder="Lawrence Berkeley National Laboratory"
+            label="Employer Name"
+            placeholder="Enter your organization name"
           ></v-text-field>
         </validation-provider>
         <validation-provider v-slot="{ errors }" slim rules="required">
@@ -22,7 +22,7 @@
             three-line
             label="Enter your program description"
             prepend-icon="mdi-text-subject"
-            placeholder="Build projects for us, win internships with us"
+            placeholder="Build projects for us to win internships with us"
           ></v-textarea>
         </validation-provider>
         <!-- <v-file-input label="Upload cover photo" outlined></v-file-input> -->
@@ -321,7 +321,16 @@ export default defineComponent({
       ],
       requiredTechOptions: [],
       requiredSkillOptions: [],
-      rewardOptions: [],
+      rewardOptions: [
+        'Paid Internship',
+        'Paid Fellowship',
+        'Paid Entrepreneur-in-Residence',
+        'Paid Apprenticeship',
+        'Unpaid Internship',
+        'Unpaid Fellowship',
+        'Unpaid Entrepreneur-in-Residence',
+        'Unpaid Apprenticeship'
+      ],
       ages: range(12, 23),
       residencySearch: null,
       skillSearch: null,
