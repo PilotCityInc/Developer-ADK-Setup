@@ -369,7 +369,7 @@ export default defineComponent({
         status.value = 'Saved Successfully';
       } catch (err) {
         console.log(err);
-        status.value = `${'Something went wrong, try again later' + '\n'}${err}`;
+        status.value = `${'Something went wrong, try again later \n'}${err}`;
       }
       saveData.saveLoading = false;
     }

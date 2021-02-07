@@ -77,7 +77,6 @@ export default defineComponent({
       }
     }
   },
-  apollo: {},
   setup(props, { emit }) {
     const description: WritableComputedRef<string> = computed({
       get: () => props.value.description,
