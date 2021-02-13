@@ -4,7 +4,7 @@ networks:
     driver: bridge
 services:
   setup: #in container-based development
-    image: pilotcity/boiler
+    build: . #enable this when modifyingh dependencies
     container_name: setup
     environment:
       - NODE_ENV=development
