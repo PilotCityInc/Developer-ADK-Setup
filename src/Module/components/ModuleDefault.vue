@@ -142,10 +142,114 @@
     </div>
     <div class="module-default__license-button mt-12">
       <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
-      <v-btn class="mr-2" x-large outlined depressed>Use</v-btn>
+      <!-- <v-btn class="mr-2" x-large outlined depressed>Use</v-btn>
       <v-btn class="ml-2" x-large dark depressed>Buy</v-btn>
       <v-btn class="ml-2" x-large dark depressed>Redeem</v-btn>
-      <v-btn class="ml-2" x-large dark depressed>Get Sponsored</v-btn>
+      <v-btn class="ml-2" x-large dark depressed>Get Sponsored</v-btn> -->
+
+      <v-btn class="mr-2" x-large outlined depressed>Save</v-btn>
+
+      <v-dialog v-model="dialog" persistent max-width="500px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" class="ml-2" x-large dark depressed v-on="on">Start Program</v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <div class="overline font-weight-bold">Program Checkout</div>
+
+            <div class="ml-auto">
+              <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
+            </div>
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-container>
+            <div class="d-flex justify-center flex-column">
+              <v-dialog v-model="dialog2" persistent max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="mt-2 mb-2"
+                    x-large
+                    rounded
+                    dark
+                    depressed
+                    v-bind="attrs"
+                    @click="dialog2 = true"
+                    v-on="on"
+                    >Use 1 Token</v-btn
+                  >
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <div class="overline font-weight-bold">
+                      Are you sure you want to use a token?
+                    </div>
+
+                    <div class="ml-auto">
+                      <v-btn icon @click="dialog2 = false"><v-icon>mdi-close</v-icon></v-btn>
+                    </div>
+                  </v-card-title>
+
+                  <v-divider></v-divider>
+
+                  <v-container>
+                    <div class="d-flex justify-center flex-row">
+                      <v-btn
+                        class="ma-2"
+                        color="red"
+                        x-large
+                        rounded
+                        depressed
+                        dark
+                        @click="dialog2 = false"
+                        >No</v-btn
+                      >
+                      <v-btn class="ma-2" color="green" rounded x-large dark depressed>Yes</v-btn>
+                    </div>
+                  </v-container>
+                </v-card>
+              </v-dialog>
+
+              <v-btn class="mt-2 mb-2" x-large rounded depressed outlined>Buy 1 Token</v-btn>
+
+              <v-dialog v-model="dialog3" persistent max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="mt-2 mb-2"
+                    x-large
+                    rounded
+                    outlined
+                    depressed
+                    v-bind="attrs"
+                    @click="dialog3 = true"
+                    v-on="on"
+                    >Redeem Token</v-btn
+                  >
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <div class="overline font-weight-bold">Enter code to redeem your token</div>
+
+                    <div class="ml-auto">
+                      <v-btn icon @click="dialog3 = false"><v-icon>mdi-close</v-icon></v-btn>
+                    </div>
+                  </v-card-title>
+
+                  <v-divider></v-divider>
+
+                  <v-container>
+                    <div class="d-flex justify-center flex-column">
+                      <v-text-field rounded hide-details outlined></v-text-field>
+                      <v-btn x-large rounded dark depressed class="mt-2">Redeem</v-btn>
+                    </div>
+                  </v-container>
+                </v-card>
+              </v-dialog>
+            </div>
+          </v-container>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -159,6 +263,7 @@ export default {
   components: {
     // Instruct
   },
+
   apollo: {},
   data() {
     const setupInstructions = ref({
@@ -168,7 +273,10 @@ export default {
     const showInstructions = ref(true);
     return {
       setupInstructions,
-      showInstructions
+      showInstructions,
+      dialog: false,
+      dialog2: false,
+      dialog3: false
     };
   }
 };
