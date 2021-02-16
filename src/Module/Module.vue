@@ -30,7 +30,7 @@
           <v-icon light x-large :color="selectedColor">mdi-rocket-outline</v-icon>
         </div>
         <div class="module__header text-md-h5 text-sm-subtitle-1 d-flex align-center">
-          <input :value="moduleName" type="text" class="module__header-text" />
+          <input :value="moduleName" type="text" readonly disabled class="module__header-text" />
           <v-chip-group class="module__header-chips"
             ><v-chip disabled dark small color="white">Preset Tags</v-chip>
           </v-chip-group>

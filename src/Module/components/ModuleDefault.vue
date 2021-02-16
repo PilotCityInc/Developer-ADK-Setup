@@ -181,16 +181,25 @@
           </template>
           <v-card>
             <v-card-title class="d-flex flex-column">
-              <div class="">
-                <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
+              <div class="d-flex justify-center">
+                <v-tooltip top color="black">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn class="" v-bind="attrs" icon v-on="on"
+                      ><v-icon>mdi-refresh</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Resend Code</span>
+                  <!-- <span>Expand</span> -->
+                </v-tooltip>
               </div>
+
               <div class="overline font-weight-bold">Text verification code</div>
             </v-card-title>
 
             <v-divider></v-divider>
 
             <v-container class="d-flex justify-center">
-              <div class="d-flex flex-column">
+              <div class="d-flex flex-column justify-center">
                 <v-text-field
                   class="justify-center module-default__sms-verification ma-2"
                   x-large
@@ -199,16 +208,9 @@
                   hide-details
                 ></v-text-field>
                 <v-btn class="ma-2" x-large dark rounded depressed>Verify</v-btn>
+
                 <div class="d-flex justify-center">
-                  <v-tooltip bottom color="black">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn class="" v-bind="attrs" icon v-on="on"
-                        ><v-icon>mdi-refresh</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Resend Code</span>
-                    <!-- <span>Expand</span> -->
-                  </v-tooltip>
+                  <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
                 </div>
               </div>
             </v-container>
@@ -226,7 +228,7 @@
 
       <v-btn class="mr-2" x-large outlined depressed>Save</v-btn>
 
-      <v-dialog v-model="dialog" persistent max-width="500px">
+      <v-dialog v-model="dialog" persistent max-width="400px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" class="ml-2" x-large dark depressed v-on="on">Start Program</v-btn>
         </template>
@@ -243,7 +245,7 @@
 
           <v-container>
             <div class="d-flex justify-center flex-column">
-              <v-dialog v-model="dialog2" persistent max-width="500px">
+              <v-dialog v-model="dialog2" persistent max-width="425px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mt-2 mb-2"
@@ -290,7 +292,7 @@
 
               <v-btn class="mt-2 mb-2" x-large rounded depressed outlined>Buy 1 Token</v-btn>
 
-              <v-dialog v-model="dialog3" persistent max-width="500px">
+              <v-dialog v-model="dialog3" persistent max-width="425px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mt-2 mb-2"
@@ -301,12 +303,12 @@
                     v-bind="attrs"
                     @click="dialog3 = true"
                     v-on="on"
-                    >Redeem Token</v-btn
+                    >Claim Sponsorship</v-btn
                   >
                 </template>
                 <v-card>
                   <v-card-title>
-                    <div class="overline font-weight-bold">Enter code to redeem your token</div>
+                    <div class="overline font-weight-bold">Enter sponsorship code</div>
 
                     <div class="ml-auto">
                       <v-btn icon @click="dialog3 = false"><v-icon>mdi-close</v-icon></v-btn>
@@ -318,7 +320,7 @@
                   <v-container>
                     <div class="d-flex justify-center flex-column">
                       <v-text-field rounded hide-details outlined></v-text-field>
-                      <v-btn x-large rounded dark depressed class="mt-2">Redeem</v-btn>
+                      <v-btn x-large rounded dark depressed class="mt-2">Claim Sponsorship</v-btn>
                     </div>
                   </v-container>
                 </v-card>
