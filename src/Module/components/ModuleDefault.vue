@@ -45,6 +45,82 @@
       <!-- ENTER CONTENT HERE -->
       <!-- DESIGN YOUR ACTIVITY HERE / COMMENT OUT WHEN YOU'VE STARTED DESIGNING -->
       <!-- <div class="module-default__none">Design your activity here</div> -->
+
+      <!-- PAID OR UNPAID -->
+      <span class="module-default__question-title">
+        Are you open to winning paid & unpaid internships?
+      </span>
+
+      <v-radio-group hide-details
+        ><v-radio label="Yes"></v-radio><v-radio label="Paid only"></v-radio
+      ></v-radio-group>
+
+      <br />
+      <br />
+
+      <!-- SKILLS REQUIRED TITLE -->
+      <span class="module-default__question-title"
+        >Do you know, can learn or have access to the following items?
+      </span>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>Operation of a drone</div>
+        </template>
+      </v-checkbox>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>JavaScript</div>
+        </template>
+      </v-checkbox>
+      <!-- SKILLS REQUIRED 1 -->
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>How to use Google Suite</div>
+        </template>
+      </v-checkbox>
+      <!-- <br />
+      <br /> -->
+      <!-- TECH REQUIRED TITLE -->
+      <!-- <span class="module-default__question-title"
+        >Do you have access of any of the required technology or tools?
+      </span>
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>DJI Mavic Pro</div>
+        </template>
+      </v-checkbox>
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>Smartphone</div>
+        </template>
+      </v-checkbox>
+      <v-checkbox v-model="checkbox" hide-details>
+        <template v-slot:label>
+          <div>DJI GO 4 App</div>
+        </template>
+      </v-checkbox> -->
+
+      <br />
+      <br />
+
+      <!-- SKILLS REQUIRED TITLE -->
+      <span class="module-default__question-title"
+        >Do you live or work in any of the priority jurisdictions?
+      </span>
+
+      <v-radio-group hide-details
+        ><v-radio label="San Leandro, CA">A</v-radio><v-radio label="San Lorenzo, CA"></v-radio
+        ><v-radio label="None of the above"></v-radio
+      ></v-radio-group>
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <!-- <div class="headline d-flex justify-center mt-12 font-weight-bold">Optional</div> -->
+
       <!-- BIRTHDATE -->
       <v-menu
         ref="menu"
@@ -53,15 +129,16 @@
         :close-on-content-click="false"
         offset-y
         min-width="290px"
-        class="mt-5 mb-5"
+        class="mt-12 mb-5"
       >
         <template v-slot:activator="{ on, attrs }">
           <validation-provider v-slot="{ errors }" rules="required">
             <v-text-field
               v-model="date"
-              prepend-icon="mdi-calendar"
+              rounded
+              prepend-icon="mdi-cake-variant"
               :error-messages="errors"
-              label="Birthdate"
+              label="Confirm your birthdate"
               outlined
               readonly
               v-bind="attrs"
@@ -78,68 +155,68 @@
         ></v-date-picker>
       </v-menu>
       <!-- RESIDENCE -->
-      <v-autocomplete
+      <!-- <v-autocomplete
         class="mt-5 mb-5"
         outlined
+        rounded
         prepend-icon="mdi-google-maps"
         label="Home Address"
-      ></v-autocomplete>
-      <br />
-      <br />
-      <!-- SKILLS REQUIRED TITLE -->
-      <span class="module-default__question-title mb-5"
-        >Do you know any of the required skills by the employer organizer?
-      </span>
-      <!-- SKILLS REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>Operation of a drone</div>
-        </template>
-      </v-checkbox>
-      <!-- SKILLS REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>JavaScript</div>
-        </template>
-      </v-checkbox>
-      <!-- SKILLS REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>How to use Google Suite</div>
-        </template>
-      </v-checkbox>
-      <br />
-      <br />
-      <!-- TECH REQUIRED TITLE -->
-      <span class="module-default__question-title mb-5"
-        >Do you have access of any of the required technology or tools?
-      </span>
-      <!--TECH REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>DJI Mavic Pro</div>
-        </template>
-      </v-checkbox>
-      <!--TECH REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>Smartphone</div>
-        </template>
-      </v-checkbox>
-      <!--TECH REQUIRED 1 -->
-      <v-checkbox v-model="checkbox">
-        <template v-slot:label>
-          <div>DJI GO 4 App</div>
-        </template>
-      </v-checkbox>
+      ></v-autocomplete> -->
 
-      <!-- PAID OR UNPAID -->
-      <br />
-      <br />
-      <span class="module-default__question-title">What compensation types are you open to?</span>
-      <v-checkbox hide-details label="Unpaid Experience"></v-checkbox>
-      <v-checkbox hide-details label="Paid"></v-checkbox>
+      <div class="d-flex flex-row mt-5 mb-5">
+        <!-- MOBILE PHONE NUMBER VERIFICATION -->
+        <v-text-field
+          prepend-icon="mdi-cellphone-iphone"
+          outlined
+          rounded
+          :error-messages="errors"
+          label="Verify mobile phone number"
+        ></v-text-field>
+
+        <v-dialog v-model="dialog4" persistent max-width="300px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn rounded class="ml-3" v-bind="attrs" outlined x-large depressed v-on="on"
+              >Verify</v-btn
+            >
+          </template>
+          <v-card>
+            <v-card-title class="d-flex flex-column">
+              <div class="">
+                <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
+              </div>
+              <div class="overline font-weight-bold">Text verification code</div>
+            </v-card-title>
+
+            <v-divider></v-divider>
+
+            <v-container class="d-flex justify-center">
+              <div class="d-flex flex-column">
+                <v-text-field
+                  class="justify-center module-default__sms-verification ma-2"
+                  x-large
+                  rounded
+                  outlined
+                  hide-details
+                ></v-text-field>
+                <v-btn class="ma-2" x-large dark rounded depressed>Verify</v-btn>
+                <div class="d-flex justify-center">
+                  <v-tooltip bottom color="black">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn class="" v-bind="attrs" icon v-on="on"
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Resend Code</span>
+                    <!-- <span>Expand</span> -->
+                  </v-tooltip>
+                </div>
+              </div>
+            </v-container>
+          </v-card>
+        </v-dialog>
+      </div>
     </div>
+
     <div class="module-default__license-button mt-12">
       <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
       <!-- <v-btn class="mr-2" x-large outlined depressed>Use</v-btn>
@@ -276,7 +353,8 @@ export default {
       showInstructions,
       dialog: false,
       dialog2: false,
-      dialog3: false
+      dialog3: false,
+      dialog4: false
     };
   }
 };
@@ -284,6 +362,11 @@ export default {
 
 <style lang="scss">
 .module-default {
+  &__sms-verification {
+    font-size: 30px;
+    letter-spacing: 3px !important;
+    width: 150px;
+  }
   &__license-button {
     text-align: center;
   }

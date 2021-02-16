@@ -5,10 +5,12 @@
         <validation-provider v-slot="{ errors }" slim rules="required">
           <v-text-field
             v-model="programDoc.data.programName"
+            rounded
             :error-messages="errors"
             class="mt-5 mb-5"
             prepend-icon="mdi-music-accidental-sharp"
             outlined
+            hint="Psst... This will be your public display name"
             label="Employer Name"
             placeholder="Enter your organization name"
           ></v-text-field>
@@ -16,13 +18,16 @@
         <validation-provider v-slot="{ errors }" slim rules="required">
           <v-textarea
             v-model="programDoc.data.programDesc"
+            rounded
             :error-messages="errors"
             class="mt-5 mb-5"
             outlined
             three-line
-            label="Enter your program description"
+            counter="280"
+            label="What's your project scope?"
             prepend-icon="mdi-text-subject"
-            placeholder="Build projects for us to win internships with us"
+            placeholder="In a tweet or less, what are you asking students to do?"
+            hint="This will be displayed when students explore programs"
           ></v-textarea>
         </validation-provider>
         <!-- <v-file-input label="Upload cover photo" outlined></v-file-input> -->
@@ -46,7 +51,53 @@
           </template>
         </v-file-input> -->
 
-        <div class="module-setup__question-title">
+        <!-- LOCATION / CITY OF RESIDENCE -->
+
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="rewardPresets"
+            rounded
+            :items="rewardOptions"
+            :search-input="rewardSearch"
+            :error-messages="errors"
+            prepend-icon="mdi-trophy"
+            hide-selected
+            label="Reward for winning students"
+            multiple
+            small-chips
+            hide-details
+            outlined
+            class="module-setup__combobox mt-5 mb-5"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add reward
+                    <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
+
+        <!-- <div class="module-setup__question-title mt-12">
           What age range will you accept as student participants?
         </div>
 
@@ -63,54 +114,10 @@
           <template v-slot:thumb-label>
             <v-icon dark> </v-icon>
           </template>
-        </v-range-slider>
+        </v-range-slider> -->
 
-        <!-- LOCATION / CITY OF RESIDENCE -->
+        <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
-        <validation-provider v-slot="{ errors }" rules="required" slim>
-          <v-combobox
-            v-model="programDoc.data.requiredResidency"
-            :error-messages="errors"
-            :items="requiredResidencyOptions"
-            :search-input.sync="residencySearch"
-            prepend-icon="mdi-map-check"
-            hide-selected
-            label="Residence from which city(s) or county(s) will be prioritized?"
-            multiple
-            small-chips
-            hide-details
-            solo
-            outlined
-            class="module-setup__combobox mt-5 mb-5"
-          >
-            <template v-slot:no-data>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    Press <kbd>enter</kbd> to add the residency "<strong>{{
-                      residencySearch
-                    }}</strong
-                    >".
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </template>
-            <template v-slot:selection="{ attrs, item, parent, selected }">
-              <v-chip
-                v-bind="attrs"
-                :input-value="selected"
-                label
-                small
-                @click="parent.selectItem(item)"
-              >
-                <span class="pr-2">
-                  {{ item }}
-                </span>
-                <v-icon small> mdi-close </v-icon>
-              </v-chip>
-            </template>
-          </v-combobox>
-        </validation-provider>
         <!-- <v-img
           class="pl-auto ml-auto module-setup__map-selected mb-5"
           :aspect-ratio="16 / 9"
@@ -120,29 +127,32 @@
 
         <!-- Required Skills -->
 
-        <validation-provider v-slot="{ errors }" rules="required" slim>
+        <validation-provider v-slot="{ errors }" slim>
           <v-combobox
             v-model="programDoc.data.requiredSkills"
+            rounded
             :error-messages="errors"
             :items="requiredSkillOptions"
             :search-input="skillSearch"
             prepend-icon="mdi-head-snowflake-outline"
             hide-selected
-            label="List any skills required"
+            label="Any pre-existing knowledge, tech or tools required?"
             multiple
+            hint="hi"
             small-chips
             hide-details
-            solo
             outlined
             class="module-setup__combobox mt-12 mb-12"
           >
             <template v-slot:no-data>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>
+                  <v-list-item-title> Press <kbd>enter</kbd> to add item </v-list-item-title>
+
+                  <!-- <v-list-item-title>
                     Press <kbd>enter</kbd> to add the skill "<strong>{{ skillSearch }}</strong
                     >".
-                  </v-list-item-title>
+                  </v-list-item-title> -->
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -162,10 +172,12 @@
             </template>
           </v-combobox>
         </validation-provider>
+
         <!-- Technology -->
-        <validation-provider v-slot="{ errors }" rules="required" slim>
+        <!-- <validation-provider v-slot="{ errors }" rules="required" slim>
           <v-combobox
             v-model="programDoc.data.requiredTech"
+            rounded
             :items="requiredTechOptions"
             :search-input="techSearch"
             :error-messages="errors"
@@ -204,31 +216,33 @@
               </v-chip>
             </template>
           </v-combobox>
-        </validation-provider>
+        </validation-provider> -->
 
         <!-- LOCATION / CITY OF RESIDENCE -->
 
-        <validation-provider v-slot="{ errors }" rules="required" slim>
+        <validation-provider v-slot="{ errors }" slim>
           <v-combobox
-            v-model="programDoc.data.rewards"
-            :items="rewardOptions"
-            :search-input="rewardSearch"
+            v-model="programDoc.data.requiredResidency"
+            rounded
             :error-messages="errors"
-            prepend-icon="mdi-trophy"
+            :items="requiredResidencyOptions"
+            :search-input.sync="residencySearch"
+            prepend-icon="mdi-map-check"
             hide-selected
-            label="Reward for winning students"
+            label="Which city or county residents are prioritized for rewards?"
             multiple
             small-chips
             hide-details
-            solo
             outlined
-            class="module-setup__combobox mt-12 mb-12"
+            class="module-setup__combobox mt-5 mb-5"
           >
             <template v-slot:no-data>
               <v-list-item>
                 <v-list-item-content>
                   <v-list-item-title>
-                    Press <kbd>enter</kbd> to add the reward "<strong>{{ rewardSearch }}</strong
+                    Press <kbd>enter</kbd> to add the residency "<strong>{{
+                      residencySearch
+                    }}</strong
                     >".
                   </v-list-item-title>
                 </v-list-item-content>
@@ -302,15 +316,10 @@ export default defineComponent({
     // Default Options
     const options = reactive({
       reward: [
-        { text: 'Paid Internship', color: 'purple' },
-        { text: 'Paid Fellowship', color: 'purple' },
-        { text: 'Paid Entrepreneur-in-Residence', color: 'purple' },
-        { text: 'Paid Apprenticeship', color: 'purple' },
-        { text: 'Unpaid Internship', color: 'pink' },
-        { text: 'Unpaid Fellowship', color: 'pink' },
-        { text: 'Unpaid Entrepreneur-in-Residence', color: 'pink' },
-        { text: 'Unpaid Apprenticeship', color: 'pink' }
+        { text: 'Paid Internship', color: 'grey darken-2' },
+        { text: 'Unpaid Internship', color: 'grey darken-2' }
       ],
+
       requiredResidencyOptions: [
         'None',
         'Alameda County, CA',
@@ -331,16 +340,8 @@ export default defineComponent({
       ],
       requiredTechOptions: [],
       requiredSkillOptions: [],
-      rewardOptions: [
-        'Paid Internship',
-        'Paid Fellowship',
-        'Paid Entrepreneur-in-Residence',
-        'Paid Apprenticeship',
-        'Unpaid Internship',
-        'Unpaid Fellowship',
-        'Unpaid Entrepreneur-in-Residence',
-        'Unpaid Apprenticeship'
-      ],
+      rewardOptions: ['Paid Internship', 'Unpaid Internship'],
+      rewardPresets: ['Paid Internship', 'Unpaid Internship'],
       ages: range(12, 23),
       residencySearch: null,
       skillSearch: null,
