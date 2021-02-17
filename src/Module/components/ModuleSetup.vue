@@ -97,24 +97,59 @@
           </v-combobox>
         </validation-provider>
 
-        <!-- <div class="module-setup__question-title mt-12">
-          What age range will you accept as student participants?
-        </div>
+        <validation-provider v-slot="{ errors }" rules="required" slim>
+          <v-combobox
+            v-model="pathwayPresets"
+            rounded
+            :items="pathwayOptions"
+            :search-input="pathwaySearch"
+            :error-messages="errors"
+            prepend-icon="mdi-sign-direction"
+            hide-selected
+            label="What are the career pathways of this project & program?"
+            multiple
+            small-chips
+            hide-details
+            outlined
+            class="module-setup__combobox mt-5 mb-5"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Press <kbd>enter</kbd> to add reward
+                    <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                @click="parent.selectItem(item)"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small> mdi-close </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
+        </validation-provider>
 
-        <v-range-slider
-          v-model="programDoc.data.ageRange"
-          :tick-labels="ages"
-          label="Age"
-          min="12"
-          max="22"
-          ticks="always"
-          tick-size="4"
-          class="mt-10 mb-10"
-        >
-          <template v-slot:thumb-label>
-            <v-icon dark> </v-icon>
-          </template>
-        </v-range-slider> -->
+        <v-file-input
+          hide-details
+          :rules="employerImage"
+          accept="image/png, image/jpeg, image/bmp"
+          prepend-icon="mdi-camera"
+          label="Upload your logo or avatar"
+          outlined
+          rounded
+        ></v-file-input>
 
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
@@ -234,6 +269,7 @@
             small-chips
             hide-details
             outlined
+            placeholder="Example: San Leandro, CA"
             class="module-setup__combobox mt-5 mb-5"
           >
             <template v-slot:no-data>
@@ -264,6 +300,25 @@
             </template>
           </v-combobox>
         </validation-provider>
+
+        <div class="module-setup__question-title mt-12">
+          What age range do you prefer for student participants?
+        </div>
+
+        <v-range-slider
+          v-model="programDoc.data.ageRange"
+          :tick-labels="ages"
+          label="Age"
+          min="12"
+          max="22"
+          ticks="always"
+          tick-size="1"
+          class="mt-10 mb-10"
+        >
+          <template v-slot:thumb-label>
+            <v-icon dark> </v-icon>
+          </template>
+        </v-range-slider>
       </div>
       <div class="module-setup__license-button mt-12">
         <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
@@ -319,34 +374,71 @@ export default defineComponent({
         { text: 'Paid Internship', color: 'grey darken-2' },
         { text: 'Unpaid Internship', color: 'grey darken-2' }
       ],
+      pathway: [
+        { text: 'Agriculture & Natural Resources', color: 'grey darken-2' },
+        { text: 'Arts, Media & Entertainment', color: 'grey darken-2' },
+        { text: 'Building & Construction Trades', color: 'grey darken-2' },
+        { text: 'Business & Finance', color: 'grey darken-2' },
+        { text: 'Education, Childhood Development & Family Services', color: 'grey darken-2' },
+        { text: 'Energy, Environment & Utilities', color: 'grey darken-2' },
+        { text: 'Engineering & Architecture', color: 'grey darken-2' },
+        { text: 'Fashion & Interior Design', color: 'grey darken-2' },
+        { text: 'Health Science & Medical Technology', color: 'grey darken-2' },
+        { text: 'Hospitality, Tourism & Recreation', color: 'grey darken-2' },
+        { text: 'Information & Communication Technologies', color: 'grey darken-2' },
+        { text: 'Manufacturing & Product Design', color: 'grey darken-2' },
+        { text: 'Marketing, Sales & Service', color: 'grey darken-2' },
+        { text: 'Public Services', color: 'grey darken-2' },
+        { text: 'Transportation', color: 'grey darken-2' }
+      ],
 
       requiredResidencyOptions: [
-        'None',
         'Alameda County, CA',
-        'San Mateo County, CA',
+        'Alameda, CA',
+        'Albany, CA',
+        'Berkeley, CA',
         'Contra Costa County, CA',
+        'East Palo Alto, CA',
+        'Emeryville, CA',
+        'Hayward, CA',
         'Marin County, CA',
-        'Santa Clara County, CA',
+        'Oakland, CA',
+        'Piedmont, CA',
         'San Leandro, CA',
         'San Lorenzo, CA',
-        'East Palo Alto, CA',
-        'Hayward, CA',
-        'Berkeley, CA',
-        'Albany, CA',
-        'Alameda, CA',
-        'Emeryville, CA',
-        'Piedmont, CA',
-        'Oakland, CA'
+        'San Mateo County, CA',
+        'Santa Clara County, CA'
       ],
       requiredTechOptions: [],
       requiredSkillOptions: [],
       rewardOptions: ['Paid Internship', 'Unpaid Internship'],
       rewardPresets: ['Paid Internship', 'Unpaid Internship'],
+      pathwayOptions: [
+        'Agriculture & Natural Resources',
+        'Arts, Media & Entertainment',
+        'Building & Construction Trades',
+        'Business & Finance',
+        'Education, Childhood Development & Family Services',
+        'Energy, Environment & Utilities',
+        'Engineering & Architecture',
+        'Fashion & Interior Design',
+        'Health Science & Medical Technology',
+        'Hospitality, Tourism & Recreation',
+        'Information & Communication Technologies',
+        'Manufacturing & Product Design',
+        'Marketing, Sales & Service',
+        'Public Services',
+        'Transportation'
+      ],
       ages: range(12, 23),
       residencySearch: null,
       skillSearch: null,
       techSearch: null,
-      rewardSearch: null
+      rewardSearch: null,
+      pathwaySearch: null,
+      employerImage: [
+        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
+      ]
     });
     // data binding
     const programDoc = computed({
