@@ -54,7 +54,7 @@
         <!-- LOCATION / CITY OF RESIDENCE -->
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
-          <v-combobox
+          <v-select
             v-model="rewardPresets"
             rounded
             :items="rewardOptions"
@@ -93,11 +93,11 @@
                 <v-icon small> mdi-close </v-icon>
               </v-chip>
             </template>
-          </v-combobox>
+          </v-select>
         </validation-provider>
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
-          <v-combobox
+          <v-select
             v-model="pathwayPresets"
             rounded
             :items="pathwayOptions"
@@ -136,10 +136,10 @@
                 <v-icon small> mdi-close </v-icon>
               </v-chip>
             </template>
-          </v-combobox>
+          </v-select>
         </validation-provider>
 
-        <v-file-input
+        <!-- <v-file-input
           hide-details
           :rules="employerImage"
           accept="image/png, image/jpeg, image/bmp"
@@ -147,7 +147,7 @@
           label="Upload your logo or avatar"
           outlined
           rounded
-        ></v-file-input>
+        ></v-file-input> -->
 
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
