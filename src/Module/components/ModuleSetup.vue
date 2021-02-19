@@ -330,7 +330,7 @@
           :disabled="invalid"
           :loading="licenseLoading"
           @click="licenseFun"
-          >License Program</v-btn
+          >Save and Next</v-btn
         >
         <v-alert
           v-if="status.length"
