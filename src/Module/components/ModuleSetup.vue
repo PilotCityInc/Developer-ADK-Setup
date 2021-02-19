@@ -55,7 +55,7 @@
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
           <v-combobox
-            v-model="rewardPresets"
+            v-model="programDoc.data.rewards"
             rounded
             :items="rewardOptions"
             :search-input="rewardSearch"
@@ -99,7 +99,7 @@
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
           <v-combobox
-            v-model="pathwayPresets"
+            v-model="programDoc.data.pathways"
             rounded
             :items="pathwayOptions"
             :search-input="pathwaySearch"
@@ -140,7 +140,7 @@
             </template>
           </v-combobox>
         </validation-provider>
-
+        <!--
         <v-file-input
           hide-details
           :rules="employerImage"
@@ -149,7 +149,7 @@
           label="Upload your logo or avatar"
           outlined
           rounded
-        ></v-file-input>
+        ></v-file-input> -->
 
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
@@ -437,7 +437,7 @@ export default defineComponent({
       rewardSearch: null,
       pathwaySearch: null,
       employerImage: [
-        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
+        (value: any) => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ]
     });
     // data binding
@@ -454,7 +454,8 @@ export default defineComponent({
       'requiredResidency',
       'requiredSkills',
       'requiredTech',
-      'rewards'
+      'rewards',
+      'pathways'
     ];
     const writeFields = dataProperties.map(prop => {
       if (!programDoc.value.data[prop]) {
