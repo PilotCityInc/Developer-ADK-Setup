@@ -154,6 +154,44 @@
           @input="menu = false"
         ></v-date-picker>
       </v-menu>
+      <!-- ONLY REQUIRE THIS IF 13 or YOUNGER depending on birthdate -->
+      <!-- <div class="d-flex flex-row mt-5">
+        <v-text-field
+          prepend-icon="mdi-email"
+          outlined
+          rounded
+          :error-messages="errors"
+          label="Type parent email to authorize & monitor"
+        ></v-text-field>
+
+        <v-dialog v-model="dialog5" persistent max-width="400px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn rounded class="ml-3" v-bind="attrs" outlined x-large depressed v-on="on"
+              >Send</v-btn
+            >
+          </template>
+
+          <v-card>
+            <v-card-title class="d-flex flex-column">
+              <div class="d-flex justify-center">
+                <v-btn class="mb-3" v-bind="attrs" icon v-on="on"
+                  ><v-icon color="yellow" large>mdi-email</v-icon></v-btn
+                >
+              </div>
+
+              <div class="headline font-weight-bold">Email access sent to parent</div>
+            </v-card-title>
+            <v-container class="d-flex justify-center">
+              <div class="d-flex flex-column justify-center">
+                <v-btn class="ma-2" x-large dark rounded depressed @click="dialog5 = false"
+                  >Close</v-btn
+                >
+              </div>
+            </v-container>
+          </v-card>
+        </v-dialog>
+      </div> -->
+
       <!-- RESIDENCE -->
       <!-- <v-autocomplete
         class="mt-5 mb-5"
@@ -356,7 +394,8 @@ export default {
       dialog: false,
       dialog2: false,
       dialog3: false,
-      dialog4: false
+      dialog4: false,
+      dialog5: false
     };
   }
 };

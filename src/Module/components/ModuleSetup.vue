@@ -368,8 +368,8 @@ export default defineComponent({
     // Default Options
     const options = reactive({
       reward: [
-        { text: 'Paid Internship', color: 'grey darken-2' },
-        { text: 'Unpaid Internship', color: 'grey darken-2' }
+        { text: 'Paid Work Experience', color: 'grey darken-2' },
+        { text: 'Unpaid Work Experience', color: 'grey darken-2' }
       ],
       pathway: [
         { text: 'Agriculture & Natural Resources', color: 'grey darken-2' },
@@ -934,8 +934,8 @@ export default defineComponent({
       ],
       requiredTechOptions: [],
       requiredSkillOptions: [],
-      rewardOptions: ['Paid Internship', 'Unpaid Internship'],
-      rewardPresets: ['Paid Internship', 'Unpaid Internship'],
+      rewardOptions: ['Paid Work Experience', 'Unpaid Work Experience'],
+      rewardPresets: ['Paid Work Experience', 'Unpaid Work Experience'],
       pathwayOptions: [
         'Agriculture & Natural Resources',
         'Arts, Media & Entertainment',
