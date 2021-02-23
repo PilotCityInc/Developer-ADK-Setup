@@ -54,8 +54,8 @@
         <!-- LOCATION / CITY OF RESIDENCE -->
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
-          <v-select
-            v-model="rewardPresets"
+          <v-combobox
+            v-model="programDoc.data.rewards"
             rounded
             :items="rewardOptions"
             :search-input="rewardSearch"
@@ -93,12 +93,12 @@
                 <v-icon small> mdi-close </v-icon>
               </v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </validation-provider>
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
-          <v-select
-            v-model="pathwayPresets"
+          <v-combobox
+            v-model="programDoc.data.pathways"
             rounded
             :items="pathwayOptions"
             :search-input="pathwaySearch"
@@ -136,10 +136,10 @@
                 <v-icon small> mdi-close </v-icon>
               </v-chip>
             </template>
-          </v-select>
+          </v-combobox>
         </validation-provider>
-
-        <!-- <v-file-input
+        <!--
+        <v-file-input
           hide-details
           :rules="employerImage"
           accept="image/png, image/jpeg, image/bmp"
@@ -330,7 +330,7 @@
           :disabled="invalid"
           :loading="licenseLoading"
           @click="licenseFun"
-          >License Program</v-btn
+          >Save and Next</v-btn
         >
         <v-alert
           v-if="status.length"
@@ -960,7 +960,7 @@ export default defineComponent({
       rewardSearch: null,
       pathwaySearch: null,
       employerImage: [
-        value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
+        (value: any) => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
       ]
     });
     // data binding
@@ -977,7 +977,8 @@ export default defineComponent({
       'requiredResidency',
       'requiredSkills',
       'requiredTech',
-      'rewards'
+      'rewards',
+      'pathways'
     ];
     const writeFields = dataProperties.map(prop => {
       if (!programDoc.value.data[prop]) {
