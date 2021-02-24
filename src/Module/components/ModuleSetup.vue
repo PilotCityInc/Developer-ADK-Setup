@@ -1005,7 +1005,7 @@ export default defineComponent({
       saveData.saveLoading = true;
       try {
         await programDoc.value.update();
-        status.value = 'Saved Successfully';
+        status.value = 'Saved';
       } catch (err) {
         console.log(err);
         status.value = `${'Something went wrong, try again later\n'}${err}`;
