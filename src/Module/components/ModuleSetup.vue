@@ -171,7 +171,6 @@
             hide-selected
             label="Any pre-existing knowledge, tech or tools required?"
             multiple
-            hint="hi"
             small-chips
             hide-details
             outlined
