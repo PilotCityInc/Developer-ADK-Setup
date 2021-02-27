@@ -47,7 +47,7 @@
       <!-- <div class="module-default__none">Design your activity here</div> -->
 
       <!-- PAID OR UNPAID -->
-      <span class="module-default__question-title">
+      <span class="module-default__question-title mt-12">
         Are you open to winning paid & unpaid internships?
       </span>
 
@@ -268,11 +268,13 @@
 
       <v-dialog v-model="dialog" persistent max-width="400px">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" class="ml-2" x-large dark depressed v-on="on">Start Program</v-btn>
+          <v-btn v-bind="attrs" class="ml-2" x-large dark depressed v-on="on"
+            >Program Checkout</v-btn
+          >
         </template>
         <v-card>
           <v-card-title>
-            <div class="overline font-weight-bold">Program Checkout</div>
+            <div class="overline font-weight-bold">Program Checkout Options</div>
 
             <div class="ml-auto">
               <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
@@ -286,7 +288,7 @@
               <v-dialog v-model="dialog2" persistent max-width="425px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    class="mt-2 mb-2"
+                    class="mt-2 mb-2 font-weight-black"
                     x-large
                     rounded
                     dark
@@ -294,7 +296,7 @@
                     v-bind="attrs"
                     @click="dialog2 = true"
                     v-on="on"
-                    >Use 1 Token</v-btn
+                    ><v-icon left>mdi-set-right</v-icon>Use 1 Token</v-btn
                   >
                 </template>
                 <v-card>
@@ -328,25 +330,28 @@
                 </v-card>
               </v-dialog>
 
-              <v-btn class="mt-2 mb-2" x-large rounded depressed outlined>Buy 1 Token</v-btn>
+              <v-btn color="blue" class="mt-2 mb-2" outlined x-large rounded depressed
+                ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
+              >
 
               <v-dialog v-model="dialog3" persistent max-width="425px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mt-2 mb-2"
                     x-large
+                    color="green"
                     rounded
                     outlined
                     depressed
                     v-bind="attrs"
                     @click="dialog3 = true"
                     v-on="on"
-                    >Claim Sponsorship</v-btn
+                    ><v-icon left>mdi-link-variant</v-icon>Enter Link</v-btn
                   >
                 </template>
                 <v-card>
                   <v-card-title>
-                    <div class="overline font-weight-bold">Enter sponsorship code</div>
+                    <div class="overline font-weight-bold">Enter Sponsorship Link</div>
 
                     <div class="ml-auto">
                       <v-btn icon @click="dialog3 = false"><v-icon>mdi-close</v-icon></v-btn>
@@ -359,6 +364,84 @@
                     <div class="d-flex justify-center flex-column">
                       <v-text-field rounded hide-details outlined></v-text-field>
                       <v-btn x-large rounded dark depressed class="mt-2">Claim Sponsorship</v-btn>
+                    </div>
+                  </v-container>
+                </v-card>
+              </v-dialog>
+
+              <v-dialog v-model="dialog6" persistent max-width="400px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="mt-2 mb-2"
+                    x-large
+                    color="red"
+                    rounded
+                    outlined
+                    depressed
+                    v-bind="attrs"
+                    @click="dialog6 = true"
+                    v-on="on"
+                    ><v-icon left>mdi-trophy</v-icon>Get Sponsored</v-btn
+                  >
+                </template>
+                <v-card>
+                  <v-card-title><v-icon x-large color="red">mdi-trophy</v-icon></v-card-title>
+                  <v-card-title>
+                    <div class="headline font-weight-bold">Get Sponsored</div>
+
+                    <div class="ml-auto">
+                      <v-btn icon @click="dialog6 = false"><v-icon>mdi-close</v-icon></v-btn>
+                    </div>
+                  </v-card-title>
+
+                  <v-divider></v-divider>
+
+                  <v-container>
+                    <div class="d-flex justify-center flex-column">
+                      <v-text-field
+                        class="ma-2"
+                        rounded
+                        label="Hometown"
+                        hide-details
+                        outlined
+                      ></v-text-field>
+                      <v-text-field
+                        class="ma-2"
+                        rounded
+                        label="County"
+                        hide-details
+                        outlined
+                      ></v-text-field>
+                      <v-text-field
+                        class="ma-2"
+                        rounded
+                        label="Country"
+                        hide-details
+                        outlined
+                      ></v-text-field>
+                      <v-text-field
+                        class="ma-2"
+                        rounded
+                        label="School"
+                        hide-details
+                        outlined
+                      ></v-text-field>
+                      <v-select
+                        class="ma-2"
+                        rounded
+                        label="Culture"
+                        hide-details
+                        outlined
+                      ></v-select>
+                      <v-text-field
+                        class="ma-2"
+                        rounded
+                        label="Why PilotCity"
+                        hide-details
+                        outlined
+                      ></v-text-field>
+
+                      <v-btn class="ma-2" color="red" x-large rounded dark depressed>Apply</v-btn>
                     </div>
                   </v-container>
                 </v-card>
@@ -395,7 +478,8 @@ export default {
       dialog2: false,
       dialog3: false,
       dialog4: false,
-      dialog5: false
+      dialog5: false,
+      dialog6: false
     };
   }
 };
