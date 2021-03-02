@@ -362,14 +362,19 @@
 
                   <v-container>
                     <div class="d-flex justify-center flex-column">
-                      <v-text-field rounded hide-details outlined></v-text-field>
+                      <v-text-field
+                        rounded
+                        hide-details
+                        outlined
+                        placeholder="https://www.pilotcity.com/sponsor/entercode"
+                      ></v-text-field>
                       <v-btn x-large rounded dark depressed class="mt-2">Claim Sponsorship</v-btn>
                     </div>
                   </v-container>
                 </v-card>
               </v-dialog>
 
-              <v-dialog v-model="dialog6" persistent max-width="400px">
+              <v-dialog v-model="dialog6" persistent max-width="450px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mt-2 mb-2"
@@ -399,13 +404,14 @@
                   <v-container>
                     <div class="d-flex justify-center flex-column">
                       <v-text-field
+                        prepend-icon="mdi-map-marker-radius"
                         class="ma-2"
                         rounded
-                        label="Hometown"
+                        label="City of Residence"
                         hide-details
                         outlined
                       ></v-text-field>
-                      <v-text-field
+                      <!-- <v-text-field
                         class="ma-2"
                         rounded
                         label="County"
@@ -418,25 +424,101 @@
                         label="Country"
                         hide-details
                         outlined
-                      ></v-text-field>
+                      ></v-text-field> -->
                       <v-text-field
+                        prepend-icon="mdi-notebook"
                         class="ma-2"
                         rounded
                         label="School"
                         hide-details
                         outlined
                       ></v-text-field>
-                      <v-select
-                        class="ma-2"
+
+                      <v-combobox
                         rounded
-                        label="Culture"
+                        :items="ethnicityCulture"
+                        :error-messages="errors"
+                        prepend-icon="mdi-account-group"
+                        label="Ethnicity & Culture"
+                        multiple
+                        small-chips
                         hide-details
                         outlined
-                      ></v-select>
+                        class="ma-2"
+                      >
+                        <template v-slot:no-data>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                Press <kbd>enter</kbd> to add reward
+                                <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </template>
+                        <template v-slot:selection="{ attrs, item, parent, selected }">
+                          <v-chip
+                            v-bind="attrs"
+                            :input-value="selected"
+                            label
+                            small
+                            @click="parent.selectItem(item)"
+                          >
+                            <span class="">
+                              {{ item }}
+                            </span>
+                            <v-icon small> mdi-close </v-icon>
+                          </v-chip>
+                        </template>
+                      </v-combobox>
+
+                      <v-combobox
+                        v-model="eligibilityPresets"
+                        rounded
+                        :items="eligibilityOptions"
+                        :search-input="eligibilitySearch"
+                        :error-messages="errors"
+                        prepend-icon="mdi-check-box-multiple-outline"
+                        label="Do you have any of the following?"
+                        multiple
+                        small-chips
+                        hide-details
+                        outlined
+                        class="ma-2"
+                      >
+                        <template v-slot:no-data>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                Press <kbd>enter</kbd> to add reward
+                                <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </template>
+                        <template v-slot:selection="{ attrs, item, parent, selected }">
+                          <v-chip
+                            v-bind="attrs"
+                            :input-value="selected"
+                            label
+                            small
+                            @click="parent.selectItem(item)"
+                          >
+                            <span class="">
+                              {{ item }}
+                            </span>
+                            <v-icon small> mdi-close </v-icon>
+                          </v-chip>
+                        </template>
+                      </v-combobox>
+
                       <v-text-field
+                        prepend-icon="mdi-telegram"
                         class="ma-2"
                         rounded
-                        label="Why PilotCity"
+                        label="How did you hear about PilotCity?"
                         hide-details
                         outlined
                       ></v-text-field>
@@ -479,7 +561,29 @@ export default {
       dialog3: false,
       dialog4: false,
       dialog5: false,
-      dialog6: false
+      dialog6: false,
+      eligibilityOptions: [
+        'I receive Free or Reduced School Lunch',
+        'I live without my parents',
+        'My family receives food stamps or CalWORKS',
+        'I have an IEP or long-term 504 Plan',
+        'I am a foster child',
+        'I am homeless',
+        'I am a parent',
+        'I am on probation',
+        'I am a first generation US resident',
+        'I am the first generation college student'
+      ],
+      eligibilityPresets: null,
+      eligibilitySearch: null,
+      ethnicityCulture: [
+        'American Indian or Alaska Native',
+        'Asian',
+        'Black or African American',
+        'Hispanic',
+        'White / Caucasian',
+        'Pacific Islander or Native Hawaiian'
+      ]
     };
   }
 };
