@@ -334,7 +334,7 @@
                 ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
               >
 
-              <v-dialog v-model="dialog3" persistent max-width="425px">
+              <v-dialog v-model="dialog3" persistent max-width="475px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="mt-2 mb-2"
@@ -363,12 +363,13 @@
                   <v-container>
                     <div class="d-flex justify-center flex-column">
                       <v-text-field
+                        class="ma-4"
                         rounded
                         hide-details
                         outlined
                         placeholder="https://www.pilotcity.com/sponsor/entercode"
                       ></v-text-field>
-                      <v-btn x-large rounded dark depressed class="mt-2">Claim Sponsorship</v-btn>
+                      <v-btn x-large rounded dark depressed class="ma-4">Claim Sponsorship</v-btn>
                     </div>
                   </v-container>
                 </v-card>
