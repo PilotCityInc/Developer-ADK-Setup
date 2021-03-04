@@ -369,7 +369,9 @@
                         outlined
                         placeholder="https://www.pilotcity.com/sponsor/entercode"
                       ></v-text-field>
-                      <v-btn x-large rounded dark depressed class="ma-4">Claim Sponsorship</v-btn>
+                      <v-btn color="green" x-large rounded dark depressed class="ma-4"
+                        >Start Program</v-btn
+                      >
                     </div>
                   </v-container>
                 </v-card>
