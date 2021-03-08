@@ -55,7 +55,7 @@
 
         <validation-provider v-slot="{ errors }" rules="required" slim>
           <v-combobox
-            v-model="rewardPresets"
+            v-model="programDoc.data.rewardPresets"
             rounded
             :items="rewardOptions"
             :search-input="rewardSearch"
