@@ -217,7 +217,7 @@
               outlined
               rounded
               :error-messages="errors"
-              label="Enter mobile phone number"
+              label="Confirm mobile phone number"
             ></v-text-field>
           </validation-provider>
 
