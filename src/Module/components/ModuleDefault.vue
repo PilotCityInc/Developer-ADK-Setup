@@ -579,6 +579,7 @@ import { getModMongoDoc, getModAdk, loading } from 'pcv4lib/src';
 import { ValidationObserver, ValidationProvider } from '@/validation';
 
 // import Instruct from './ModuleInstruct.vue';
+import { Db } from 'mongodb';
 import MongoDoc from '../types';
 
 export default {
@@ -600,6 +601,14 @@ export default {
     studentDoc: {
       required: true,
       type: Object as PropType<MongoDoc>
+    },
+    db: {
+      required: true,
+      type: Object as () => Db
+    },
+    userDoc: {
+      required: true,
+      type: Object as () => MongoDoc
     }
   },
 
@@ -660,6 +669,47 @@ export default {
     //     ...programDoc.value.data
     //   }
     // };
+    const studentCheckout = () => {
+      const db = props.db as Db;
+      return db
+        .collection('Tokens')
+        .findOne({
+          newOwner_id: props.userDoc._id
+        })
+        .then(doc => {
+          return db
+            .collection('Tokens')
+            .updateOne(
+              {
+                _id: doc._id
+              },
+              {
+                $set: {
+                  newOwner_id: null
+                },
+                $push: {
+                  eventLog: {
+                    event: 'used Token',
+                    user_id: props.userDoc._id,
+                    timestamp: new Date()
+                  }
+                }
+              },
+              {
+                upsert: true
+              }
+            )
+            .then(() => {
+              programDoc.value = {
+                data: {
+                  participants: [...programDoc.value.participants, props.userDoc._id],
+                  ...programDoc.value.data
+                },
+                ...programDoc.value
+              };
+            });
+        });
+    };
     return {
       programDoc,
       initSetupprogram,

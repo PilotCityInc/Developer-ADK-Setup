@@ -3,6 +3,8 @@
     <Module
       v-model="programDocStub"
       :student-doc="studentDoc"
+      :db="db"
+      :user-doc="userDoc"
       @inputStudentDoc="studentDoc = $event"
     />
   </v-app>
@@ -10,6 +12,7 @@
 
 <script lang="ts">
 import { ref, Ref } from '@vue/composition-api';
+import { ObjectId } from 'bson';
 import Vue from 'vue';
 // import ApolloExample from './components/ApolloExample.vue';
 import Module from './Module/Module.vue';
@@ -24,6 +27,7 @@ export default Vue.extend({
   setup() {
     const programDocStub = ref({
       data: {
+        participants: [new ObjectId(1)],
         adks: [
           {
             name: 'rfp'
@@ -46,9 +50,16 @@ export default Vue.extend({
       },
       changeStream: {}
     });
+    const db = {};
+    const userDoc = {
+      data: {
+        _id: new ObjectId(1)
+      }
+    };
     return {
       programDocStub,
-      studentDoc
+      studentDoc,
+      userDoc
     };
   }
 });
