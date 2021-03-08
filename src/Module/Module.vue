@@ -48,7 +48,13 @@
         <div v-if="currentPage != 'preview'" class="module__pagination"></div>
         <div class="module__page">
           <keep-alive>
-            <component :is="getComponent" v-model="programDoc" :license-program="licenseProgram" />
+            <component
+              :is="getComponent"
+              v-model="programDoc"
+              :student-doc="studentDoc"
+              :license-program="licenseProgram"
+              @inputStudentDoc="studentDoc = $event"
+            />
           </keep-alive>
         </div>
       </div>
@@ -171,8 +177,10 @@
 <script lang="ts">
 import { computed, reactive, ref, toRefs, defineComponent, PropType } from '@vue/composition-api';
 import '../styles/module.scss';
+import { getModMongoDoc } from 'pcv4lib/src';
 // import { Collection } from 'mongodb';
 import * as Module from './components';
+import MongoDoc from './types';
 
 export default defineComponent({
   name: 'ModuleName',
@@ -195,6 +203,11 @@ export default defineComponent({
     licenseProgram: {
       required: true,
       type: Function as PropType<() => any>
+    },
+    studentDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc>,
+      default: () => {}
     }
   },
   setup(props, ctx) {
@@ -204,9 +217,15 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    const moduleName = ref('Setup Program');
+    const studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+
     const page = reactive({
       currentPage: 'Setup'
+    });
+
+    const moduleName = computed(() => {
+      if (page.currentPage === 'setup') return 'Setup Program';
+      return 'Start Program';
     });
     const getComponent = computed(() => {
       return `module-${page.currentPage.toLowerCase()}`;
@@ -266,7 +285,8 @@ export default defineComponent({
       ...toRefs(timelineData),
       timeline,
       comment,
-      programDoc
+      programDoc,
+      studentDocument
     };
   }
 });
