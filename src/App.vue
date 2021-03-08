@@ -2,6 +2,7 @@
   <v-app>
     <Module
       v-model="programDocStub"
+      :user-type="userTypeStub"
       :student-doc="studentDoc"
       @inputStudentDoc="studentDoc = $event"
     />
@@ -46,9 +47,11 @@ export default Vue.extend({
       },
       changeStream: {}
     });
+    const userTypeStub = 'organizer';
     return {
       programDocStub,
-      studentDoc
+      studentDoc,
+      userTypeStub
     };
   }
 });

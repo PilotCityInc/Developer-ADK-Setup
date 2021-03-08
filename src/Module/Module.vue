@@ -2,7 +2,7 @@
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
     <div class="module__navbar">
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage != 'preview'"
         class="module__navbar-button"
         dark
@@ -22,7 +22,7 @@
         color="green"
         @click="currentPage = 'setup'"
         >Student View</v-btn
-      >
+      > -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
@@ -208,6 +208,13 @@ export default defineComponent({
       required: false,
       type: Object as PropType<MongoDoc>,
       default: () => {}
+    },
+    userType: {
+      required: true,
+      type: String
+      // participant: '',
+      // organizer: '',
+      // stakeholder: ''
     }
   },
   setup(props, ctx) {
@@ -222,6 +229,12 @@ export default defineComponent({
     const page = reactive({
       currentPage: 'Setup'
     });
+
+    if (props.userType === 'organizer') {
+      page.currentPage = 'setup';
+    } else {
+      page.currentPage = 'preview';
+    }
 
     const moduleName = computed(() => {
       if (page.currentPage === 'setup') return 'Setup Program';
