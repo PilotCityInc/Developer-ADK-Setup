@@ -140,6 +140,7 @@
         <!-- <div class="headline d-flex justify-center mt-12 font-weight-bold">Optional</div> -->
 
         <!-- BIRTHDATE -->
+
         <v-menu
           ref="menu"
           :value="false"
@@ -148,6 +149,7 @@
           offset-y
           min-width="290px"
           class="mt-12 mb-5"
+          v-model="birthdayMenu"
         >
           <template v-slot:activator="{ on, attrs }">
             <validation-provider v-slot="{ errors }" rules="required">
@@ -170,6 +172,7 @@
             :max="new Date().toISOString().substr(0, 10)"
             min="1950-01-01"
             @input="menu = false"
+            @change="save"
           ></v-date-picker>
         </v-menu>
         <!-- ONLY REQUIRE THIS IF 13 or YOUNGER depending on birthdate -->
@@ -227,12 +230,14 @@
               prepend-icon="mdi-cellphone-iphone"
               outlined
               rounded
+              prefix="+1 "
+              v-mask="'(###) ###-####'"
               :error-messages="errors"
               label="Confirm mobile phone number"
             ></v-text-field>
           </validation-provider>
 
-          <v-dialog v-model="dialog4" persistent max-width="300px">
+          <v-dialog v-model="dialog4" persistent max-width="350px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 rounded
@@ -260,7 +265,7 @@
                   </v-tooltip>
                 </div>
 
-                <div class="overline font-weight-bold">Text verification code</div>
+                <div class="overline font-weight-bold">Text verification code sent</div>
               </v-card-title>
 
               <v-divider></v-divider>
@@ -748,6 +753,7 @@ export default {
     });
     const showInstructions = ref(true);
     return {
+      birthdayMenu: false,
       setupInstructions,
       showInstructions,
       dialog: false,
@@ -779,6 +785,16 @@ export default {
         'Pacific Islander or Native Hawaiian'
       ]
     };
+  },
+  watch: {
+    birthdayMenu() {
+      this.$refs.picker.activePicker = 'YEAR';
+    }
+  },
+  methods: {
+    save(studentBirthday) {
+      this.$refs.birthdayMenu.save(studentBirthday);
+    }
   }
 };
 </script>
