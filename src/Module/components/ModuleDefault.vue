@@ -48,21 +48,70 @@
         <!-- <div class="module-default__none">Design your activity here</div> -->
 
         <!-- PAID OR UNPAID -->
-        <br />
-        <br />
+        <!-- <br />
+        <br /> -->
 
-        <div v-if="programDoc.data.rewardPresets !== undefined">
-          <span class="module-default__question-title mt-12">
-            Are you open to winning paid & unpaid internships?
-          </span>
-          <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details
-            ><v-radio
+        <!-- <div v-if="programDoc.data.rewardPresets !== undefined"> -->
+        <span class="module-default__question-title mt-12">
+          Are you open to winning paid & unpaid internships?
+        </span>
+        <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details>
+          <!-- <v-radio
               v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
               :key="itemIndex"
               :label="rewardPresets"
-            ></v-radio>
-          </v-radio-group>
-        </div>
+            ></v-radio> -->
+          <v-radio
+            v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
+            label="Yes"
+          ></v-radio>
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Paid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            disabled
+            label="Yes"
+          ></v-radio>
+
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+          >
+            <template v-slot:label>
+              <div>Yes <strong color="red" class="module-default__required"> REQUIRED</strong></div>
+            </template></v-radio
+          >
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Paid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+          >
+            <template v-slot:label>
+              <div>
+                Paid Only <strong color="red" class="module-default__required"> REQUIRED</strong>
+              </div>
+            </template>
+          </v-radio>
+          <v-radio
+            v-else-if="
+              programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            label="Paid Only"
+            disabled
+          >
+          </v-radio>
+          <v-radio v-else>
+            <template v-slot:label>
+              <div>Paid Only</div>
+            </template>
+          </v-radio>
+        </v-radio-group>
+        <!-- </div> -->
 
         <br />
         <br />
@@ -79,7 +128,6 @@
               :key="itemIndex"
               v-model="studentDoc.data.accessSkills"
               :label="requiredSkills"
-              hide-details
               :error-messages="errors"
               required
             >
@@ -664,6 +712,15 @@ export default {
       });
     }
 
+    //     function response() {
+    //       axios.post('/url', {
+    // ...
+    // })
+    // .then((response) => {
+    //     console.log(response);
+    // })
+    //     }
+
     const { adkData } = getModAdk(
       props,
       ctx.emit,
@@ -674,7 +731,7 @@ export default {
     );
 
     const rewardstest = ref([]);
-    console.log(programDoc.value.data.requiredSkills);
+    console.log(programDoc.value.data);
 
     // programDoc.value = {
     //   ...programDoc.value,
@@ -785,6 +842,9 @@ export default {
 
 <style lang="scss">
 .module-default {
+  &__required {
+    color: red;
+  }
   &__sms-verification {
     font-size: 30px;
     letter-spacing: 3px !important;
