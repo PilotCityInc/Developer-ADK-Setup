@@ -53,7 +53,7 @@
 
         <!-- <div v-if="programDoc.data.rewardPresets !== undefined"> -->
         <span class="module-default__question-title mt-12">
-          Are you open to winning paid & unpaid internships?
+          Are you open to winning unpaid or paid work experiences?
         </span>
         <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details>
           <!-- <v-radio
@@ -70,7 +70,6 @@
               programDoc.data.rewards[0] === 'Paid Work Experience' &&
               programDoc.data.rewards.length === 1
             "
-            disabled
             label="Yes"
           ></v-radio>
 
@@ -81,7 +80,7 @@
             "
           >
             <template v-slot:label>
-              <div>Yes <strong color="red" class="module-default__required"> REQUIRED</strong></div>
+              <div>Yes <strong class="module-default__required ml-2"> REQUIRED</strong></div>
             </template></v-radio
           >
           <v-radio
@@ -91,9 +90,7 @@
             "
           >
             <template v-slot:label>
-              <div>
-                Paid Only <strong color="red" class="module-default__required"> REQUIRED</strong>
-              </div>
+              <div>Paid Only <strong class="module-default__required ml-2"></strong></div>
             </template>
           </v-radio>
           <v-radio
@@ -215,10 +212,10 @@
             </validation-provider>
           </template>
           <v-date-picker
+            max="2010-12-31"
+            min="1950-01-01"
             ref="picker"
             v-model="studentDoc.data.studentBirthday"
-            :max="new Date().toISOString().substr(0, 10)"
-            min="1950-01-01"
             @input="menu = false"
             @change="save"
           ></v-date-picker>
@@ -859,7 +856,11 @@ export default {
 <style lang="scss">
 .module-default {
   &__required {
-    color: red;
+    color: #404142;
+    font-family: 'Raleway';
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
   }
   &__sms-verification {
     font-size: 30px;
