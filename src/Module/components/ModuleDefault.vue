@@ -48,46 +48,54 @@
         <!-- <div class="module-default__none">Design your activity here</div> -->
 
         <!-- PAID OR UNPAID -->
-        <span class="module-default__question-title mt-12">
-          Are you open to winning paid & unpaid internships?
-        </span>
+        <br />
+        <br />
 
-        <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details
-          ><v-radio
-            v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
-            :key="itemIndex"
-            :label="rewardPresets"
-          ></v-radio>
-        </v-radio-group>
+        <div v-if="programDoc.data.rewardPresets !== undefined">
+          <span class="module-default__question-title mt-12">
+            Are you open to winning paid & unpaid internships?
+          </span>
+          <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details
+            ><v-radio
+              v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
+              :key="itemIndex"
+              :label="rewardPresets"
+            ></v-radio>
+          </v-radio-group>
+        </div>
 
         <br />
         <br />
 
         <!-- SKILLS REQUIRED TITLE -->
-        <span class="module-default__question-title"
-          >Do you know, can learn or have access to the following items?
-        </span>
-        <!-- SKILLS REQUIRED 1 -->
-        <v-checkbox
-          v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
-          :key="itemIndex"
-          v-model="studentDoc.data.accessSkills"
-          :label="requiredSkills"
-          hide-details
-        >
-          {{ requiredSkills }}
-        </v-checkbox>
-        <!-- <v-checkbox v-model="checkbox" hide-details>
+        <div v-if="programDoc.data.requiredSkills.length !== 0">
+          <validation-provider>
+            <span class="module-default__question-title"
+              >Do you know, can learn or have access to the following items?
+            </span>
+            <!-- SKILLS REQUIRED 1 -->
+            <v-checkbox
+              v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
+              :key="itemIndex"
+              v-model="studentDoc.data.accessSkills"
+              :label="requiredSkills"
+              hide-details
+              :error-messages="errors"
+              required
+            >
+              {{ requiredSkills }}
+            </v-checkbox>
+            <!-- <v-checkbox v-model="checkbox" hide-details>
         <template v-slot:label>
           <div>JavaScript</div>
         </template>
       </v-checkbox> -->
-        <!-- <v-checkbox v-model="checkbox" hide-details>
+            <!-- <v-checkbox v-model="checkbox" hide-details>
         <template v-slot:label>
           <div>How to use Google Suite</div>
         </template>
       <br /> -->
-        <!-- <span class="module-default__question-title"
+            <!-- <span class="module-default__question-title"
         >Do you have access of any of the required technology or tools?
       </span>
       <v-checkbox v-model="checkbox" hide-details>
@@ -105,26 +113,29 @@
           <div>DJI GO 4 App</div>
         </template>
       </v-checkbox> -->
-
-        <br />
-        <br />
+          </validation-provider>
+          <br />
+          <br />
+        </div>
 
         <!-- SKILLS REQUIRED TITLE -->
-        <span class="module-default__question-title"
-          >Do you live or work in any of the priority jurisdictions?
-        </span>
-        <v-radio-group v-model="studentDoc.data.studentLocation" hide-details
-          ><v-radio
-            v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
-            :key="itemIndex"
-            :label="requiredResidency"
-          ></v-radio
-          ><v-radio label="None of the above"></v-radio
-        ></v-radio-group>
-        <br />
-        <br />
-        <br />
-        <br />
+        <div v-if="programDoc.data.requiredResidency.length !== 0">
+          <span class="module-default__question-title"
+            >Do you live or work in any of the priority jurisdictions?
+          </span>
+          <v-radio-group v-model="studentDoc.data.studentLocation" hide-details
+            ><v-radio
+              v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
+              :key="itemIndex"
+              :label="requiredResidency"
+            ></v-radio
+            ><v-radio label="None of the above"></v-radio
+          ></v-radio-group>
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
 
         <!-- <div class="headline d-flex justify-center mt-12 font-weight-bold">Optional</div> -->
 
@@ -222,25 +233,25 @@
           </validation-provider>
 
           <v-dialog v-model="dialog4" persistent max-width="300px">
-            <!-- <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              rounded
-              class="ml-3"
-              v-bind="attrs"
-              outlined
-              x-large
-              depressed
-              v-on="on"
-              @click="verifyPhoneNumber"
-              >Verify</v-btn
-            >
-          </template> -->
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                rounded
+                class="ml-3"
+                v-bind="attrs"
+                outlined
+                x-large
+                depressed
+                v-on="on"
+                @click="sendVerification"
+                >Verify</v-btn
+              >
+            </template>
             <v-card>
               <v-card-title class="d-flex flex-column">
                 <div class="d-flex justify-center">
                   <v-tooltip top color="black">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn class="" v-bind="attrs" icon v-on="on" @click="verifyPhoneNumber"
+                      <v-btn class="" v-bind="attrs" icon v-on="on" @click="sendVerification"
                         ><v-icon>mdi-refresh</v-icon></v-btn
                       >
                     </template>
@@ -254,25 +265,25 @@
 
               <v-divider></v-divider>
 
-              <!-- <v-container class="d-flex justify-center">
-              <div class="d-flex flex-column justify-center">
-                <v-text-field
-                  v-model="verificationCode"
-                  class="justify-center module-default__sms-verification ma-2"
-                  x-large
-                  rounded
-                  outlined
-                  hide-details
-                ></v-text-field>
-                <v-btn class="ma-2" x-large dark rounded depressed @click="verificationCode"
-                  >Verify</v-btn
-                >
+              <v-container class="d-flex justify-center">
+                <div class="d-flex flex-column justify-center">
+                  <v-text-field
+                    v-model="verificationCode"
+                    class="justify-center module-default__sms-verification ma-2"
+                    x-large
+                    rounded
+                    outlined
+                    hide-details
+                  ></v-text-field>
+                  <v-btn class="ma-2" x-large dark rounded depressed @click="verifyPhoneNumber"
+                    >Verify</v-btn
+                  >
 
-                <div class="d-flex justify-center">
-                  <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
+                  <div class="d-flex justify-center">
+                    <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
+                  </div>
                 </div>
-              </div>
-            </v-container> -->
+              </v-container>
             </v-card>
           </v-dialog>
         </div>
@@ -579,6 +590,7 @@ import { getModMongoDoc, getModAdk, loading } from 'pcv4lib/src';
 import { ValidationObserver, ValidationProvider } from '@/validation';
 
 // import Instruct from './ModuleInstruct.vue';
+import { Db } from 'mongodb';
 import MongoDoc from '../types';
 
 export default {
@@ -600,6 +612,14 @@ export default {
     studentDoc: {
       required: true,
       type: Object as PropType<MongoDoc>
+    },
+    db: {
+      required: true,
+      type: Object as () => Db
+    },
+    userDoc: {
+      required: true,
+      type: Object as () => MongoDoc
     }
   },
 
@@ -651,7 +671,7 @@ export default {
     );
 
     const rewardstest = ref([]);
-    console.log(programDoc.value.data.requiredResidency);
+    console.log(programDoc.value.data.requiredSkills);
 
     // programDoc.value = {
     //   ...programDoc.value,
@@ -660,6 +680,47 @@ export default {
     //     ...programDoc.value.data
     //   }
     // };
+    const studentCheckout = () => {
+      const db = props.db as Db;
+      return db
+        .collection('Tokens')
+        .findOne({
+          newOwner_id: props.userDoc._id
+        })
+        .then(doc => {
+          return db
+            .collection('Tokens')
+            .updateOne(
+              {
+                _id: doc._id
+              },
+              {
+                $set: {
+                  newOwner_id: null
+                },
+                $push: {
+                  eventLog: {
+                    event: 'used Token',
+                    user_id: props.userDoc._id,
+                    timestamp: new Date()
+                  }
+                }
+              },
+              {
+                upsert: true
+              }
+            )
+            .then(() => {
+              programDoc.value = {
+                data: {
+                  participants: [...programDoc.value.participants, props.userDoc._id],
+                  ...programDoc.value.data
+                },
+                ...programDoc.value
+              };
+            });
+        });
+    };
     return {
       programDoc,
       initSetupprogram,

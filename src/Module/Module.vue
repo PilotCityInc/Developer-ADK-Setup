@@ -2,8 +2,8 @@
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
     <div class="module__navbar">
-      <!-- <v-btn
-        v-if="currentPage != 'preview'"
+      <v-btn
+        v-if="currentPage != 'preview' && userType === 'organizer'"
         class="module__navbar-button"
         dark
         x-small
@@ -14,7 +14,7 @@
       >
 
       <v-btn
-        v-if="currentPage == 'preview'"
+        v-if="currentPage == 'preview' && userType === 'organizer'"
         class="module__navbar-button"
         dark
         x-small
@@ -22,7 +22,7 @@
         color="green"
         @click="currentPage = 'setup'"
         >Student View</v-btn
-      > -->
+      >
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
@@ -53,6 +53,8 @@
               v-model="programDoc"
               :student-doc="studentDoc"
               :license-program="licenseProgram"
+              :db="db"
+              :user-doc="userDoc"
               @inputStudentDoc="studentDoc = $event"
             />
           </keep-alive>
@@ -179,6 +181,7 @@ import { computed, reactive, ref, toRefs, defineComponent, PropType } from '@vue
 import '../styles/module.scss';
 import { getModMongoDoc } from 'pcv4lib/src';
 // import { Collection } from 'mongodb';
+import { Db } from 'mongodb';
 import * as Module from './components';
 import MongoDoc from './types';
 
@@ -215,6 +218,14 @@ export default defineComponent({
       // participant: '',
       // organizer: '',
       // stakeholder: ''
+    },
+    db: {
+      required: true,
+      type: Object as () => Db
+    },
+    userDoc: {
+      required: true,
+      type: Object as () => MongoDoc
     }
   },
   setup(props, ctx) {
