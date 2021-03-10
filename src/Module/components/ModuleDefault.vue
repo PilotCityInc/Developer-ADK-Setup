@@ -228,7 +228,7 @@
               outlined
               rounded
               :error-messages="errors"
-              label="Enter mobile phone number"
+              label="Confirm mobile phone number"
             ></v-text-field>
           </validation-provider>
 
@@ -297,9 +297,6 @@
       <v-btn class="ml-2" x-large dark depressed>Get Sponsored</v-btn> -->
 
         <v-btn class="mr-2" x-large outlined depressed @click="process()">Save</v-btn>
-        <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
-          message
-        }}</v-alert>
 
         <v-dialog v-model="dialog" persistent max-width="400px">
           <template v-slot:activator="{ on, attrs }">
@@ -443,6 +440,7 @@
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
                           v-model="studentDoc.data.studentResidence"
+                          rules="required"
                           prepend-icon="mdi-map-marker-radius"
                           class="ma-2"
                           rounded
@@ -466,6 +464,7 @@
                       ></v-text-field> -->
                         <v-text-field
                           v-model="studentDoc.data.studentSchool"
+                          rules="required"
                           prepend-icon="mdi-notebook"
                           class="ma-2"
                           rounded
@@ -516,7 +515,7 @@
                           </v-combobox>
                         </validation-provider>
 
-                        <validation-provider v-slot="{ errors }" slim rules="required">
+                        <validation-provider v-slot="{ errors }" slim>
                           <v-combobox
                             v-model="studentDoc.data.studentFollowingOptions"
                             rounded
@@ -561,6 +560,7 @@
 
                         <v-text-field
                           v-model="studentDoc.data.learntPilotcity"
+                          rules="required"
                           prepend-icon="mdi-telegram"
                           class="ma-2"
                           rounded
@@ -579,6 +579,9 @@
           </v-card>
         </v-dialog>
       </div>
+      <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
+        message
+      }}</v-alert>
     </v-container>
   </ValidationObserver>
 </template>
