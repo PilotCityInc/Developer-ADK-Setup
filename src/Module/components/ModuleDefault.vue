@@ -282,7 +282,7 @@
             ></v-text-field>
           </validation-provider>
 
-          <v-dialog v-model="dialog4" persistent max-width="350px">
+          <v-dialog v-model="dialog4" persistent max-width="375px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 rounded
@@ -310,7 +310,7 @@
                   </v-tooltip>
                 </div>
 
-                <div class="overline font-weight-bold">Text verification code sent</div>
+                <div class="overline font-weight-bold">Enter text verification code sent</div>
               </v-card-title>
 
               <v-divider></v-divider>
@@ -618,8 +618,45 @@
                           hide-details
                           outlined
                         ></v-text-field>
-
-                        <v-btn class="ma-2" color="red" x-large rounded dark depressed>Apply</v-btn>
+                        <v-dialog v-model="dialogApply" persistent max-width="500px">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                              class="ma-2"
+                              color="red"
+                              x-large
+                              rounded
+                              dark
+                              depressed
+                              v-bind="attrs"
+                              @click="dialogApply = true"
+                              v-on="on"
+                              >Apply</v-btn
+                            >
+                          </template>
+                          <v-card>
+                            <v-card-title>
+                              <v-container class="d-flex flex-column justify-center">
+                                <div class="overline font-weight-bold justify-center">
+                                  Thank you!
+                                </div>
+                                <div class="headline font-weight-bold justify-center">
+                                  We'll be finding you a sponsor
+                                </div>
+                              </v-container>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-container>
+                              <div class="justify-center flex-column d-flex mt-3 mb-3">
+                                <v-btn x-large rounded dark depressed class="ma-3">
+                                  Go to My Programs
+                                </v-btn>
+                                <v-btn x-large rounded outlined depressed class="ma-3">
+                                  Explore more programs
+                                </v-btn>
+                              </div>
+                            </v-container>
+                          </v-card>
+                        </v-dialog>
                       </div>
                     </v-container>
                   </v-card>
@@ -816,6 +853,7 @@ export default {
       dialog4: false,
       dialog5: false,
       dialog6: false,
+      dialogApply: false,
       eligibilityOptions: [
         'I receive Free or Reduced School Lunch',
         'I live without my parents',
