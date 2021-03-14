@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver>
-    <v-container class="module-default__container">
+    <div>
       <!-- <div class="module-default__instructions">
       <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
         <v-expansion-panel>
@@ -669,7 +669,7 @@
       <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
         message
       }}</v-alert>
-    </v-container>
+    </div>
   </ValidationObserver>
 </template>
 
