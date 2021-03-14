@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver>
-    <div>
+    <v-container class="module-default pa-0">
       <!-- <div class="module-default__instructions">
       <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
         <v-expansion-panel>
@@ -685,7 +685,7 @@
       <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
         message
       }}</v-alert>
-    </div>
+    </v-container>
   </ValidationObserver>
 </template>
 
@@ -800,47 +800,47 @@ export default {
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
       studentAdkData.value[skill] = false;
     });
-    const studentCheckout = () => {
-      const db = props.db as Db;
-      return db
-        .collection('Tokens')
-        .findOne({
-          newOwner_id: props.userDoc._id
-        })
-        .then(doc => {
-          return db
-            .collection('Tokens')
-            .updateOne(
-              {
-                _id: doc._id
-              },
-              {
-                $set: {
-                  newOwner_id: null
-                },
-                $push: {
-                  eventLog: {
-                    event: 'used Token',
-                    user_id: props.userDoc._id,
-                    timestamp: new Date()
-                  }
-                }
-              },
-              {
-                upsert: true
-              }
-            )
-            .then(() => {
-              programDoc.value = {
-                data: {
-                  participants: [...programDoc.value.participants, props.userDoc._id],
-                  ...programDoc.value.data
-                },
-                ...programDoc.value
-              };
-            });
-        });
-    };
+    // const studentCheckout = () => {
+    //   const db = props.db as Db;
+    //   return db
+    //     .collection('Tokens')
+    //     .findOne({
+    //       newOwner_id: props.userDoc._id
+    //     })
+    //     .then(doc => {
+    //       return db
+    //         .collection('Tokens')
+    //         .updateOne(
+    //           {
+    //             _id: doc._id
+    //           },
+    //           {
+    //             $set: {
+    //               newOwner_id: null
+    //             },
+    //             $push: {
+    //               eventLog: {
+    //                 event: 'used Token',
+    //                 user_id: props.userDoc._id,
+    //                 timestamp: new Date()
+    //               }
+    //             }
+    //           },
+    //           {
+    //             upsert: true
+    //           }
+    //         )
+    //         .then(() => {
+    //           programDoc.value = {
+    //             data: {
+    //               participants: [...programDoc.value.participants, props.userDoc._id],
+    //               ...programDoc.value.data
+    //             },
+    //             ...programDoc.value
+    //           };
+    //         });
+    //     });
+    // };
     return {
       programDoc,
       initSetupprogram,
