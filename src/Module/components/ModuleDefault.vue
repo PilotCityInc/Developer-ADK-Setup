@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver>
-    <v-container class="module-default__container">
+    <div>
       <!-- <div class="module-default__instructions">
       <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
         <v-expansion-panel>
@@ -53,7 +53,7 @@
 
         <!-- <div v-if="programDoc.data.rewardPresets !== undefined"> -->
         <span class="module-default__question-title mt-12">
-          Are you open to winning paid & unpaid internships?
+          Are you open to winning unpaid or paid work experiences?
         </span>
         <v-radio-group v-model="studentAdkData.rewardsTest" hide-details>
           <!-- <v-radio
@@ -70,7 +70,6 @@
               programDoc.data.rewards[0] === 'Paid Work Experience' &&
               programDoc.data.rewards.length === 1
             "
-            disabled
             label="Yes"
           ></v-radio>
 
@@ -81,7 +80,7 @@
             "
           >
             <template v-slot:label>
-              <div>Yes <strong color="red" class="module-default__required"> REQUIRED</strong></div>
+              <div>Yes <strong class="module-default__required ml-2"> REQUIRED</strong></div>
             </template></v-radio
           >
           <v-radio
@@ -91,9 +90,7 @@
             "
           >
             <template v-slot:label>
-              <div>
-                Paid Only <strong color="red" class="module-default__required"> REQUIRED</strong>
-              </div>
+              <div>Paid Only <strong class="module-default__required ml-2"></strong></div>
             </template>
           </v-radio>
           <v-radio
@@ -192,8 +189,10 @@
         <!-- <div class="headline d-flex justify-center mt-12 font-weight-bold">Optional</div> -->
 
         <!-- BIRTHDATE -->
+
         <v-menu
           ref="menu"
+          v-model="birthdayMenu"
           :value="false"
           transition="scale-transition"
           :close-on-content-click="false"
@@ -218,10 +217,11 @@
           </template>
           <v-date-picker
             ref="picker"
-            v-model="studentAdkData.studentBirthday"
-            :max="new Date().toISOString().substr(0, 10)"
+            v-model="studentDoc.data.studentBirthday"
+            max="2010-12-31"
             min="1950-01-01"
             @input="menu = false"
+            @change="save"
           ></v-date-picker>
         </v-menu>
         <!-- ONLY REQUIRE THIS IF 13 or YOUNGER depending on birthdate -->
@@ -276,15 +276,17 @@
           <validation-provider v-slot="{ errors }" slim rules="required">
             <v-text-field
               v-model="studentAdkData.phoneNumber"
+              v-mask="'(###) ###-####'"
               prepend-icon="mdi-cellphone-iphone"
               outlined
               rounded
+              prefix="+1 "
               :error-messages="errors"
               label="Confirm mobile phone number"
             ></v-text-field>
           </validation-provider>
 
-          <v-dialog v-model="dialog4" persistent max-width="300px">
+          <v-dialog v-model="dialog4" persistent max-width="375px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 rounded
@@ -312,7 +314,7 @@
                   </v-tooltip>
                 </div>
 
-                <div class="overline font-weight-bold">Text verification code</div>
+                <div class="overline font-weight-bold">Enter text verification code sent</div>
               </v-card-title>
 
               <v-divider></v-divider>
@@ -632,8 +634,45 @@
                           hide-details
                           outlined
                         ></v-text-field>
-
-                        <v-btn class="ma-2" color="red" x-large rounded dark depressed>Apply</v-btn>
+                        <v-dialog v-model="dialogApply" persistent max-width="500px">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                              class="ma-2"
+                              color="red"
+                              x-large
+                              rounded
+                              dark
+                              depressed
+                              v-bind="attrs"
+                              @click="dialogApply = true"
+                              v-on="on"
+                              >Apply</v-btn
+                            >
+                          </template>
+                          <v-card>
+                            <v-card-title>
+                              <v-container class="d-flex flex-column justify-center">
+                                <div class="overline font-weight-bold justify-center">
+                                  Thank you!
+                                </div>
+                                <div class="headline font-weight-bold justify-center">
+                                  We'll be finding you a sponsor
+                                </div>
+                              </v-container>
+                            </v-card-title>
+                            <v-divider></v-divider>
+                            <v-container>
+                              <div class="justify-center flex-column d-flex mt-3 mb-3">
+                                <v-btn x-large rounded dark depressed class="ma-3">
+                                  Go to My Programs
+                                </v-btn>
+                                <v-btn x-large rounded outlined depressed class="ma-3">
+                                  Explore more programs
+                                </v-btn>
+                              </div>
+                            </v-container>
+                          </v-card>
+                        </v-dialog>
                       </div>
                     </v-container>
                   </v-card>
@@ -646,7 +685,7 @@
       <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
         message
       }}</v-alert>
-    </v-container>
+    </div>
   </ValidationObserver>
 </template>
 
@@ -827,6 +866,7 @@ export default {
     });
     const showInstructions = ref(true);
     return {
+      birthdayMenu: false,
       setupInstructions,
       showInstructions,
       dialog: false,
@@ -835,6 +875,7 @@ export default {
       dialog4: false,
       dialog5: false,
       dialog6: false,
+      dialogApply: false,
       eligibilityOptions: [
         'I receive Free or Reduced School Lunch',
         'I live without my parents',
@@ -858,6 +899,16 @@ export default {
         'Pacific Islander or Native Hawaiian'
       ]
     };
+  },
+  watch: {
+    birthdayMenu() {
+      this.$refs.picker.activePicker = 'YEAR';
+    }
+  },
+  methods: {
+    save(studentBirthday) {
+      this.$refs.birthdayMenu.save(studentBirthday);
+    }
   }
 };
 </script>
@@ -865,7 +916,11 @@ export default {
 <style lang="scss">
 .module-default {
   &__required {
-    color: red;
+    color: #404142;
+    font-family: 'Raleway';
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
   }
   &__sms-verification {
     font-size: 30px;
