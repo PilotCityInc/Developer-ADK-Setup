@@ -55,7 +55,7 @@
         <span class="module-default__question-title mt-12">
           Are you open to winning paid & unpaid internships?
         </span>
-        <v-radio-group v-model="studentDoc.data.rewardsTest" hide-details>
+        <v-radio-group v-model="studentAdkData.rewardsTest" hide-details>
           <!-- <v-radio
               v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
               :key="itemIndex"
@@ -118,32 +118,37 @@
 
         <!-- SKILLS REQUIRED TITLE -->
         <div v-if="programDoc.data.requiredSkills.length !== 0">
-          <validation-provider>
-            <span class="module-default__question-title"
-              >Do you know, can learn or have access to the following items?
-            </span>
-            <!-- SKILLS REQUIRED 1 -->
-            <v-checkbox
-              v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
-              :key="itemIndex"
-              v-model="studentDoc.data.accessSkills"
-              :label="requiredSkills"
-              :error-messages="errors"
-              required
-            >
-              {{ requiredSkills }}
-            </v-checkbox>
-            <!-- <v-checkbox v-model="checkbox" hide-details>
+          <span class="module-default__question-title"
+            >Do you know, can learn or have access to the following items?
+          </span>
+          <!-- SKILLS REQUIRED 1 -->
+          <div
+            v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
+            :key="itemIndex"
+          >
+            <validation-provider v-slot="{ errors }" rules="required">
+              <v-checkbox
+                v-model="studentAdkData.accessSkills[requiredSkills]"
+                :value="true"
+                :label="requiredSkills"
+                :error-messages="errors"
+                required
+              >
+                {{ requiredSkills }}
+              </v-checkbox>
+            </validation-provider>
+          </div>
+          <!-- <v-checkbox v-model="checkbox" hide-details>
         <template v-slot:label>
           <div>JavaScript</div>
         </template>
       </v-checkbox> -->
-            <!-- <v-checkbox v-model="checkbox" hide-details>
+          <!-- <v-checkbox v-model="checkbox" hide-details>
         <template v-slot:label>
           <div>How to use Google Suite</div>
         </template>
       <br /> -->
-            <!-- <span class="module-default__question-title"
+          <!-- <span class="module-default__question-title"
         >Do you have access of any of the required technology or tools?
       </span>
       <v-checkbox v-model="checkbox" hide-details>
@@ -161,7 +166,6 @@
           <div>DJI GO 4 App</div>
         </template>
       </v-checkbox> -->
-          </validation-provider>
           <br />
           <br />
         </div>
@@ -171,7 +175,7 @@
           <span class="module-default__question-title"
             >Do you live or work in any of the priority jurisdictions?
           </span>
-          <v-radio-group v-model="studentDoc.data.studentLocation" hide-details
+          <v-radio-group v-model="studentAdkData.studentLocation" hide-details
             ><v-radio
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
@@ -200,7 +204,7 @@
           <template v-slot:activator="{ on, attrs }">
             <validation-provider v-slot="{ errors }" rules="required">
               <v-text-field
-                v-model="studentDoc.data.studentBirthday"
+                v-model="studentAdkData.studentBirthday"
                 rounded
                 prepend-icon="mdi-cake-variant"
                 :error-messages="errors"
@@ -214,7 +218,7 @@
           </template>
           <v-date-picker
             ref="picker"
-            v-model="studentDoc.data.studentBirthday"
+            v-model="studentAdkData.studentBirthday"
             :max="new Date().toISOString().substr(0, 10)"
             min="1950-01-01"
             @input="menu = false"
@@ -271,7 +275,7 @@
           <!-- MOBILE PHONE NUMBER VERIFICATION -->
           <validation-provider v-slot="{ errors }" slim rules="required">
             <v-text-field
-              v-model="studentDoc.data.phoneNumber"
+              v-model="studentAdkData.phoneNumber"
               prepend-icon="mdi-cellphone-iphone"
               outlined
               rounded
@@ -323,8 +327,20 @@
                     outlined
                     hide-details
                   ></v-text-field>
-                  <v-btn class="ma-2" x-large dark rounded depressed @click="verifyPhoneNumber"
+                  <v-btn
+                    class="ma-2"
+                    x-large
+                    dark
+                    rounded
+                    depressed
+                    @click="verifyPhoneNumber.process"
                     >Verify</v-btn
+                  >
+                  <v-alert
+                    v-if="verifyPhoneNumber.success || verifyPhoneNumber.error"
+                    class="mt-3"
+                    :type="verifyPhoneNumber.message ? 'success' : 'error'"
+                    >{{ message }}</v-alert
                   >
 
                   <div class="d-flex justify-center">
@@ -487,7 +503,7 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
-                          v-model="studentDoc.data.studentResidence"
+                          v-model="studentAdkData.studentResidence"
                           rules="required"
                           prepend-icon="mdi-map-marker-radius"
                           class="ma-2"
@@ -511,7 +527,7 @@
                         outlined
                       ></v-text-field> -->
                         <v-text-field
-                          v-model="studentDoc.data.studentSchool"
+                          v-model="studentAdkData.studentSchool"
                           rules="required"
                           prepend-icon="mdi-notebook"
                           class="ma-2"
@@ -523,7 +539,7 @@
 
                         <validation-provider v-slot="{ errors }" slim rules="required">
                           <v-combobox
-                            v-model="studentDoc.data.studentEthnicity"
+                            v-model="studentAdkData.studentEthnicity"
                             rounded
                             :items="ethnicityCulture"
                             :error-messages="errors"
@@ -565,7 +581,7 @@
 
                         <validation-provider v-slot="{ errors }" slim>
                           <v-combobox
-                            v-model="studentDoc.data.studentFollowingOptions"
+                            v-model="studentAdkData.studentFollowingOptions"
                             rounded
                             :items="eligibilityOptions"
                             :search-input="eligibilitySearch"
@@ -607,7 +623,7 @@
                         </validation-provider>
 
                         <v-text-field
-                          v-model="studentDoc.data.learntPilotcity"
+                          v-model="studentAdkData.learntPilotcity"
                           rules="required"
                           prepend-icon="mdi-telegram"
                           class="ma-2"
@@ -635,7 +651,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, reactive, toRefs } from '@vue/composition-api';
 import axios from 'axios';
 import { getModMongoDoc, getModAdk, loading } from 'pcv4lib/src';
 import { ValidationObserver, ValidationProvider } from '@/validation';
@@ -675,9 +691,13 @@ export default {
   },
 
   setup(props, ctx) {
+    const state = reactive({
+      studentAdkData: null as null | Record<string, any>
+    });
     const programDoc = getModMongoDoc(props, ctx.emit);
     // const teamDoc = getModMongoDoc(props, ctx.emit, defaultTeamData, “teamDoc”, “input.teamDoc”)
     const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+    // state.studentDoc = studentDoc.value;
 
     // const defaultStudentData = ['rewardPresets', 'internshipChoices', 'studentLocation'];
 
@@ -686,7 +706,7 @@ export default {
     // });
 
     const initSetupprogram = {
-      accessSkills: [],
+      accessSkills: {},
       rewardstest: [],
       studentLocation: [],
       studentBirthday: '',
@@ -698,40 +718,36 @@ export default {
       learntPilotcity: ''
     };
 
-    function sendVerification() {
-      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: studentDoc.value.data.phoneNumber
-      });
-    }
-
-    function verifyPhoneNumber() {
-      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify', {
-        to: '+15108139049',
-        code: '378044',
-        userID: '603f0dac46877e5c6574334d'
-      });
-    }
-
-    //     function response() {
-    //       axios.post('/url', {
-    // ...
-    // })
-    // .then((response) => {
-    //     console.log(response);
-    // })
-    //     }
-
-    const { adkData } = getModAdk(
+    const { adkData: studentAdkData } = getModAdk(
       props,
       ctx.emit,
-      'autoapply',
+      'forum',
       initSetupprogram,
       'studentDoc',
       'inputStudentDoc'
     );
+    state.studentAdkData = studentAdkData.value;
+
+    function sendVerification() {
+      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
+        to: studentAdkData.value.phoneNumber
+      });
+    }
+
+    function verifyPhoneNumber() {
+      return axios.post(
+        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
+        {
+          to: '+15108139049',
+          code: '378044',
+          userID: '603f0dac46877e5c6574334d'
+        }
+      );
+    }
 
     const rewardstest = ref([]);
     console.log(programDoc.value.data);
+    const test = ref([]);
 
     // programDoc.value = {
     //   ...programDoc.value,
@@ -740,6 +756,11 @@ export default {
     //     ...programDoc.value.data
     //   }
     // };
+    // required skills
+
+    programDoc.value.data.requiredSkills.forEach((skill: string) => {
+      studentAdkData.value[skill] = false;
+    });
     const studentCheckout = () => {
       const db = props.db as Db;
       return db
@@ -786,9 +807,10 @@ export default {
       initSetupprogram,
       rewardstest,
       sendVerification,
-      verifyPhoneNumber,
-      adkData,
-      ...loading(studentDoc.value.update, 'Saved', 'Something went wrong, try again later')
+      verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified', 'Something went wrong') },
+      ...loading(studentDoc.value.update, 'Saved', 'Something went wrong, try again later'),
+      ...toRefs(state),
+      test
 
       // ...toRefs(saveData),
       // saveProgram,

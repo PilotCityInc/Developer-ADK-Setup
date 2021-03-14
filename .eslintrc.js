@@ -23,7 +23,6 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     camelcase: 'off',
-    '@typescript-eslint/camelcase': ['warn'],
     'no-underscore-dangle': 'off'
   },
   overrides: [
