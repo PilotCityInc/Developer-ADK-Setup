@@ -56,11 +56,11 @@
             <component
               :is="getComponent"
               v-model="programDoc"
-              :student-doc="studentDoc"
+              :student-doc="studentDocument"
               :license-program="licenseProgram"
               :db="db"
               :user-doc="userDoc"
-              @inputStudentDoc="studentDoc = $event"
+              @inputStudentDoc="studentDocument = $event"
             />
           </keep-alive>
         </div>
@@ -240,8 +240,8 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
+    console.log(props.studentDoc)
     const studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
-
     const page = reactive({
       currentPage: 'Setup'
     });

@@ -55,7 +55,7 @@
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
         </span>
-        <v-radio-group v-model="studentAdkData.rewardsTest" hide-details>
+        <v-radio-group v-model="studentDocument.rewardsTest" hide-details>
           <!-- <v-radio
               v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
               :key="itemIndex"
@@ -125,7 +125,7 @@
           >
             <validation-provider v-slot="{ errors }" rules="required">
               <v-checkbox
-                v-model="studentAdkData.accessSkills[requiredSkills]"
+                v-model="studentDocument.accessSkills[requiredSkills]"
                 :value="true"
                 :label="requiredSkills"
                 :error-messages="errors"
@@ -172,7 +172,7 @@
           <span class="module-default__question-title"
             >Do you live or work in any of the priority jurisdictions?
           </span>
-          <v-radio-group v-model="studentAdkData.studentLocation" hide-details
+          <v-radio-group v-model="studentDocument.studentLocation" hide-details
             ><v-radio
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
@@ -203,7 +203,7 @@
           <template v-slot:activator="{ on, attrs }">
             <validation-provider v-slot="{ errors }" rules="required">
               <v-text-field
-                v-model="studentAdkData.studentBirthday"
+                v-model="studentDocument.studentBirthday"
                 rounded
                 prepend-icon="mdi-cake-variant"
                 :error-messages="errors"
@@ -275,7 +275,7 @@
           <!-- MOBILE PHONE NUMBER VERIFICATION -->
           <validation-provider v-slot="{ errors }" slim rules="required">
             <v-text-field
-              v-model="studentAdkData.phoneNumber"
+              v-model="studentDocument.phoneNumber"
               v-mask="'(###) ###-####'"
               prepend-icon="mdi-cellphone-iphone"
               outlined
@@ -335,14 +335,19 @@
                     dark
                     rounded
                     depressed
-                    @click="verifyPhoneNumber.process"
+                    @click="verifyPhoneNumber.process()"
                     >Verify</v-btn
                   >
+                  <v-progress-circular
+                  v-if="verifyPhoneNumber.loading.value"
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
                   <v-alert
-                    v-if="verifyPhoneNumber.success || verifyPhoneNumber.error"
+                    v-if="verifyPhoneNumber.success.value || verifyPhoneNumber.error.value"
                     class="mt-3"
-                    :type="verifyPhoneNumber.message ? 'success' : 'error'"
-                    >{{ message }}</v-alert
+                    :type="verifyPhoneNumber.success.value ? 'success' : 'error'"
+                    >{{ verifyPhoneNumber.message.value }}</v-alert
                   >
 
                   <div class="d-flex justify-center">
@@ -505,7 +510,7 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
-                          v-model="studentAdkData.studentResidence"
+                          v-model="studentDocument.studentResidence"
                           rules="required"
                           prepend-icon="mdi-map-marker-radius"
                           class="ma-2"
@@ -529,7 +534,7 @@
                         outlined
                       ></v-text-field> -->
                         <v-text-field
-                          v-model="studentAdkData.studentSchool"
+                          v-model="studentDocument.studentSchool"
                           rules="required"
                           prepend-icon="mdi-notebook"
                           class="ma-2"
@@ -541,7 +546,7 @@
 
                         <validation-provider v-slot="{ errors }" slim rules="required">
                           <v-combobox
-                            v-model="studentAdkData.studentEthnicity"
+                            v-model="studentDocument.studentEthnicity"
                             rounded
                             :items="ethnicityCulture"
                             :error-messages="errors"
@@ -583,7 +588,7 @@
 
                         <validation-provider v-slot="{ errors }" slim>
                           <v-combobox
-                            v-model="studentAdkData.studentFollowingOptions"
+                            v-model="studentDocument.studentFollowingOptions"
                             rounded
                             :items="eligibilityOptions"
                             :search-input="eligibilitySearch"
@@ -625,7 +630,7 @@
                         </validation-provider>
 
                         <v-text-field
-                          v-model="studentAdkData.learntPilotcity"
+                          v-model="studentDocument.learntPilotcity"
                           rules="required"
                           prepend-icon="mdi-telegram"
                           class="ma-2"
@@ -730,9 +735,7 @@ export default {
   },
 
   setup(props, ctx) {
-    const state = reactive({
-      studentAdkData: null as null | Record<string, any>
-    });
+
     const programDoc = getModMongoDoc(props, ctx.emit);
     // const teamDoc = getModMongoDoc(props, ctx.emit, defaultTeamData, “teamDoc”, “input.teamDoc”)
     const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
@@ -756,37 +759,39 @@ export default {
       studentFollowingOptions: [],
       learntPilotcity: ''
     };
+    const studentDocument = computed({
+      get: () => props.studentDoc,
+      set: newVal => {
+        ctx.emit('inputStudentDoc', newVal);
+      }
+    });
 
-    const { adkData: studentAdkData } = getModAdk(
-      props,
-      ctx.emit,
-      'forum',
-      initSetupprogram,
-      'studentDoc',
-      'inputStudentDoc'
-    );
-    state.studentAdkData = studentAdkData.value;
-
-    function sendVerification() {
-      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: studentAdkData.value.phoneNumber
-      });
+    studentDocument.value = {
+        ...studentDocument.value,
+        data:{
+            ...initSetupprogram,
+            ...studentDocument.value.data
+        }
     }
 
+    function sendVerification() {
+        console.log(studentDocument.value.phoneNumber)
+      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
+        to: studentDocument.value.phoneNumber
+      });
+    }
+    const verificationCode = ref("")
     function verifyPhoneNumber() {
       return axios.post(
         'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
         {
-          to: '+15108139049',
-          code: '378044',
-          userID: '603f0dac46877e5c6574334d'
+          to: studentDocument.value.phoneNumber,
+          code: verificationCode.value,
+          userID: props.userDoc.data._id.toString()
         }
       );
     }
 
-    const rewardstest = ref([]);
-    console.log(programDoc.value.data);
-    const test = ref([]);
 
     // programDoc.value = {
     //   ...programDoc.value,
@@ -798,7 +803,7 @@ export default {
     // required skills
 
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
-      studentAdkData.value[skill] = false;
+      studentDocument.value[skill] = false;
     });
     // const studentCheckout = () => {
     //   const db = props.db as Db;
@@ -844,13 +849,11 @@ export default {
     return {
       programDoc,
       initSetupprogram,
-      rewardstest,
       sendVerification,
-      verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified', 'Something went wrong') },
+      verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(studentDoc.value.update, 'Saved', 'Something went wrong, try again later'),
-      ...toRefs(state),
-      test
-
+      studentDocument,
+      verificationCode
       // ...toRefs(saveData),
       // saveProgram,
       // status
