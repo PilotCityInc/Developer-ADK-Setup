@@ -275,7 +275,7 @@
           <!-- MOBILE PHONE NUMBER VERIFICATION -->
           <validation-provider v-slot="{ errors }" slim rules="required">
             <v-text-field
-              v-model="studentDocument.phoneNumber"
+              v-model="studentDocument.data.phoneNumber"
               v-mask="'(###) ###-####'"
               prepend-icon="mdi-cellphone-iphone"
               outlined
@@ -339,10 +339,10 @@
                     >Verify</v-btn
                   >
                   <v-progress-circular
-                  v-if="verifyPhoneNumber.loading.value"
-      indeterminate
-      color="primary"
-    ></v-progress-circular>
+                    v-if="verifyPhoneNumber.loading.value"
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
                   <v-alert
                     v-if="verifyPhoneNumber.success.value || verifyPhoneNumber.error.value"
                     class="mt-3"
@@ -427,7 +427,16 @@
                           @click="dialog2 = false"
                           >No</v-btn
                         >
-                        <v-btn class="ma-2" color="green" rounded x-large dark depressed>Yes</v-btn>
+                        <v-btn
+                          class="ma-2"
+                          color="green"
+                          rounded
+                          x-large
+                          dark
+                          depressed
+                          @click="studentCheckout"
+                          >Yes</v-btn
+                        >
                       </div>
                     </v-container>
                   </v-card>
@@ -510,7 +519,7 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
-                          v-model="studentDocument.studentResidence"
+                          v-model="studentDocument.data.studentResidence"
                           rules="required"
                           prepend-icon="mdi-map-marker-radius"
                           class="ma-2"
@@ -534,7 +543,7 @@
                         outlined
                       ></v-text-field> -->
                         <v-text-field
-                          v-model="studentDocument.studentSchool"
+                          v-model="studentDocument.data.studentSchool"
                           rules="required"
                           prepend-icon="mdi-notebook"
                           class="ma-2"
@@ -546,7 +555,7 @@
 
                         <validation-provider v-slot="{ errors }" slim rules="required">
                           <v-combobox
-                            v-model="studentDocument.studentEthnicity"
+                            v-model="studentDocument.data.studentEthnicity"
                             rounded
                             :items="ethnicityCulture"
                             :error-messages="errors"
@@ -588,7 +597,7 @@
 
                         <validation-provider v-slot="{ errors }" slim>
                           <v-combobox
-                            v-model="studentDocument.studentFollowingOptions"
+                            v-model="studentDocument.data.studentFollowingOptions"
                             rounded
                             :items="eligibilityOptions"
                             :search-input="eligibilitySearch"
@@ -630,7 +639,7 @@
                         </validation-provider>
 
                         <v-text-field
-                          v-model="studentDocument.learntPilotcity"
+                          v-model="studentDocument.data.learntPilotcity"
                           rules="required"
                           prepend-icon="mdi-telegram"
                           class="ma-2"
@@ -695,16 +704,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, reactive, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import axios from 'axios';
-import { getModMongoDoc, getModAdk, loading } from 'pcv4lib/src';
+import { getModMongoDoc, loading } from 'pcv4lib/src';
 import { ValidationObserver, ValidationProvider } from '@/validation';
 
 // import Instruct from './ModuleInstruct.vue';
 import { Db } from 'mongodb';
 import MongoDoc from '../types';
 
-export default {
+export default defineComponent({
   name: 'ModuleDefault',
   components: {
     ValidationProvider,
@@ -722,7 +731,7 @@ export default {
     },
     studentDoc: {
       required: true,
-      type: Object as PropType<MongoDoc>
+      type: Object as () => MongoDoc
     },
     db: {
       required: true,
@@ -735,10 +744,8 @@ export default {
   },
 
   setup(props, ctx) {
-
     const programDoc = getModMongoDoc(props, ctx.emit);
     // const teamDoc = getModMongoDoc(props, ctx.emit, defaultTeamData, “teamDoc”, “input.teamDoc”)
-    const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
     // state.studentDoc = studentDoc.value;
 
     // const defaultStudentData = ['rewardPresets', 'internshipChoices', 'studentLocation'];
@@ -760,38 +767,37 @@ export default {
       learntPilotcity: ''
     };
     const studentDocument = computed({
-      get: () => props.studentDoc,
+      get: () => props.studentDoc as MongoDoc,
       set: newVal => {
         ctx.emit('inputStudentDoc', newVal);
       }
     });
 
     studentDocument.value = {
-        ...studentDocument.value,
-        data:{
-            ...initSetupprogram,
-            ...studentDocument.value.data
-        }
-    }
+      ...studentDocument.value,
+      data: {
+        ...initSetupprogram,
+        ...studentDocument.value.data
+      }
+    };
 
     function sendVerification() {
-        console.log(studentDocument.value.phoneNumber)
+      console.log(studentDocument.value.data.phoneNumber);
       axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: studentDocument.value.phoneNumber
+        to: studentDocument.value.data.phoneNumber
       });
     }
-    const verificationCode = ref("")
+    const verificationCode = ref('');
     function verifyPhoneNumber() {
       return axios.post(
         'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
         {
-          to: studentDocument.value.phoneNumber,
+          to: studentDocument.value.data.phoneNumber,
           code: verificationCode.value,
           userID: props.userDoc.data._id.toString()
         }
       );
     }
-
 
     // programDoc.value = {
     //   ...programDoc.value,
@@ -803,55 +809,65 @@ export default {
     // required skills
 
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
-      studentDocument.value[skill] = false;
+      studentDocument.value.data[skill] = false;
     });
-    // const studentCheckout = () => {
-    //   const db = props.db as Db;
-    //   return db
-    //     .collection('Tokens')
-    //     .findOne({
-    //       newOwner_id: props.userDoc._id
-    //     })
-    //     .then(doc => {
-    //       return db
-    //         .collection('Tokens')
-    //         .updateOne(
-    //           {
-    //             _id: doc._id
-    //           },
-    //           {
-    //             $set: {
-    //               newOwner_id: null
-    //             },
-    //             $push: {
-    //               eventLog: {
-    //                 event: 'used Token',
-    //                 user_id: props.userDoc._id,
-    //                 timestamp: new Date()
-    //               }
-    //             }
-    //           },
-    //           {
-    //             upsert: true
-    //           }
-    //         )
-    //         .then(() => {
-    //           programDoc.value = {
-    //             data: {
-    //               participants: [...programDoc.value.participants, props.userDoc._id],
-    //               ...programDoc.value.data
-    //             },
-    //             ...programDoc.value
-    //           };
-    //         });
-    //     });
-    // };
+    const studentCheckout = () => {
+      const db = props.db as Db;
+      return db
+        .collection('Tokens')
+        .findOne({
+          newOwner_id: props.userDoc.data._id
+        })
+        .then(doc => {
+          return db
+            .collection('Tokens')
+            .updateOne(
+              {
+                _id: doc._id
+              },
+              {
+                $set: {
+                  newOwner_id: null
+                },
+                $push: {
+                  eventLog: {
+                    event: 'used Token',
+                    user_id: props.userDoc.data._id,
+                    timestamp: new Date()
+                  }
+                }
+              },
+              {
+                upsert: true
+              }
+            )
+            .then(async () => {
+              programDoc.value = {
+                ...programDoc.value,
+                data: {
+                  participants: [...programDoc.value.data.participants, props.userDoc.data._id],
+                  ...programDoc.value.data
+                }
+              };
+              await programDoc.value.update();
+              const result = await db.collection('Student').insertOne(studentDocument.value.data);
+              studentDocument.value.data._id = result.insertedId;
+              studentDocument.value.update = () =>
+                db.collection('Student').findOneAndUpdate(
+                  {
+                    _id: result.insertedId
+                  },
+                  { ...studentDocument.value.data, lastSaved: new Date() }
+                );
+            });
+        });
+    };
     return {
       programDoc,
       initSetupprogram,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
-      ...loading(studentDoc.value.update, 'Saved', 'Something went wrong, try again later'),
+      ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
       studentDocument,
       verificationCode
       // ...toRefs(saveData),
@@ -913,7 +929,7 @@ export default {
       this.$refs.birthdayMenu.save(studentBirthday);
     }
   }
-};
+});
 </script>
 
 <style lang="scss">

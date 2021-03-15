@@ -41,7 +41,7 @@ export default Vue.extend({
       data: {
         adks: []
       },
-      update: () => {
+      save: () => {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(true);
