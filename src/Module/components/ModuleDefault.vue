@@ -1,39 +1,6 @@
 <template>
   <ValidationObserver>
     <v-container class="module-default pa-0">
-      <!-- <div class="module-default__instructions">
-      <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
-        <v-expansion-panel>
-          <v-expansion-panel-header
-            v-show="showInstructions"
-            hide-actions
-            class="pa-0"
-            @click="showInstructions = true"
-          >
-            <template v-slot="{ open }">
-              <v-scroll-y-transition hide-on-leave>
-                <div v-if="!open" class="d-flex flex-column justify-center">
-                  <v-icon color="grey lighten-2" class="d-flex justify-center">
-                    mdi-chevron-down
-                  </v-icon>
-                  <div color="grey lighten-2" class="module-default__collapse-title">
-                    INSTRUCTIONS
-                  </div>
-                </div>
-              </v-scroll-y-transition>
-            </template>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <Instruct readonly />
-            <div @click="showInstructions = true">
-              <div class="module-default__collapse-title">CLOSE</div>
-              <v-icon color="grey lighten-2" class="d-flex justify-center"> mdi-chevron-up </v-icon>
-            </div>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </div> -->
-
       <v-progress-linear
         class="module-default__collapse-divider"
         color="#dedede"
@@ -43,24 +10,10 @@
         stream
       />
       <div class="module-edit__container">
-        <!-- ENTER CONTENT HERE -->
-        <!-- DESIGN YOUR ACTIVITY HERE / COMMENT OUT WHEN YOU'VE STARTED DESIGNING -->
-        <!-- <div class="module-default__none">Design your activity here</div> -->
-
-        <!-- PAID OR UNPAID -->
-        <!-- <br />
-        <br /> -->
-
-        <!-- <div v-if="programDoc.data.rewardPresets !== undefined"> -->
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
         </span>
         <v-radio-group v-model="studentDocument.rewardsTest" hide-details>
-          <!-- <v-radio
-              v-for="(rewardPresets, itemIndex) in programDoc.data.rewardPresets"
-              :key="itemIndex"
-              :label="rewardPresets"
-            ></v-radio> -->
           <v-radio
             v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
             label="Yes"
@@ -80,7 +33,10 @@
             "
           >
             <template v-slot:label>
-              <div>Yes <strong class="module-default__required ml-2"> REQUIRED</strong></div>
+              <div>
+                Yes
+                <strong class="module-default__required ml-2"> REQUIRED</strong>
+              </div>
             </template></v-radio
           >
           <v-radio
@@ -90,7 +46,10 @@
             "
           >
             <template v-slot:label>
-              <div>Paid Only <strong class="module-default__required ml-2"></strong></div>
+              <div>
+                Paid Only
+                <strong class="module-default__required ml-2"></strong>
+              </div>
             </template>
           </v-radio>
           <v-radio
@@ -135,34 +94,7 @@
               </v-checkbox>
             </validation-provider>
           </div>
-          <!-- <v-checkbox v-model="checkbox" hide-details>
-        <template v-slot:label>
-          <div>JavaScript</div>
-        </template>
-      </v-checkbox> -->
-          <!-- <v-checkbox v-model="checkbox" hide-details>
-        <template v-slot:label>
-          <div>How to use Google Suite</div>
-        </template>
-      <br /> -->
-          <!-- <span class="module-default__question-title"
-        >Do you have access of any of the required technology or tools?
-      </span>
-      <v-checkbox v-model="checkbox" hide-details>
-        <template v-slot:label>
-          <div>DJI Mavic Pro</div>
-        </template>
-      </v-checkbox>
-      <v-checkbox v-model="checkbox" hide-details>
-        <template v-slot:label>
-          <div>Smartphone</div>
-        </template>
-      </v-checkbox>
-      <v-checkbox v-model="checkbox" hide-details>
-        <template v-slot:label>
-          <div>DJI GO 4 App</div>
-        </template>
-      </v-checkbox> -->
+
           <br />
           <br />
         </div>
@@ -185,10 +117,6 @@
           <br />
           <br />
         </div>
-
-        <!-- <div class="headline d-flex justify-center mt-12 font-weight-bold">Optional</div> -->
-
-        <!-- BIRTHDATE -->
 
         <v-menu
           ref="menu"
@@ -224,52 +152,6 @@
             @change="save"
           ></v-date-picker>
         </v-menu>
-        <!-- ONLY REQUIRE THIS IF 13 or YOUNGER depending on birthdate -->
-        <!-- <div class="d-flex flex-row mt-5">
-        <v-text-field
-          prepend-icon="mdi-email"
-          outlined
-          rounded
-          :error-messages="errors"
-          label="Type parent email to authorize & monitor"
-        ></v-text-field>
-
-        <v-dialog v-model="dialog5" persistent max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn rounded class="ml-3" v-bind="attrs" outlined x-large depressed v-on="on"
-              >Send</v-btn
-            >
-          </template>
-
-          <v-card>
-            <v-card-title class="d-flex flex-column">
-              <div class="d-flex justify-center">
-                <v-btn class="mb-3" v-bind="attrs" icon v-on="on"
-                  ><v-icon color="yellow" large>mdi-email</v-icon></v-btn
-                >
-              </div>
-
-              <div class="headline font-weight-bold">Email access sent to parent</div>
-            </v-card-title>
-            <v-container class="d-flex justify-center">
-              <div class="d-flex flex-column justify-center">
-                <v-btn class="ma-2" x-large dark rounded depressed @click="dialog5 = false"
-                  >Close</v-btn
-                >
-              </div>
-            </v-container>
-          </v-card>
-        </v-dialog>
-      </div> -->
-
-        <!-- RESIDENCE -->
-        <!-- <v-autocomplete
-        class="mt-5 mb-5"
-        outlined
-        rounded
-        prepend-icon="mdi-google-maps"
-        label="Home Address"
-      ></v-autocomplete> -->
 
         <div class="d-flex flex-row mt-5 mb-5">
           <!-- MOBILE PHONE NUMBER VERIFICATION -->
@@ -361,12 +243,6 @@
       </div>
 
       <div class="module-default__license-button mt-12">
-        <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
-        <!-- <v-btn class="mr-2" x-large outlined depressed>Use</v-btn>
-      <v-btn class="ml-2" x-large dark depressed>Buy</v-btn>
-      <v-btn class="ml-2" x-large dark depressed>Redeem</v-btn>
-      <v-btn class="ml-2" x-large dark depressed>Get Sponsored</v-btn> -->
-
         <v-btn class="mr-2" x-large outlined depressed @click="process()">Save</v-btn>
 
         <v-dialog v-model="dialog" persistent max-width="400px">
@@ -434,10 +310,15 @@
                           x-large
                           dark
                           depressed
-                          @click="studentCheckout"
+                          @click="studentCheckout.process"
                           >Yes</v-btn
                         >
                       </div>
+                      <v-progress-circular
+                        v-if="studentCheckout.loading.value"
+                        indeterminate
+                        color="primary"
+                      ></v-progress-circular>
                     </v-container>
                   </v-card>
                 </v-dialog>
@@ -745,14 +626,6 @@ export default defineComponent({
 
   setup(props, ctx) {
     const programDoc = getModMongoDoc(props, ctx.emit);
-    // const teamDoc = getModMongoDoc(props, ctx.emit, defaultTeamData, “teamDoc”, “input.teamDoc”)
-    // state.studentDoc = studentDoc.value;
-
-    // const defaultStudentData = ['rewardPresets', 'internshipChoices', 'studentLocation'];
-
-    // const writeFields = defaultStudentData.map(prop => {
-    //   return {};
-    // });
 
     const initSetupprogram = {
       accessSkills: {},
@@ -772,7 +645,6 @@ export default defineComponent({
         ctx.emit('inputStudentDoc', newVal);
       }
     });
-
     studentDocument.value = {
       ...studentDocument.value,
       data: {
@@ -799,15 +671,6 @@ export default defineComponent({
       );
     }
 
-    // programDoc.value = {
-    //   ...programDoc.value,
-    //   data: {
-    //     ...Object.assign({}, ...writeFields),
-    //     ...programDoc.value.data
-    //   }
-    // };
-    // required skills
-
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
       studentDocument.value.data[skill] = false;
     });
@@ -831,7 +694,7 @@ export default defineComponent({
                 },
                 $push: {
                   eventLog: {
-                    event: 'used Token',
+                    event: `joined Program ${programDoc.value.data._id.toString()}`,
                     user_id: props.userDoc.data._id,
                     timestamp: new Date()
                   }
@@ -859,6 +722,8 @@ export default defineComponent({
                   },
                   { ...studentDocument.value.data, lastSaved: new Date() }
                 );
+              studentDocument.value.data.created = new Date();
+              await studentDocument.value.update();
             });
         });
     };
@@ -868,15 +733,13 @@ export default defineComponent({
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
+      studentCheckout: {
+        ...loading(studentCheckout, "You've been added to this program!")
+      },
       studentDocument,
       verificationCode
-      // ...toRefs(saveData),
-      // saveProgram,
-      // status
     };
   },
-
-  // apollo: {},
 
   data() {
     const setupInstructions = ref({
