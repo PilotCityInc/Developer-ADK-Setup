@@ -34,14 +34,7 @@
       </v-expansion-panels>
     </div> -->
 
-      <v-progress-linear
-        class="module-default__collapse-divider"
-        color="#dedede"
-        height="2"
-        value="100"
-        buffer-value="100"
-        stream
-      />
+    <v-progress-linear class="mt-3" color="#dedede" height="2" value="100" buffer-value="100" stream />
       <div class="module-edit__container">
         <!-- ENTER CONTENT HERE -->
         <!-- DESIGN YOUR ACTIVITY HERE / COMMENT OUT WHEN YOU'VE STARTED DESIGNING -->
@@ -973,7 +966,7 @@ export default defineComponent({
   &__collapse-divider {
     margin-top: 15px;
     // margin-bottom: 75px;
-    margin-bottom: none !important;
+    // margin-bottom: none !important;
     margin-right: none;
     margin-left: none;
     padding-right: none;
