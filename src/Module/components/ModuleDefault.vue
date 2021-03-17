@@ -1,14 +1,40 @@
 <template>
   <ValidationObserver>
     <v-container class="module-default pa-0">
-      <v-progress-linear
-        class="module-default__collapse-divider"
-        color="#dedede"
-        height="2"
-        value="100"
-        buffer-value="100"
-        stream
-      />
+      <!-- <div class="module-default__instructions">
+      <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
+        <v-expansion-panel>
+          <v-expansion-panel-header
+            v-show="showInstructions"
+            hide-actions
+            class="pa-0"
+            @click="showInstructions = true"
+          >
+            <template v-slot="{ open }">
+              <v-scroll-y-transition hide-on-leave>
+                <div v-if="!open" class="d-flex flex-column justify-center">
+                  <v-icon color="grey lighten-2" class="d-flex justify-center">
+                    mdi-chevron-down
+                  </v-icon>
+                  <div color="grey lighten-2" class="module-default__collapse-title">
+                    INSTRUCTIONS
+                  </div>
+                </div>
+              </v-scroll-y-transition>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <Instruct readonly />
+            <div @click="showInstructions = true">
+              <div class="module-default__collapse-title">CLOSE</div>
+              <v-icon color="grey lighten-2" class="d-flex justify-center"> mdi-chevron-up </v-icon>
+            </div>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div> -->
+
+    <v-progress-linear class="mt-3" color="#dedede" height="2" value="100" buffer-value="100" stream />
       <div class="module-edit__container">
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
@@ -843,7 +869,7 @@ export default defineComponent({
   &__collapse-divider {
     margin-top: 15px;
     // margin-bottom: 75px;
-    margin-bottom: none !important;
+    // margin-bottom: none !important;
     margin-right: none;
     margin-left: none;
     padding-right: none;
