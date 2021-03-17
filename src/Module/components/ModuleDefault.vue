@@ -323,9 +323,9 @@
                   </v-card>
                 </v-dialog>
 
-                <v-btn color="blue" class="mt-2 mb-2" outlined x-large rounded depressed
+                <!-- <v-btn color="blue" class="mt-2 mb-2" outlined x-large rounded depressed
                   ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
-                >
+                > -->
 
                 <v-dialog v-model="dialog3" persistent max-width="475px">
                   <template v-slot:activator="{ on, attrs }">
@@ -386,7 +386,7 @@
                 </v-dialog>
 
                 <v-dialog v-model="dialog6" persistent max-width="450px">
-                  <template v-slot:activator="{ on, attrs }">
+                  <!-- <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       class="mt-2 mb-2"
                       x-large
@@ -399,7 +399,7 @@
                       v-on="on"
                       ><v-icon left>mdi-trophy</v-icon>Get Sponsored</v-btn
                     >
-                  </template>
+                  </template> -->
                   <v-card>
                     <v-card-title><v-icon x-large color="red">mdi-trophy</v-icon></v-card-title>
                     <v-card-title>
