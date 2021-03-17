@@ -131,7 +131,7 @@
           <template v-slot:activator="{ on, attrs }">
             <validation-provider v-slot="{ errors }" rules="required">
               <v-text-field
-                v-model="studentDocument.studentBirthday"
+                v-model="studentDocument.data.studentBirthday"
                 rounded
                 prepend-icon="mdi-cake-variant"
                 :error-messages="errors"
@@ -145,7 +145,7 @@
           </template>
           <v-date-picker
             ref="picker"
-            v-model="studentDoc.data.studentBirthday"
+            v-model="studentDocument.data.studentBirthday"
             max="2010-12-31"
             min="1950-01-01"
             @input="menu = false"
@@ -264,6 +264,11 @@
 
             <v-container>
               <div class="d-flex justify-center flex-column">
+                <v-btn>
+                  <v-progress-circular v-if="getTokens.loading.value" />
+                  <p v-else>{{ getTokens.message.value }}</p>
+                  TOKENS AVAILABLE</v-btn
+                >
                 <v-dialog v-model="dialog2" persistent max-width="425px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -694,58 +699,25 @@ export default defineComponent({
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
       studentDocument.value.data[skill] = false;
     });
-    const studentUseToken = () => {
-      const db = props.db as Db;
-      return db
-        .collection('Tokens')
-        .findOne({
-          newOwner_id: props.userDoc.data._id
-        })
-        .then(doc => {
-          return db
-            .collection('Tokens')
-            .updateOne(
-              {
-                _id: doc._id
-              },
-              {
-                $set: {
-                  newOwner_id: null
-                },
-                $push: {
-                  eventLog: {
-                    event: `joined Program ${programDoc.value.data._id.toString()}`,
-                    user_id: props.userDoc.data._id,
-                    timestamp: new Date()
-                  }
-                }
-              },
-              {
-                upsert: true
-              }
-            )
-            .then(async () => {
-              programDoc.value = {
-                ...programDoc.value,
-                data: {
-                  participants: [...programDoc.value.data.participants, props.userDoc.data._id],
-                  ...programDoc.value.data
-                }
-              };
-              await programDoc.value.update();
-              const result = await db.collection('Student').insertOne(studentDocument.value.data);
-              studentDocument.value.data._id = result.insertedId;
-              studentDocument.value.update = () =>
-                db.collection('Student').findOneAndUpdate(
-                  {
-                    _id: result.insertedId
-                  },
-                  { ...studentDocument.value.data, lastSaved: new Date() }
-                );
-              studentDocument.value.data.created = new Date();
-              await studentDocument.value.update();
-            });
-        });
+    const getTokens = {
+      ...loading(async () =>
+        props.db.collection('Tokens').aggregate([
+          {
+            $match: {
+              newOwner_id: props.userDoc.data._id
+            }
+          },
+          { $group: { _id: null, n: { $sum: 1 } } }
+        ])
+      )
+    };
+    getTokens.process();
+    const studentUseToken = async () => {
+      await props.mongoUser.callFunction('useToken', {
+        participantId: props.userDoc.data._id,
+        programId: programDoc.value.data._id
+      });
+      ctx.emit('nextPage');
     };
     const sponsorshipLink = ref('');
     const useClaimLink = async () => {
@@ -769,7 +741,10 @@ export default defineComponent({
       studentDocument,
       verificationCode,
       sponsorshipLink,
-      useClaimLink: { ...loading(useClaimLink, 'Successfully retrieved token from link') }
+      useClaimLink: {
+        ...loading(useClaimLink, 'Successfully retrieved token from link')
+      },
+      getTokens
     };
   },
 

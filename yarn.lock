@@ -2221,10 +2221,10 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.1.tgz#283f669ff76d7b8260df8ab7a4262cc83d988256"
   integrity sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg==
 
-"@types/mongodb@^3.5.31":
-  version "3.6.9"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.9.tgz#55f7e5b04f33904a12d6f0ab4f5d119a5062ade4"
-  integrity sha512-2XSGr/+IOKeFQ5tU9ATcIiIr7bpHqWyOXNGLOOhp0kg2NnfEvoKZF1SZ25j4zvJRqM2WeSUjfWSvymFJ3HBGJQ==
+"@types/mongodb@^3.6.10":
+  version "3.6.10"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.6.10.tgz#80cceaabeec9f460e5b46844e938e8eba74f9266"
+  integrity sha512-BkwAHFiZSSWdTIqbUVGmgvIsiXXjqAketeK7Izy7oSs6G3N8Bn993tK9eq6QEovQDx6OQ2FGP2KWDDxBzdlJ6Q==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
@@ -11536,10 +11536,10 @@ mongodb-stitch-core-services-mongodb-remote@^4.8.0:
     bson "4.0.2"
     mongodb-stitch-core-sdk "^4.8.0"
 
-mongodb@^3.6.2:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.4.tgz#ca59fd65b06831308262372ef9df6b78f9da97be"
-  integrity sha512-Y+Ki9iXE9jI+n9bVtbTOOdK0B95d6wVGSucwtBkvQ+HIvVdTCfpVRp01FDC24uhC/Q2WXQ8Lpq3/zwtB5Op9Qw==
+mongodb@^3.6.5:
+  version "3.6.5"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.5.tgz#c27d786fd4d3c83dc19302483707d12a9d2aee5f"
+  integrity sha512-mQlYKw1iGbvJJejcPuyTaytq0xxlYbIoVDm2FODR+OHxyEiMR021vc32bTvamgBjCswsD54XIRwhg3yBaWqJjg==
   dependencies:
     bl "^2.2.1"
     bson "^1.1.4"
@@ -12685,10 +12685,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pcv4lib@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/pcv4lib/-/pcv4lib-1.0.12.tgz#693523e1a983a821b526f59fc531d07720e0b95e"
-  integrity sha512-s7U3Q4YUc+fU4DUFGZ9HDoZ5prwxxkx/V/rPIsiP23wUfNsQm2Dt8YaPca0YV7z8n6tbewEtKR2UhtiWG50z4w==
+pcv4lib@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/pcv4lib/-/pcv4lib-1.0.13.tgz#eefc2dcb2842b4285ac478777da1338a60f17693"
+  integrity sha512-RwymbIuNoao26xNss7wVKuSajU28EqfaARS+wG9rp7yNVQprmbcKu1ke+XDdwv2/5EOUcPealPjSkSKcjgubZg==
 
 pend@~1.2.0:
   version "1.2.0"
