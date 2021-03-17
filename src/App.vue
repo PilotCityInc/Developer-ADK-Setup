@@ -2,10 +2,12 @@
   <v-app>
     <Module
       v-model="programDocStub"
-      :user-type="userTypeStub"
       :student-doc="studentDoc"
       :db="db"
       :user-doc="userDoc"
+      :license-program="licenseProgram"
+      :user-type="userType"
+      :mongo-user="mongoUser"
       @inputStudentDoc="studentDoc = $event"
     />
   </v-app>
@@ -21,7 +23,6 @@ import MongoDoc from './Module/types';
 
 export default Vue.extend({
   name: 'App',
-
   components: {
     Module
   },
@@ -35,13 +36,13 @@ export default Vue.extend({
           }
         ]
       },
-      save: async () => null
+      update: async () => null
     });
     const studentDoc: Ref<MongoDoc> = ref({
       data: {
         adks: []
       },
-      save: () => {
+      update: () => {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(true);
@@ -51,18 +52,23 @@ export default Vue.extend({
       },
       changeStream: {}
     });
-    const userTypeStub = 'organizer';
     const db = {};
     const userDoc = {
       data: {
         _id: new ObjectId(1)
       }
     };
+    const userType = ref('organizer');
+    const licenseProgram = () => {};
+    const mongoUser = {};
     return {
       programDocStub,
       studentDoc,
       userDoc,
-      userTypeStub
+      db,
+      licenseProgram,
+      userType,
+      mongoUser
     };
   }
 });
