@@ -310,12 +310,12 @@
                           x-large
                           dark
                           depressed
-                          @click="studentCheckout.process"
+                          @click="studentUseToken.process"
                           >Yes</v-btn
                         >
                       </div>
                       <v-progress-circular
-                        v-if="studentCheckout.loading.value"
+                        v-if="studentUseToken.loading.value"
                         indeterminate
                         color="primary"
                       ></v-progress-circular>
@@ -356,14 +356,29 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
+                          v-model="sponsorshipLink"
                           class="ma-4"
                           rounded
                           hide-details
                           outlined
                           placeholder="https://www.pilotcity.com/sponsor/entercode"
                         ></v-text-field>
-                        <v-btn color="green" x-large rounded dark depressed class="ma-4"
+                        <v-btn
+                          color="green"
+                          x-large
+                          rounded
+                          dark
+                          depressed
+                          class="ma-4"
+                          :loading="useClaimLink.loading.value"
+                          @click="useClaimLink.process"
                           >Start Program</v-btn
+                        >
+                        <v-alert
+                          v-if="useClaimLink.success.value || useClaimLink.error.value"
+                          class="mt-3"
+                          :type="success ? 'success' : 'error'"
+                          >{{ useClaimLink.message.value }}</v-alert
                         >
                       </div>
                     </v-container>
@@ -592,6 +607,7 @@ import { ValidationObserver, ValidationProvider } from '@/validation';
 
 // import Instruct from './ModuleInstruct.vue';
 import { Db } from 'mongodb';
+import { User } from 'realm-web';
 import MongoDoc from '../types';
 
 export default defineComponent({
@@ -621,6 +637,10 @@ export default defineComponent({
     userDoc: {
       required: true,
       type: Object as () => MongoDoc
+    },
+    mongoUser: {
+      required: true,
+      type: Object as () => User
     }
   },
 
@@ -674,7 +694,7 @@ export default defineComponent({
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
       studentDocument.value.data[skill] = false;
     });
-    const studentCheckout = () => {
+    const studentUseToken = () => {
       const db = props.db as Db;
       return db
         .collection('Tokens')
@@ -727,17 +747,29 @@ export default defineComponent({
             });
         });
     };
+    const sponsorshipLink = ref('');
+    const useClaimLink = async () => {
+      console.log('running');
+      return props.mongoUser.callFunction(
+        'claimLink',
+        props.userDoc.data._id,
+        sponsorshipLink.value,
+        programDoc.value.data._id.toString()
+      );
+    };
     return {
       programDoc,
       initSetupprogram,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
-      studentCheckout: {
-        ...loading(studentCheckout, "You've been added to this program!")
+      studentUseToken: {
+        ...loading(studentUseToken, "You've been added to this program!")
       },
       studentDocument,
-      verificationCode
+      verificationCode,
+      sponsorshipLink,
+      useClaimLink: { ...loading(useClaimLink, 'Successfully retrieved token from link') }
     };
   },
 

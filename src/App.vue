@@ -7,6 +7,7 @@
       :user-doc="userDoc"
       :license-program="licenseProgram"
       :user-type="userType"
+      :mongo-user="mongoUser"
       @inputStudentDoc="studentDoc = $event"
     />
   </v-app>
@@ -59,13 +60,15 @@ export default Vue.extend({
     };
     const userType = ref('organizer');
     const licenseProgram = () => {};
+    const mongoUser = {};
     return {
       programDocStub,
       studentDoc,
       userDoc,
       db,
       licenseProgram,
-      userType
+      userType,
+      mongoUser
     };
   }
 });

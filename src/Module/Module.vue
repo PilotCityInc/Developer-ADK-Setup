@@ -59,7 +59,9 @@
             :license-program="licenseProgram"
             :db="db"
             :user-doc="userDoc"
+            :mongo-user="mongoUser"
             @inputStudentDoc="studentDocument = $event"
+            @nextPage="$emit('nextPage')"
           />
         </div>
       </div>
@@ -73,6 +75,7 @@ import '../styles/module.scss';
 import { getModMongoDoc } from 'pcv4lib/src';
 // import { Collection } from 'mongodb';
 import { Db } from 'mongodb';
+import { User } from 'realm-web';
 import * as Module from './components';
 import MongoDoc from './types';
 
@@ -116,6 +119,10 @@ export default defineComponent({
     userDoc: {
       required: true,
       type: Object as () => MongoDoc
+    },
+    mongoUser: {
+      required: true,
+      type: Object as () => User
     }
   },
   setup(props, ctx) {
@@ -125,7 +132,6 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    console.log(props.studentDoc);
     const studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
     const page = reactive({
       currentPage: 'Setup'
