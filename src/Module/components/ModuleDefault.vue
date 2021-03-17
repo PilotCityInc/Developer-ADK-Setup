@@ -34,7 +34,14 @@
       </v-expansion-panels>
     </div> -->
 
-    <v-progress-linear class="mt-3" color="#dedede" height="2" value="100" buffer-value="100" stream />
+      <v-progress-linear
+        class="mt-3"
+        color="#dedede"
+        height="2"
+        value="100"
+        buffer-value="100"
+        stream
+      />
       <div class="module-edit__container">
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
@@ -290,10 +297,9 @@
 
             <v-container>
               <div class="d-flex justify-center flex-column">
-                <v-btn>
+                <strong class="mx-autowd">
                   <v-progress-circular v-if="getTokens.loading.value" />
-                  <p v-else>{{ getTokens.message.value }}</p>
-                  TOKENS AVAILABLE</v-btn
+                  {{ getTokens.message.value }} TOKENS AVAILABLE</strong
                 >
                 <v-dialog v-model="dialog2" persistent max-width="425px">
                   <template v-slot:activator="{ on, attrs }">
@@ -727,14 +733,17 @@ export default defineComponent({
     });
     const getTokens = {
       ...loading(async () =>
-        props.db.collection('Tokens').aggregate([
-          {
-            $match: {
-              newOwner_id: props.userDoc.data._id
-            }
-          },
-          { $group: { _id: null, n: { $sum: 1 } } }
-        ])
+        props.db
+          .collection('Tokens')
+          .aggregate([
+            {
+              $match: {
+                newOwner_id: props.userDoc.data._id
+              }
+            },
+            { $group: { _id: null, n: { $sum: 1 } } }
+          ])
+          .then(val => val[0].n)
       )
     };
     getTokens.process();
