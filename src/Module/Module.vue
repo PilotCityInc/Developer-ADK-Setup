@@ -1,11 +1,11 @@
 <template>
   <!--  TODO: make the inputs into actual components -->
   <v-container class="module">
-    <div class="module__navbar d-flex">
+    <!-- <div class="module__navbar d-flex">
       <v-btn v-if="currentPage == 'preview' && userType === 'organizer'" x-large icon>
         <v-icon x-large>mdi-chevron-double-left</v-icon>
       </v-btn>
-    </div>
+    </div> -->
     <div class="module__navbar">
       <v-btn
         v-if="currentPage != 'preview' && userType === 'organizer'"
@@ -218,7 +218,7 @@ body {
 }
 
 .v-timeline-item__divider {
-  align-items: start !important;
+  // align-items: start !important;
 }
 
 .module {

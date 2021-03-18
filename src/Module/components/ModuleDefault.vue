@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver>
-    <v-container class="module-default pa-0">
+    <v-container class="module-default pa-0 align-center">
       <!-- <div class="module-default__instructions">
       <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
         <v-expansion-panel>
@@ -34,7 +34,14 @@
       </v-expansion-panels>
     </div> -->
 
-    <v-progress-linear class="mt-3" color="#dedede" height="2" value="100" buffer-value="100" stream />
+      <v-progress-linear
+        class="mt-3"
+        color="#dedede"
+        height="2"
+        value="100"
+        buffer-value="100"
+        stream
+      />
       <div class="module-edit__container">
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
@@ -228,7 +235,7 @@
               <v-divider></v-divider>
 
               <v-container class="d-flex justify-center">
-                <div class="d-flex flex-column justify-center">
+                <div class="d-flex flex-column justify-center align-center">
                   <v-text-field
                     v-model="verificationCode"
                     class="justify-center module-default__sms-verification ma-2"
@@ -279,7 +286,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <div class="overline font-weight-bold">Program Checkout Options</div>
+              <div class="overline font-weight-black">Program Checkout</div>
 
               <div class="ml-auto">
                 <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
@@ -292,8 +299,9 @@
               <div class="d-flex justify-center flex-column">
                 <strong class="mx-autowd">
                   <v-progress-circular v-if="getTokens.loading.value" />
-                 {{ getTokens.message.value }} TOKENS AVAILABLE</strong
+                  {{ getTokens.message.value }} TOKENS AVAILABLE</strong
                 >
+                <div class="justify-center d-flex"></div>
                 <v-dialog v-model="dialog2" persistent max-width="425px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -322,7 +330,7 @@
                     <v-divider></v-divider>
 
                     <v-container>
-                      <div class="d-flex justify-center flex-row">
+                      <div class="d-flex justify-center flex-row align-center">
                         <v-btn
                           class="ma-2"
                           color="red"
@@ -343,18 +351,23 @@
                           @click="studentUseToken.process"
                           >Yes</v-btn
                         >
+                        <v-progress-circular
+                          v-if="studentUseToken.loading.value"
+                          indeterminate
+                          color="primary"
+                        ></v-progress-circular>
                       </div>
                       <v-progress-circular
                         v-if="studentUseToken.loading.value"
                         indeterminate
                         color="primary"
                       ></v-progress-circular>
-                     <v-alert
-                          v-if="studentUseToken.success.value || studentUseToken.error.value"
-                          class="mt-3"
-                          :type="success ? 'success' : 'error'"
-                          >{{ studentUseToken.message.value }}</v-alert
-                        >
+                      <v-alert
+                        v-if="studentUseToken.success.value || studentUseToken.error.value"
+                        class="mt-3"
+                        :type="success ? 'success' : 'error'"
+                        >{{ studentUseToken.message.value }}</v-alert
+                      >
                     </v-container>
                   </v-card>
                 </v-dialog>
@@ -375,7 +388,7 @@
                       v-bind="attrs"
                       @click="dialog3 = true"
                       v-on="on"
-                      ><v-icon left>mdi-link-variant</v-icon>Enter Link</v-btn
+                      ><v-icon left>mdi-vector-link</v-icon>Enter Link</v-btn
                     >
                   </template>
                   <v-card>
@@ -625,6 +638,21 @@
                 </v-dialog>
               </div>
             </v-container>
+
+            <v-divider></v-divider>
+
+            <div class="d-flex justify-center">
+              <v-btn
+                class="explore-card__button font-weight-bold ml-1 mr-1 mt-6 mb-6"
+                rounded
+                small
+                disabled
+                depressed
+                :ripple="false"
+                ><v-icon left> mdi-set-none </v-icon> Balance:
+                {{ getTokens.message.value }} Tokens</v-btn
+              >
+            </div>
           </v-card>
         </v-dialog>
       </div>
@@ -732,14 +760,17 @@ export default defineComponent({
     });
     const getTokens = {
       ...loading(async () =>
-        props.db.collection('Tokens').aggregate([
-          {
-            $match: {
-              newOwner_id: props.userDoc.data._id
-            }
-          },
-          { $group: { _id: null, n: { $sum: 1 } } }
-        ]).then(val => val[0].n)
+        props.db
+          .collection('Tokens')
+          .aggregate([
+            {
+              $match: {
+                newOwner_id: props.userDoc.data._id
+              }
+            },
+            { $group: { _id: null, n: { $sum: 1 } } }
+          ])
+          .then(val => val[0].n)
       )
     };
     getTokens.process();
