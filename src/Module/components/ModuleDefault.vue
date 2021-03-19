@@ -357,6 +357,17 @@
                           color="primary"
                         ></v-progress-circular>
                       </div>
+                      <v-progress-circular
+                        v-if="studentUseToken.loading.value"
+                        indeterminate
+                        color="primary"
+                      ></v-progress-circular>
+                      <v-alert
+                        v-if="studentUseToken.success.value || studentUseToken.error.value"
+                        class="mt-3"
+                        :type="success ? 'success' : 'error'"
+                        >{{ studentUseToken.message.value }}</v-alert
+                      >
                     </v-container>
                   </v-card>
                 </v-dialog>
