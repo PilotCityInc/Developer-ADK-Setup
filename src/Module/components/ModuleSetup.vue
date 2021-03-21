@@ -149,9 +149,8 @@
           rounded
         ></v-file-input> -->
 
-        <validation-provider v-slot="{ errors }" slim>
-          <v-select
-            v-model="programDoc.data.colors"
+        <!-- <validation-provider v-slot="{ errors }" slim> -->
+        <!-- <v-select
             rounded
             :error-messages="errors"
             :items="pilotcityColors"
@@ -164,8 +163,34 @@
             outlined
             class="module-setup__combobox mt-12 mb-12"
           >
-          </v-select>
-        </validation-provider>
+          </v-select> -->
+        <!-- <v-color-picker
+            v-model="programDoc.data.colors"
+            disabled
+            :item-color="programDoc.data.colors"
+            :error-messages="errors"
+            :items="pilotcityColors"
+            dot-size="25"
+            hide-canvas
+            hide-inputs
+            hide-mode-switch
+            show-swatches
+            :swatches="pilotcityColors"
+            swatches-max-height="100"
+          ></v-color-picker> -->
+
+        <!-- <v-color-picker
+            v-model="selectedColor"
+            disabled
+            dot-size="25"
+            hide-canvas
+            hide-inputs
+            hide-mode-switch
+            show-swatches
+            :swatches="pilotcityColors"
+            swatches-max-height="100"
+          ></v-color-picker> -->
+        <!-- </validation-provider> -->
 
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
