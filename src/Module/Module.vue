@@ -59,6 +59,7 @@
             :mongo-user="mongoUser"
             @inputStudentDoc="studentDocument = $event"
             @nextPage="$emit('nextPage')"
+            @usedToken="$emit('usedToken')"
           />
         </div>
       </div>

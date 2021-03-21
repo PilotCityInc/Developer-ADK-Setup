@@ -779,6 +779,7 @@ export default defineComponent({
         participantId: props.userDoc.data._id,
         programId: programDoc.value.data._id
       });
+      ctx.emit('usedToken');
       ctx.emit('nextPage');
     };
     const sponsorshipLink = ref('');
