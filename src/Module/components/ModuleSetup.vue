@@ -149,6 +149,24 @@
           rounded
         ></v-file-input> -->
 
+        <validation-provider v-slot="{ errors }" slim>
+          <v-select
+            v-model="programDoc.data.colors"
+            rounded
+            :error-messages="errors"
+            :items="pilotcityColors"
+            :item-color="programDoc.data.colors"
+            prepend-icon="mdi-format-color-fill"
+            hide-selected
+            :color="programDoc.data.colors"
+            label="Chose a color to be displayed?"
+            hide-details
+            outlined
+            class="module-setup__combobox mt-12 mb-12"
+          >
+          </v-select>
+        </validation-provider>
+
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
         <!-- <v-img
@@ -365,6 +383,7 @@ export default defineComponent({
   },
   setup(props, ctx) {
     // Default Options
+
     const options = reactive({
       reward: [
         { text: 'Paid Work Experience', color: 'grey darken-2' },
@@ -931,6 +950,17 @@ export default defineComponent({
         'Yucaipa, CA',
         'Yucca Valley, CA'
       ],
+      pilotcityColors: [
+        '#6eba80',
+        '#3c9dcd',
+        '#ea6764',
+        '#eda1bf',
+        '#fec34b',
+        '#bdbdbd',
+        '#ae90b0',
+        '#f79961',
+        '#000000'
+      ],
       requiredTechOptions: [],
       requiredSkillOptions: [],
       rewardOptions: ['Paid Work Experience', 'Unpaid Work Experience'],
@@ -977,11 +1007,13 @@ export default defineComponent({
       'requiredSkills',
       'requiredTech',
       'rewards',
-      'pathways'
+      'pathways',
+      'colors'
     ];
     const writeFields = dataProperties.map(prop => {
       if (!programDoc.value.data[prop]) {
-        if (prop === 'programName' || prop === 'programDesc') return { [prop]: '' };
+        if (prop === 'programName' || prop === 'programDesc' || prop === 'colors')
+          return { [prop]: '' };
         if (prop === 'ageRange') return { [prop]: [12, 22] };
 
         return { [prop]: [] };
