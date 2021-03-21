@@ -297,10 +297,10 @@
 
             <v-container>
               <div class="d-flex justify-center flex-column">
-                <strong class="mx-autowd">
+                <!-- <strong class="mx-autowd">
                   <v-progress-circular v-if="getTokens.loading.value" />
                   {{ getTokens.message.value }} TOKENS AVAILABLE</strong
-                >
+                > -->
                 <div class="justify-center d-flex"></div>
                 <v-dialog v-model="dialog2" persistent max-width="425px">
                   <template v-slot:activator="{ on, attrs }">
