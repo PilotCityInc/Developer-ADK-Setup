@@ -57,6 +57,7 @@
             :db="db"
             :user-doc="userDoc"
             :mongo-user="mongoUser"
+            :user-type="userType"
             @inputStudentDoc="studentDocument = $event"
             @nextPage="$emit('nextPage')"
           />
