@@ -60,6 +60,7 @@
             :user-type="userType"
             @inputStudentDoc="studentDocument = $event"
             @nextPage="$emit('nextPage')"
+            @usedToken="$emit('usedToken')"
           />
         </div>
       </div>
@@ -130,7 +131,9 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    const studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+    const studentDocument = ref({
+      data: {}
+    });
     const page = reactive({
       currentPage: 'Setup'
     });
