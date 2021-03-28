@@ -179,8 +179,7 @@
             swatches-max-height="100"
           ></v-color-picker> -->
 
-          <!-- THIS IS THE ONE -->
-          
+        <!-- THIS IS THE ONE -->
         <!-- <div class="d-flex justify-center">
           <validation-provider v-slot="{ errors }" slim>
             <v-color-picker
