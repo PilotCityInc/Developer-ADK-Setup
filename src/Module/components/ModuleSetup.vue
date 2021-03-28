@@ -179,18 +179,24 @@
             swatches-max-height="100"
           ></v-color-picker> -->
 
-        <!-- <v-color-picker
-            v-model="selectedColor"
-            disabled
-            dot-size="25"
-            hide-canvas
-            hide-inputs
-            hide-mode-switch
-            show-swatches
-            :swatches="pilotcityColors"
-            swatches-max-height="100"
-          ></v-color-picker> -->
-        <!-- </validation-provider> -->
+          <!-- THIS IS THE ONE -->
+          
+        <!-- <div class="d-flex justify-center">
+          <validation-provider v-slot="{ errors }" slim>
+            <v-color-picker
+              v-model="selectedColor"
+              :error-messages="errors"
+              hide-canvas
+              hide-sliders
+              hide-inputs
+              hide-mode-switch
+              show-swatches
+              :items="pilotcityColors"
+              :swatches="pilotcityColors"
+              swatches-max-height="100"
+            ></v-color-picker>
+          </validation-provider>
+        </div> -->
 
         <div class="headline d-flex justify-center mt-12 font-weight-bold">Add-ons</div>
 
@@ -1072,6 +1078,18 @@ export default defineComponent({
     const licenseData = reactive({
       licenseLoading: false
     });
+    const color = reactive({
+      pilotcityColors: [
+        ['#6eba80', '#3c9dcd', '#ea6764'],
+        ['#eda1bf', '#fec34b', '#bdbdbd'],
+        ['#ae90b0', '#f79961', '#000000']
+      ],
+      // ENTER ACTIVITY COLOR
+      selectedColor: '#dedede'
+    });
+    const getColor = computed(() => {
+      return color.selectedColor.substring(0, 7);
+    });
     async function licenseFun() {
       licenseData.licenseLoading = true;
       try {
@@ -1089,7 +1107,9 @@ export default defineComponent({
       saveProgram,
       ...toRefs(licenseData),
       licenseFun,
-      status
+      status,
+      ...toRefs(color),
+      getColor
     };
   }
 });
