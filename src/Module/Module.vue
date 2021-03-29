@@ -52,7 +52,7 @@
           <component
             :is="getComponent"
             v-model="programDoc"
-            :student-doc="studentDocument"
+            :student-doc="studentDoc || { data: { adks: [] }, update: () => {} }"
             :license-program="licenseProgram"
             :db="db"
             :user-doc="userDoc"
@@ -131,9 +131,7 @@ export default defineComponent({
         ctx.emit('input', newVal);
       }
     });
-    const studentDocument = ref({
-      data: {}
-    });
+
     const page = reactive({
       currentPage: 'Setup'
     });
@@ -206,8 +204,7 @@ export default defineComponent({
       ...toRefs(timelineData),
       timeline,
       comment,
-      programDoc,
-      studentDocument
+      programDoc
     };
   }
 });

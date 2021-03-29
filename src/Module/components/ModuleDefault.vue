@@ -142,6 +142,7 @@
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
               :label="requiredResidency"
+              :value="requiredResidency"
             ></v-radio
             ><v-radio label="None of the above"></v-radio
           ></v-radio-group>
@@ -164,7 +165,7 @@
           <template v-slot:activator="{ on, attrs }">
             <validation-provider v-slot="{ errors }" rules="required">
               <v-text-field
-                v-model="studentDocument.data.studentBirthday"
+                v-model="birthdate"
                 rounded
                 prepend-icon="mdi-cake-variant"
                 :error-messages="errors"
@@ -178,10 +179,13 @@
           </template>
           <v-date-picker
             ref="picker"
-            v-model="studentDocument.data.studentBirthday"
+            v-model="birthdate"
             max="2010-12-31"
             min="1950-01-01"
-            @input="menu = false"
+            @input="
+              birthdayMenu = false;
+              saveBirthday($event);
+            "
             @change="save"
           ></v-date-picker>
         </v-menu>
@@ -190,7 +194,7 @@
           <!-- MOBILE PHONE NUMBER VERIFICATION -->
           <validation-provider v-slot="{ errors }" slim rules="required">
             <v-text-field
-              v-model="studentDocument.data.phoneNumber"
+              v-model="phoneNumber"
               v-mask="'(###) ###-####'"
               prepend-icon="mdi-cellphone-iphone"
               outlined
@@ -201,7 +205,7 @@
             ></v-text-field>
           </validation-provider>
 
-          <v-dialog v-model="dialog4" persistent max-width="375px">
+          <v-dialog v-model="verifyNumberDialog" persistent max-width="375px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 rounded
@@ -210,6 +214,7 @@
                 outlined
                 x-large
                 depressed
+                :disabled="phoneNumber.length !== 14"
                 v-on="on"
                 @click="sendVerification"
                 >Verify</v-btn
@@ -266,7 +271,9 @@
                   >
 
                   <div class="d-flex justify-center">
-                    <v-btn icon @click="dialog4 = false"><v-icon>mdi-close</v-icon></v-btn>
+                    <v-btn icon @click="verifyNumberDialog = false"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                   </div>
                 </div>
               </v-container>
@@ -276,7 +283,9 @@
       </div>
 
       <div class="module-default__license-button mt-12">
-        <v-btn class="mr-2" x-large outlined depressed @click="process()">Save</v-btn>
+        <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
+          >Save</v-btn
+        >
 
         <v-dialog v-model="dialog" persistent max-width="400px">
           <template v-slot:activator="{ on, attrs }">
@@ -668,10 +677,9 @@ import { defineComponent, computed, ref } from '@vue/composition-api';
 import axios from 'axios';
 import { getModMongoDoc, loading } from 'pcv4lib/src';
 import { ValidationObserver, ValidationProvider } from '@/validation';
-
-// import Instruct from './ModuleInstruct.vue';
 import { Db } from 'mongodb';
 import { User } from 'realm-web';
+import Instruct from './ModuleInstruct.vue';
 import MongoDoc from '../types';
 
 export default defineComponent({
@@ -722,44 +730,54 @@ export default defineComponent({
       accessSkills: {},
       rewardstest: [],
       studentLocation: [],
-      studentBirthday: '',
-      PhoneNumber: '',
       studentResidence: '',
       studentSchool: '',
       studentEthnicity: [],
       studentFollowingOptions: [],
       learntPilotcity: ''
     };
-    const studentDocument = computed({
-      get: () => props.studentDoc as MongoDoc,
-      set: newVal => {
-        ctx.emit('inputStudentDoc', newVal);
-      }
-    });
-    studentDocument.value = {
-      ...studentDocument.value,
-      data: {
-        ...initSetupprogram,
-        ...studentDocument.value.data
-      }
-    };
 
+    const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+    const studentDocument = ref(studentDoc.value);
+    const birthdate = ref('');
+    props.db
+      .collection('StudentPortfolio')
+      .findOne({ _id: props.userDoc.data._id })
+      .then(doc => {
+        birthdate.value = doc.date;
+      });
+
+    const phoneNumber = ref(props.userDoc.data.phoneNumber);
+    const verifyNumberDialog = ref(false);
     function sendVerification() {
-      console.log(studentDocument.value.data.phoneNumber);
       axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: studentDocument.value.data.phoneNumber
+        to: phoneNumber.value
       });
     }
     const verificationCode = ref('');
     function verifyPhoneNumber() {
-      return axios.post(
-        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
-        {
-          to: studentDocument.value.data.phoneNumber,
-          code: verificationCode.value,
-          userID: props.userDoc.data._id.toString()
+      return new Promise(async (resolve, reject) => {
+        const resp = await axios.post(
+          'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
+          {
+            to: phoneNumber.value,
+            code: verificationCode.value,
+            userID: props.userDoc.data._id.toString()
+          }
+        );
+        if (resp.data.status === 'error')
+          reject(new Error('Verification failed. Please try again.'));
+        if (resp.data.status === 'success') {
+          verifyNumberDialog.value = false;
+          props.db
+            .collection('User')
+            .findOneAndUpdate(
+              { _id: props.userDoc.data._id },
+              { $set: { phoneNumber: phoneNumber.value } }
+            );
+          resolve(true);
         }
-      );
+      });
     }
 
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
@@ -799,8 +817,17 @@ export default defineComponent({
         programDoc.value.data._id.toString()
       );
     };
+    const saveBirthday = (birthday: string) => {
+      props.db
+        .collection('StudentPortfolio')
+        .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
+    };
     return {
+      phoneNumber,
+      birthdate,
       programDoc,
+      saveBirthday,
+      verifyNumberDialog,
       initSetupprogram,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
@@ -814,24 +841,16 @@ export default defineComponent({
       useClaimLink: {
         ...loading(useClaimLink, 'Successfully retrieved token from link')
       },
-      getTokens
-    };
-  },
-
-  data() {
-    const setupInstructions = ref({
-      description: '',
-      instructions: ['', '', '']
-    });
-    const showInstructions = ref(true);
-    return {
+      getTokens,
       birthdayMenu: false,
-      setupInstructions,
-      showInstructions,
+      setupInstructions: ref({
+        description: '',
+        instructions: ['', '', '']
+      }),
+      showInstructions: ref(true),
       dialog: false,
       dialog2: false,
       dialog3: false,
-      dialog4: false,
       dialog5: false,
       dialog6: false,
       dialogApply: false,
