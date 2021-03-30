@@ -32,7 +32,7 @@ export default Vue.extend({
         participants: [new ObjectId(1)],
         adks: [
           {
-            name: 'rfp'
+            name: 'scope'
           }
         ]
       },
