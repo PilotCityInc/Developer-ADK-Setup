@@ -180,8 +180,8 @@
           <v-date-picker
             ref="picker"
             v-model="birthdate"
-            max="2010-12-31"
-            min="1950-01-01"
+            max="2008-01-01"
+            min="1992-01-01"
             @input="
               birthdayMenu = false;
               saveBirthday($event);
