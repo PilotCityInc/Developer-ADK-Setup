@@ -397,12 +397,12 @@
                       v-bind="attrs"
                       @click="dialog3 = true"
                       v-on="on"
-                      ><v-icon left>mdi-vector-link</v-icon>Enter Link</v-btn
+                      ><v-icon left>mdi-vector-link</v-icon>Enter Code</v-btn
                     >
                   </template>
                   <v-card>
                     <v-card-title>
-                      <div class="overline font-weight-bold">Enter Sponsorship Link</div>
+                      <div class="overline font-weight-bold">Enter Sponsorship Code</div>
 
                       <div class="ml-auto">
                         <v-btn icon @click="dialog3 = false"><v-icon>mdi-close</v-icon></v-btn>
