@@ -121,7 +121,7 @@
           >
             <validation-provider v-slot="{ errors }" rules="required">
               <v-checkbox
-                v-model="studentDocument.accessSkills[requiredSkills]"
+                v-model="studentDocument.data.accessSkills[requiredSkills]"
                 :value="true"
                 :label="requiredSkills"
                 :error-messages="errors"
@@ -141,7 +141,7 @@
           <span class="module-default__question-title"
             >Do you live or work in any of the priority jurisdictions?
           </span>
-          <v-radio-group v-model="studentDocument.studentLocation" hide-details
+          <v-radio-group v-model="studentDocument.data.studentLocation" hide-details
             ><v-radio
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
@@ -732,7 +732,7 @@ export default defineComponent({
 
     const initSetupprogram = {
       accessSkills: {},
-      rewardstest: [],
+      rewards: [],
       studentLocation: [],
       studentResidence: '',
       studentSchool: '',
@@ -746,7 +746,7 @@ export default defineComponent({
       ctx.emit,
       {
         data: {
-          rewards: null
+          ...initSetupprogram
         }
       },
       'studentDoc',
@@ -839,7 +839,6 @@ export default defineComponent({
       programDoc,
       saveBirthday,
       verifyNumberDialog,
-      initSetupprogram,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
