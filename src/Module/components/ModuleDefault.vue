@@ -821,7 +821,6 @@ export default defineComponent({
     };
     const sponsorshipLink = ref('');
     const useClaimLink = async () => {
-      console.log('running');
       return props.mongoUser.callFunction(
         'claimLink',
         props.userDoc.data._id,
