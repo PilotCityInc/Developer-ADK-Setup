@@ -46,10 +46,11 @@
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
         </span>
-        <v-radio-group v-model="studentDocument.rewardsTest" hide-details>
+        <v-radio-group v-model="studentDocument.data.rewards" hide-details>
           <v-radio
             v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
             label="Yes"
+            value="yes"
           ></v-radio>
           <v-radio
             v-if="
@@ -57,6 +58,7 @@
               programDoc.data.rewards.length === 1
             "
             label="Yes"
+            value="yes"
           ></v-radio>
 
           <v-radio
@@ -77,6 +79,7 @@
               programDoc.data.rewards[0] === 'Paid Work Experience' &&
               programDoc.data.rewards.length === 1
             "
+            value="paid only"
           >
             <template v-slot:label>
               <div>
@@ -91,10 +94,11 @@
               programDoc.data.rewards.length === 1
             "
             label="Paid Only"
+            value="paid only"
             disabled
           >
           </v-radio>
-          <v-radio v-else>
+          <v-radio v-else value="paid only">
             <template v-slot:label>
               <div>Paid Only</div>
             </template>
@@ -737,7 +741,17 @@ export default defineComponent({
       learntPilotcity: ''
     };
 
-    const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+    const studentDoc = getModMongoDoc(
+      props,
+      ctx.emit,
+      {
+        data: {
+          rewards: null
+        }
+      },
+      'studentDoc',
+      'inputStudentDoc'
+    );
     const studentDocument = ref(studentDoc.value);
     const birthdate = ref('');
     props.db
@@ -755,29 +769,27 @@ export default defineComponent({
       });
     }
     const verificationCode = ref('');
-    function verifyPhoneNumber() {
-      return new Promise(async (resolve, reject) => {
-        const resp = await axios.post(
-          'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
-          {
-            to: phoneNumber.value,
-            code: verificationCode.value,
-            userID: props.userDoc.data._id.toString()
-          }
-        );
-        if (resp.data.status === 'error')
-          reject(new Error('Verification failed. Please try again.'));
-        if (resp.data.status === 'success') {
-          verifyNumberDialog.value = false;
-          props.db
-            .collection('User')
-            .findOneAndUpdate(
-              { _id: props.userDoc.data._id },
-              { $set: { phoneNumber: phoneNumber.value } }
-            );
-          resolve(true);
+    async function verifyPhoneNumber() {
+      const resp = await axios.post(
+        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
+        {
+          to: phoneNumber.value,
+          code: verificationCode.value,
+          userID: props.userDoc.data._id.toString()
         }
-      });
+      );
+      if (resp.data.status === 'error') throw new Error('Verification failed. Please try again.');
+      else {
+        // (resp.data.status === 'success')
+        verifyNumberDialog.value = false;
+        props.db
+          .collection('User')
+          .findOneAndUpdate(
+            { _id: props.userDoc.data._id },
+            { $set: { phoneNumber: phoneNumber.value } }
+          );
+        return true;
+      }
     }
 
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
