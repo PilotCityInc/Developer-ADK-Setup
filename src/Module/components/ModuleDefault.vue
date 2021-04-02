@@ -121,8 +121,9 @@
           >
             <validation-provider v-slot="{ errors }" rules="required">
               <v-checkbox
-                v-model="studentDocument.data.accessSkills[requiredSkills]"
-                :value="true"
+                v-model="accessSkills"
+                multiple
+                :value="requiredSkills"
                 :label="requiredSkills"
                 :error-messages="errors"
                 required
@@ -731,7 +732,7 @@ export default defineComponent({
     const programDoc = getModMongoDoc(props, ctx.emit);
 
     const initSetupprogram = {
-      accessSkills: {},
+      accessSkills: [],
       rewards: [],
       studentLocation: [],
       studentResidence: '',
@@ -741,7 +742,7 @@ export default defineComponent({
       learntPilotcity: ''
     };
 
-    const studentDoc = getModMongoDoc(
+    const studentDocument = getModMongoDoc(
       props,
       ctx.emit,
       {
@@ -752,7 +753,6 @@ export default defineComponent({
       'studentDoc',
       'inputStudentDoc'
     );
-    const studentDocument = ref(studentDoc.value);
     const birthdate = ref('');
     props.db
       .collection('StudentPortfolio')
@@ -833,7 +833,9 @@ export default defineComponent({
         .collection('StudentPortfolio')
         .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
     };
+    const accessSkills = ref(studentDocument.value.data.accessSkills || []);
     return {
+      accessSkills,
       phoneNumber,
       birthdate,
       programDoc,
@@ -841,9 +843,17 @@ export default defineComponent({
       verifyNumberDialog,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
-      ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
+      ...loading(async () => {
+        studentDocument.value.data.accessSkills = accessSkills.value;
+        await studentDocument.value.update();
+      }, 'Saved'),
       studentUseToken: {
-        ...loading(studentUseToken, "You've been added to this program!")
+        ...loading(async () => {
+          await studentUseToken();
+          studentDocument.value.data.accessSkills = accessSkills.value;
+          console.log(accessSkills.value);
+          await studentDocument.value.update();
+        }, "You've been added to this program!")
       },
       studentDocument,
       verificationCode,
