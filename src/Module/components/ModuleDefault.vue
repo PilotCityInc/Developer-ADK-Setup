@@ -807,7 +807,7 @@ export default defineComponent({
             },
             { $group: { _id: null, n: { $sum: 1 } } }
           ])
-          .then(val => val[0].n)
+          .then(val => (val[0] ? val[0].n : 0))
       )
     };
     getTokens.process();
