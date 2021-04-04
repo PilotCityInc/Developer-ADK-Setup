@@ -449,7 +449,7 @@
                 </v-dialog>
 
                 <v-dialog v-model="dialog6" persistent max-width="450px">
-                  <!-- <template v-slot:activator="{ on, attrs }">
+                  <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       class="mt-2 mb-2"
                       x-large
@@ -462,7 +462,7 @@
                       v-on="on"
                       ><v-icon left>mdi-trophy</v-icon>Get Sponsored</v-btn
                     >
-                  </template> -->
+                  </template>
                   <v-card>
                     <v-card-title><v-icon x-large color="red">mdi-trophy</v-icon></v-card-title>
                     <v-card-title>
@@ -477,17 +477,18 @@
 
                     <v-container>
                       <div class="d-flex justify-center flex-column">
-                        <v-text-field
-                          v-model="studentDocument.data.studentResidence"
-                          rules="required"
-                          prepend-icon="mdi-map-marker-radius"
-                          class="ma-2"
-                          rounded
-                          label="City of Residence"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-                        <!-- <v-text-field
+                        <v-form v-model="applyForSponsorshipValid">
+                          <v-text-field
+                            v-model="studentDocument.data.studentResidence"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-map-marker-radius"
+                            class="ma-2"
+                            rounded
+                            label="City of Residence"
+                            hide-details
+                            outlined
+                          ></v-text-field>
+                          <!-- <v-text-field
                         class="ma-2"
                         rounded
                         label="County"
@@ -501,127 +502,126 @@
                         hide-details
                         outlined
                       ></v-text-field> -->
-                        <v-text-field
-                          v-model="studentDocument.data.studentSchool"
-                          rules="required"
-                          prepend-icon="mdi-notebook"
-                          class="ma-2"
-                          rounded
-                          label="School"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-
-                        <validation-provider v-slot="{ errors }" slim rules="required">
-                          <v-combobox
-                            v-model="studentDocument.data.studentEthnicity"
+                          <v-text-field
+                            v-model="studentDocument.data.studentSchool"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-notebook"
+                            class="ma-2"
                             rounded
-                            :items="ethnicityCulture"
-                            :error-messages="errors"
-                            prepend-icon="mdi-account-group"
-                            label="Ethnicity & Culture"
-                            multiple
-                            small-chips
+                            label="School"
                             hide-details
                             outlined
-                            class="ma-2"
-                          >
-                            <template v-slot:no-data>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>
-                                    Press <kbd>enter</kbd> to add reward
-                                    <!-- <strong>{{ rewardSearch }}</strong
-                    >". -->
-                                  </v-list-item-title>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </template>
-                            <template v-slot:selection="{ attrs, item, parent, selected }">
-                              <v-chip
-                                v-bind="attrs"
-                                :input-value="selected"
-                                label
-                                small
-                                @click="parent.selectItem(item)"
-                              >
-                                <span class="">
-                                  {{ item }}
-                                </span>
-                                <v-icon small> mdi-close </v-icon>
-                              </v-chip>
-                            </template>
-                          </v-combobox>
-                        </validation-provider>
+                          ></v-text-field>
 
-                        <validation-provider v-slot="{ errors }" slim>
-                          <v-combobox
-                            v-model="studentDocument.data.studentFollowingOptions"
-                            rounded
-                            :items="eligibilityOptions"
-                            :search-input="eligibilitySearch"
-                            :error-messages="errors"
-                            prepend-icon="mdi-check-box-multiple-outline"
-                            label="Do you have any of the following?"
-                            multiple
-                            small-chips
-                            hide-details
-                            outlined
-                            class="ma-2"
-                          >
-                            <template v-slot:no-data>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>
-                                    Press <kbd>enter</kbd> to add reward
-                                    <!-- <strong>{{ rewardSearch }}</strong
-                    >". -->
-                                  </v-list-item-title>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </template>
-                            <template v-slot:selection="{ attrs, item, parent, selected }">
-                              <v-chip
-                                v-bind="attrs"
-                                :input-value="selected"
-                                label
-                                small
-                                @click="parent.selectItem(item)"
-                              >
-                                <span class="">
-                                  {{ item }}
-                                </span>
-                                <v-icon small> mdi-close </v-icon>
-                              </v-chip>
-                            </template>
-                          </v-combobox>
-                        </validation-provider>
-
-                        <v-text-field
-                          v-model="studentDocument.data.learntPilotcity"
-                          rules="required"
-                          prepend-icon="mdi-telegram"
-                          class="ma-2"
-                          rounded
-                          label="How did you hear about PilotCity?"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-                        <v-dialog v-model="dialogApply" persistent max-width="500px">
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                              class="ma-2"
-                              color="red"
-                              x-large
+                          <validation-provider v-slot="{ errors }" slim rules="required">
+                            <v-combobox
+                              v-model="studentDocument.data.studentEthnicity"
                               rounded
-                              dark
-                              depressed
-                              v-bind="attrs"
-                              @click="dialogApply = true"
-                              v-on="on"
-                              >Apply</v-btn
+                              :items="ethnicityCulture"
+                              :error-messages="errors"
+                              prepend-icon="mdi-account-group"
+                              label="Ethnicity & Culture"
+                              multiple
+                              small-chips
+                              hide-details
+                              outlined
+                              class="ma-2"
                             >
-                          </template>
+                              <template v-slot:no-data>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>
+                                      Press <kbd>enter</kbd> to add reward
+                                      <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                                    </v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </template>
+                              <template v-slot:selection="{ attrs, item, parent, selected }">
+                                <v-chip
+                                  v-bind="attrs"
+                                  :input-value="selected"
+                                  label
+                                  small
+                                  @click="parent.selectItem(item)"
+                                >
+                                  <span class="">
+                                    {{ item }}
+                                  </span>
+                                  <v-icon small> mdi-close </v-icon>
+                                </v-chip>
+                              </template>
+                            </v-combobox>
+                          </validation-provider>
+
+                          <validation-provider v-slot="{ errors }" slim>
+                            <v-combobox
+                              v-model="studentDocument.data.studentFollowingOptions"
+                              rounded
+                              :items="eligibilityOptions"
+                              :search-input="eligibilitySearch"
+                              :error-messages="errors"
+                              prepend-icon="mdi-check-box-multiple-outline"
+                              label="Do you have any of the following?"
+                              multiple
+                              small-chips
+                              hide-details
+                              outlined
+                              class="ma-2"
+                            >
+                              <template v-slot:no-data>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>
+                                      Press <kbd>enter</kbd> to add reward
+                                      <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                                    </v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </template>
+                              <template v-slot:selection="{ attrs, item, parent, selected }">
+                                <v-chip
+                                  v-bind="attrs"
+                                  :input-value="selected"
+                                  label
+                                  small
+                                  @click="parent.selectItem(item)"
+                                >
+                                  <span class="">
+                                    {{ item }}
+                                  </span>
+                                  <v-icon small> mdi-close </v-icon>
+                                </v-chip>
+                              </template>
+                            </v-combobox>
+                          </validation-provider>
+
+                          <v-text-field
+                            v-model="studentDocument.data.learntPilotcity"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-telegram"
+                            class="ma-2"
+                            rounded
+                            label="How did you hear about PilotCity?"
+                            hide-details
+                            outlined
+                          ></v-text-field>
+                          <v-btn
+                            class="mx-auto"
+                            style="width: 100%"
+                            color="red"
+                            x-large
+                            rounded
+                            :dark="applyForSponsorshipValid"
+                            depressed
+                            :disabled="!applyForSponsorshipValid"
+                            @click="applyForSponsorship"
+                            >Apply</v-btn
+                          >
+                        </v-form>
+                        <v-dialog v-model="dialogApply" persistent max-width="500px">
                           <v-card>
                             <v-card-title>
                               <v-container class="d-flex flex-column justify-center">
@@ -636,10 +636,24 @@
                             <v-divider></v-divider>
                             <v-container>
                               <div class="justify-center flex-column d-flex mt-3 mb-3">
-                                <v-btn x-large rounded dark depressed class="ma-3">
+                                <v-btn
+                                  x-large
+                                  rounded
+                                  dark
+                                  depressed
+                                  class="ma-3"
+                                  @click="$router.push({ name: 'portfolio' })"
+                                >
                                   Go to My Programs
                                 </v-btn>
-                                <v-btn x-large rounded outlined depressed class="ma-3">
+                                <v-btn
+                                  x-large
+                                  rounded
+                                  outlined
+                                  depressed
+                                  class="ma-3"
+                                  @click="$router.push({ name: 'explore' })"
+                                >
                                   Explore more programs
                                 </v-btn>
                               </div>
@@ -759,6 +773,9 @@ export default defineComponent({
       .findOne({ _id: props.userDoc.data._id })
       .then(doc => {
         birthdate.value = doc.date;
+        studentDocument.value.data.studentResidence = doc.home.city;
+        studentDocument.value.data.studentSchool = doc.school.name;
+        studentDocument.value.data.studentEthnicity = doc.ethnicity;
       });
 
     const phoneNumber = ref(props.userDoc.data.phoneNumber);
@@ -834,7 +851,33 @@ export default defineComponent({
         .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
     };
     const accessSkills = ref(studentDocument.value.data.accessSkills || []);
+    const dialogApply = ref(false);
+    const applyForSponsorship = async () => {
+      const data = {
+        participant_id: props.userDoc.data._id,
+        program_id: programDoc.value.data._id,
+        city: studentDocument.value.data.studentResidence,
+        school: studentDocument.value.data.studentSchool,
+        ethnicityCulture: studentDocument.value.data.studentEthnicity,
+        qualifications: studentDocument.value.data.studentFollowingOptions,
+        referredBy: studentDocument.value.data.learntPilotcity,
+        phoneNumber: phoneNumber.value,
+        birthday: birthdate.value,
+        rewards: studentDocument.value.data.rewards,
+        accessSkills: accessSkills.value,
+        studentLocation: studentDocument.value.data.studentLocation,
+        status: 'pending'
+      };
+      await props.db.collection('SponsorRequest').insertOne(data);
+      dialogApply.value = true;
+    };
+    const rules = ref({
+      required: value => !!value || 'Required.'
+    });
     return {
+      rules,
+      applyForSponsorship,
+      applyForSponsorshipValid: false,
       accessSkills,
       phoneNumber,
       birthdate,
@@ -873,7 +916,7 @@ export default defineComponent({
       dialog3: false,
       dialog5: false,
       dialog6: false,
-      dialogApply: false,
+      dialogApply,
       eligibilityOptions: [
         'I receive Free or Reduced School Lunch',
         'I live without my parents',
