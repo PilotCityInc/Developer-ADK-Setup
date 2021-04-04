@@ -7,7 +7,7 @@
       </v-btn>
     </div> -->
     <div class="module__navbar">
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage != 'preview' && userType === 'organizer'"
         class="module__navbar-button"
         dark
@@ -27,7 +27,7 @@
         color="green"
         @click="currentPage = 'setup'"
         >Student View</v-btn
-      >
+      > -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
