@@ -3,11 +3,7 @@
   "license": "MIT",
   "main": "/dist/index.ts",
   "name": "developer-adk-setup",
-<<<<<<< HEAD
-  "version": "1.0.38",
-=======
-  "version": "1.0.42",
->>>>>>> 4b546f567df823f86a30e25cd572ecbfffc31205
+  "version": "1.0.43",
   "description": "PilotCity Development Kit Template for creating your own Program Activities",
   "repository": {
     "type": "git",
