@@ -46,10 +46,11 @@
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
         </span>
-        <v-radio-group v-model="studentDocument.rewardsTest" hide-details>
+        <v-radio-group v-model="studentDocument.data.rewards" hide-details>
           <v-radio
             v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
             label="Yes"
+            value="yes"
           ></v-radio>
           <v-radio
             v-if="
@@ -57,6 +58,7 @@
               programDoc.data.rewards.length === 1
             "
             label="Yes"
+            value="yes"
           ></v-radio>
 
           <v-radio
@@ -77,6 +79,7 @@
               programDoc.data.rewards[0] === 'Paid Work Experience' &&
               programDoc.data.rewards.length === 1
             "
+            value="paid only"
           >
             <template v-slot:label>
               <div>
@@ -91,10 +94,11 @@
               programDoc.data.rewards.length === 1
             "
             label="Paid Only"
+            value="paid only"
             disabled
           >
           </v-radio>
-          <v-radio v-else>
+          <v-radio v-else value="paid only">
             <template v-slot:label>
               <div>Paid Only</div>
             </template>
@@ -117,8 +121,9 @@
           >
             <validation-provider v-slot="{ errors }" rules="required">
               <v-checkbox
-                v-model="studentDocument.accessSkills[requiredSkills]"
-                :value="true"
+                v-model="accessSkills"
+                multiple
+                :value="requiredSkills"
                 :label="requiredSkills"
                 :error-messages="errors"
                 required
@@ -137,7 +142,7 @@
           <span class="module-default__question-title"
             >Do you live or work in any of the priority jurisdictions?
           </span>
-          <v-radio-group v-model="studentDocument.studentLocation" hide-details
+          <v-radio-group v-model="studentDocument.data.studentLocation" hide-details
             ><v-radio
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
@@ -727,8 +732,8 @@ export default defineComponent({
     const programDoc = getModMongoDoc(props, ctx.emit);
 
     const initSetupprogram = {
-      accessSkills: {},
-      rewardstest: [],
+      accessSkills: [],
+      rewards: [],
       studentLocation: [],
       studentResidence: '',
       studentSchool: '',
@@ -737,8 +742,17 @@ export default defineComponent({
       learntPilotcity: ''
     };
 
-    const studentDoc = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
-    const studentDocument = ref(studentDoc.value);
+    const studentDocument = getModMongoDoc(
+      props,
+      ctx.emit,
+      {
+        data: {
+          ...initSetupprogram
+        }
+      },
+      'studentDoc',
+      'inputStudentDoc'
+    );
     const birthdate = ref('');
     props.db
       .collection('StudentPortfolio')
@@ -755,29 +769,27 @@ export default defineComponent({
       });
     }
     const verificationCode = ref('');
-    function verifyPhoneNumber() {
-      return new Promise(async (resolve, reject) => {
-        const resp = await axios.post(
-          'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
-          {
-            to: phoneNumber.value,
-            code: verificationCode.value,
-            userID: props.userDoc.data._id.toString()
-          }
-        );
-        if (resp.data.status === 'error')
-          reject(new Error('Verification failed. Please try again.'));
-        if (resp.data.status === 'success') {
-          verifyNumberDialog.value = false;
-          props.db
-            .collection('User')
-            .findOneAndUpdate(
-              { _id: props.userDoc.data._id },
-              { $set: { phoneNumber: phoneNumber.value } }
-            );
-          resolve(true);
+    async function verifyPhoneNumber() {
+      const resp = await axios.post(
+        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
+        {
+          to: phoneNumber.value,
+          code: verificationCode.value,
+          userID: props.userDoc.data._id.toString()
         }
-      });
+      );
+      if (resp.data.status === 'error') throw new Error('Verification failed. Please try again.');
+      else {
+        // (resp.data.status === 'success')
+        verifyNumberDialog.value = false;
+        props.db
+          .collection('User')
+          .findOneAndUpdate(
+            { _id: props.userDoc.data._id },
+            { $set: { phoneNumber: phoneNumber.value } }
+          );
+        return true;
+      }
     }
 
     programDoc.value.data.requiredSkills.forEach((skill: string) => {
@@ -795,7 +807,7 @@ export default defineComponent({
             },
             { $group: { _id: null, n: { $sum: 1 } } }
           ])
-          .then(val => val[0].n)
+          .then(val => (val[0] ? val[0].n : 0))
       )
     };
     getTokens.process();
@@ -809,7 +821,6 @@ export default defineComponent({
     };
     const sponsorshipLink = ref('');
     const useClaimLink = async () => {
-      console.log('running');
       return props.mongoUser.callFunction(
         'claimLink',
         props.userDoc.data._id,
@@ -822,18 +833,27 @@ export default defineComponent({
         .collection('StudentPortfolio')
         .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
     };
+    const accessSkills = ref(studentDocument.value.data.accessSkills || []);
     return {
+      accessSkills,
       phoneNumber,
       birthdate,
       programDoc,
       saveBirthday,
       verifyNumberDialog,
-      initSetupprogram,
       sendVerification,
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
-      ...loading(studentDocument.value.update, 'Saved', 'Something went wrong, try again later'),
+      ...loading(async () => {
+        studentDocument.value.data.accessSkills = accessSkills.value;
+        await studentDocument.value.update();
+      }, 'Saved'),
       studentUseToken: {
-        ...loading(studentUseToken, "You've been added to this program!")
+        ...loading(async () => {
+          await studentUseToken();
+          studentDocument.value.data.accessSkills = accessSkills.value;
+          console.log(accessSkills.value);
+          await studentDocument.value.update();
+        }, "You've been added to this program!")
       },
       studentDocument,
       verificationCode,
