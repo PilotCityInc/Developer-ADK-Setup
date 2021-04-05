@@ -288,9 +288,9 @@
       </div>
 
       <div class="module-default__license-button mt-12">
-        <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
+        <!-- <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
           >Save</v-btn
-        >
+        > -->
 
         <v-dialog v-model="dialog" persistent max-width="400px">
           <template v-slot:activator="{ on, attrs }">
