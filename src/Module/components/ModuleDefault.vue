@@ -855,6 +855,8 @@ export default defineComponent({
     const applyForSponsorship = async () => {
       const data = {
         participant_id: props.userDoc.data._id,
+        firstName: props.userDoc.data.firstName,
+        lastName: props.userDoc.data.lastName,
         program_id: programDoc.value.data._id,
         city: studentDocument.value.data.studentResidence,
         school: studentDocument.value.data.studentSchool,
