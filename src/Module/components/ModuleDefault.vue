@@ -232,8 +232,7 @@
                   :disabled="phoneNumber.length !== 14"
                   v-on="on"
                   @click="sendVerification"
-                  ><v-icon v-if="userDoc.data.phoneVerified" left>mdi-check-bold</v-icon
-                  >Verify</v-btn
+                  ><v-icon v-if="phoneVerified" left>mdi-check-bold</v-icon>Verify</v-btn
                 >
               </template>
               <v-card>
@@ -309,9 +308,9 @@
               v-bind="attrs"
               class="ml-2"
               x-large
-              :dark="checkoutFormCompleted && !studentDoc._id"
+              :dark="enableProgramCheckout && !studentDoc._id"
               depressed
-              :disabled="!checkoutFormCompleted || studentDoc._id"
+              :disabled="!enableProgramCheckout || studentDoc._id"
               v-on="on"
               >Program Checkout</v-btn
             >
@@ -806,6 +805,7 @@ export default defineComponent({
         });
 
     const phoneNumber = ref(props.userDoc.data.phoneNumber);
+    const phoneVerified = ref(!!props.userDoc.data.phoneVerified);
     const verifyNumberDialog = ref(false);
     function sendVerification() {
       axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
@@ -824,8 +824,8 @@ export default defineComponent({
       );
       if (resp.data.status === 'error') throw new Error('Verification failed. Please try again.');
       else {
-        // (resp.data.status === 'success')
         verifyNumberDialog.value = false;
+        phoneVerified.value = true;
         props.db
           .collection('User')
           .findOneAndUpdate(
@@ -905,13 +905,19 @@ export default defineComponent({
       allSkillsSelected: value =>
         (value && value.length === programDoc.value.data.requiredSkills.length) || 'Required.'
     });
+    const checkoutFormCompleted = ref(false);
+    const enableProgramCheckout = computed(
+      () => checkoutFormCompleted.value && phoneVerified.value
+    );
     return {
-      checkoutFormCompleted: false,
+      checkoutFormCompleted,
+      enableProgramCheckout,
       rules,
       applyForSponsorship,
       applyForSponsorshipValid: false,
       accessSkills,
       phoneNumber,
+      phoneVerified,
       birthdate,
       programDoc,
       saveBirthday,
