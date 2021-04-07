@@ -71,6 +71,7 @@
                 programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
                 programDoc.data.rewards.length === 1
               "
+              value="yes"
             >
               <template v-slot:label>
                 <div>
@@ -231,6 +232,7 @@
                   :disabled="phoneNumber.length !== 14"
                   v-on="on"
                   @click="sendVerification"
+                  ><v-icon v-if="userDoc.data.phoneVerified" left>mdi-check-bold</v-icon
                   >Verify</v-btn
                 >
               </template>
