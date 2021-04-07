@@ -232,7 +232,7 @@
                   :disabled="phoneNumber.length !== 14"
                   v-on="on"
                   @click="sendVerification"
-                  ><v-icon v-if="phoneVerified" left>mdi-check-bold</v-icon>Verify</v-btn
+                  ><v-icon color="green" v-if="phoneVerified" left>mdi-check-bold</v-icon>Verify</v-btn
                 >
               </template>
               <v-card>
