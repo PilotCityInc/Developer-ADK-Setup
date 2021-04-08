@@ -43,7 +43,6 @@
         stream
       />
       <v-form v-model="checkoutFormCompleted">
-        <div class="module-edit__container">
           <span class="module-default__question-title mt-12">
             Are you open to winning unpaid or paid work experiences?
           </span>
@@ -295,7 +294,6 @@
               </v-card>
             </v-dialog>
           </div>
-        </div>
       </v-form>
       <div class="module-default__license-button mt-12">
         <!-- <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
