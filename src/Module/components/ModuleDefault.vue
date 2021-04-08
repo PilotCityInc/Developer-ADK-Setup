@@ -304,7 +304,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               v-bind="attrs"
-              class="ml-2"
+              class="ml-2 font-weight-black"
               x-large
               :dark="enableProgramCheckout && !studentDoc._id"
               depressed
