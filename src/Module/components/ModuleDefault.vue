@@ -42,7 +42,7 @@
         buffer-value="100"
         stream
       />
-      <v-form v-model="checkoutFormCompleted">
+      <v-form v-model="checkoutFormCompleted" class="mt-12">
           <span class="module-default__question-title mt-12">
             Are you open to winning unpaid or paid work experiences?
           </span>
