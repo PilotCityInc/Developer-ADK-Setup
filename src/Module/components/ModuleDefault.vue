@@ -362,7 +362,12 @@
                           x-large
                           dark
                           depressed
-                          @click="studentUseToken.process"
+                          @click="
+                            async () => {
+                              await studentUseToken.process();
+                              await process();
+                            }
+                          "
                           >Yes</v-btn
                         >
                         <v-progress-circular
