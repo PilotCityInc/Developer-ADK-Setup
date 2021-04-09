@@ -43,257 +43,258 @@
         stream
       />
       <v-form v-model="checkoutFormCompleted" class="mt-12">
-          <span class="module-default__question-title mt-12">
-            Are you open to winning unpaid or paid work experiences?
+        <span class="module-default__question-title mt-12">
+          Are you open to winning unpaid or paid work experiences?
+        </span>
+        <v-radio-group
+          v-model="studentDocument.data.rewards"
+          hide-details
+          :rules="[rules.required]"
+        >
+          <v-radio
+            v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
+            label="Yes"
+            value="yes"
+          ></v-radio>
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Paid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            label="Yes"
+            value="yes"
+          ></v-radio>
+
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            value="yes"
+          >
+            <template v-slot:label>
+              <div>
+                Yes
+                <strong class="module-default__required ml-2"> REQUIRED</strong>
+              </div>
+            </template></v-radio
+          >
+          <v-radio
+            v-if="
+              programDoc.data.rewards[0] === 'Paid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            value="paid only"
+          >
+            <template v-slot:label>
+              <div>
+                Paid Only
+                <strong class="module-default__required ml-2"></strong>
+              </div>
+            </template>
+          </v-radio>
+          <v-radio
+            v-else-if="
+              programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
+              programDoc.data.rewards.length === 1
+            "
+            label="Paid Only"
+            value="paid only"
+            disabled
+          >
+          </v-radio>
+          <v-radio v-else value="paid only">
+            <template v-slot:label>
+              <div>Paid Only</div>
+            </template>
+          </v-radio>
+        </v-radio-group>
+        <!-- </div> -->
+
+        <br />
+        <br />
+
+        <!-- SKILLS REQUIRED TITLE -->
+        <div v-if="programDoc.data.requiredSkills.length !== 0">
+          <span class="module-default__question-title"
+            >Do you know, can learn or have access to the following items?
+          </span>
+          <!-- SKILLS REQUIRED 1 -->
+          <div
+            v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
+            :key="itemIndex"
+          >
+            <validation-provider v-slot="{ errors }" rules="required">
+              <v-checkbox
+                v-model="accessSkills"
+                multiple
+                :value="requiredSkills"
+                :label="requiredSkills"
+                :error-messages="errors"
+                :rules="[rules.allSkillsSelected]"
+                required
+              >
+                {{ requiredSkills }}
+              </v-checkbox>
+            </validation-provider>
+          </div>
+
+          <br />
+          <br />
+        </div>
+
+        <!-- SKILLS REQUIRED TITLE -->
+        <div v-if="programDoc.data.requiredResidency.length !== 0">
+          <span class="module-default__question-title"
+            >Do you live or work in any of the priority jurisdictions?
           </span>
           <v-radio-group
-            v-model="studentDocument.data.rewards"
+            v-model="studentDocument.data.studentLocation"
             hide-details
             :rules="[rules.required]"
-          >
-            <v-radio
-              v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
-              label="Yes"
-              value="yes"
-            ></v-radio>
-            <v-radio
-              v-if="
-                programDoc.data.rewards[0] === 'Paid Work Experience' &&
-                programDoc.data.rewards.length === 1
-              "
-              label="Yes"
-              value="yes"
-            ></v-radio>
-
-            <v-radio
-              v-if="
-                programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
-                programDoc.data.rewards.length === 1
-              "
-              value="yes"
-            >
-              <template v-slot:label>
-                <div>
-                  Yes
-                  <strong class="module-default__required ml-2"> REQUIRED</strong>
-                </div>
-              </template></v-radio
-            >
-            <v-radio
-              v-if="
-                programDoc.data.rewards[0] === 'Paid Work Experience' &&
-                programDoc.data.rewards.length === 1
-              "
-              value="paid only"
-            >
-              <template v-slot:label>
-                <div>
-                  Paid Only
-                  <strong class="module-default__required ml-2"></strong>
-                </div>
-              </template>
-            </v-radio>
-            <v-radio
-              v-else-if="
-                programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
-                programDoc.data.rewards.length === 1
-              "
-              label="Paid Only"
-              value="paid only"
-              disabled
-            >
-            </v-radio>
-            <v-radio v-else value="paid only">
-              <template v-slot:label>
-                <div>Paid Only</div>
-              </template>
-            </v-radio>
-          </v-radio-group>
-          <!-- </div> -->
-
-          <br />
-          <br />
-
-          <!-- SKILLS REQUIRED TITLE -->
-          <div v-if="programDoc.data.requiredSkills.length !== 0">
-            <span class="module-default__question-title"
-              >Do you know, can learn or have access to the following items?
-            </span>
-            <!-- SKILLS REQUIRED 1 -->
-            <div
-              v-for="(requiredSkills, itemIndex) in programDoc.data.requiredSkills"
+            ><v-radio
+              v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
-            >
-              <validation-provider v-slot="{ errors }" rules="required">
-                <v-checkbox
-                  v-model="accessSkills"
-                  multiple
-                  :value="requiredSkills"
-                  :label="requiredSkills"
-                  :error-messages="errors"
-                  :rules="[rules.allSkillsSelected]"
-                  required
-                >
-                  {{ requiredSkills }}
-                </v-checkbox>
-              </validation-provider>
-            </div>
+              :label="requiredResidency"
+              :value="requiredResidency"
+            ></v-radio
+            ><v-radio label="None of the above"></v-radio
+          ></v-radio-group>
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
 
-            <br />
-            <br />
-          </div>
-
-          <!-- SKILLS REQUIRED TITLE -->
-          <div v-if="programDoc.data.requiredResidency.length !== 0">
-            <span class="module-default__question-title"
-              >Do you live or work in any of the priority jurisdictions?
-            </span>
-            <v-radio-group
-              v-model="studentDocument.data.studentLocation"
-              hide-details
-              :rules="[rules.required]"
-              ><v-radio
-                v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
-                :key="itemIndex"
-                :label="requiredResidency"
-                :value="requiredResidency"
-              ></v-radio
-              ><v-radio label="None of the above"></v-radio
-            ></v-radio-group>
-            <br />
-            <br />
-            <br />
-            <br />
-          </div>
-
-          <v-menu
-            ref="menu"
-            v-model="birthdayMenu"
-            :value="false"
-            transition="scale-transition"
-            :close-on-content-click="false"
-            offset-y
-            min-width="290px"
-            class="mt-12 mb-5"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <validation-provider v-slot="{ errors }" rules="required">
-                <v-text-field
-                  v-model="birthdate"
-                  rounded
-                  prepend-icon="mdi-cake-variant"
-                  :error-messages="errors"
-                  label="Confirm your birthdate"
-                  outlined
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </validation-provider>
-            </template>
-            <v-date-picker
-              ref="picker"
-              v-model="birthdate"
-              max="2008-01-01"
-              min="1992-01-01"
-              @input="
-                birthdayMenu = false;
-                saveBirthday($event);
-              "
-              @change="save"
-            ></v-date-picker>
-          </v-menu>
-
-          <div class="d-flex flex-row mt-5 mb-5">
-            <!-- MOBILE PHONE NUMBER VERIFICATION -->
-            <validation-provider v-slot="{ errors }" slim rules="required">
+        <v-menu
+          ref="menu"
+          v-model="birthdayMenu"
+          :value="false"
+          transition="scale-transition"
+          :close-on-content-click="false"
+          offset-y
+          min-width="290px"
+          class="mt-12 mb-5"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <validation-provider v-slot="{ errors }" rules="required">
               <v-text-field
-                v-model="phoneNumber"
-                v-mask="'(###) ###-####'"
-                prepend-icon="mdi-cellphone-iphone"
-                outlined
+                v-model="birthdate"
                 rounded
-                prefix="+1 "
+                prepend-icon="mdi-cake-variant"
                 :error-messages="errors"
-                label="Confirm mobile phone number"
+                label="Confirm your birthdate"
+                outlined
+                readonly
+                v-bind="attrs"
+                v-on="on"
               ></v-text-field>
             </validation-provider>
+          </template>
+          <v-date-picker
+            ref="picker"
+            v-model="birthdate"
+            max="2008-01-01"
+            min="1992-01-01"
+            @input="
+              birthdayMenu = false;
+              saveBirthday($event);
+            "
+            @change="save"
+          ></v-date-picker>
+        </v-menu>
 
-            <v-dialog v-model="verifyNumberDialog" persistent max-width="375px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  rounded
-                  class="ml-3"
-                  v-bind="attrs"
-                  outlined
-                  x-large
-                  depressed
-                  :disabled="phoneNumber.length !== 14"
-                  v-on="on"
-                  @click="sendVerification"
-                  ><v-icon color="green" v-if="phoneVerified" left>mdi-check-bold</v-icon>Verify</v-btn
-                >
-              </template>
-              <v-card>
-                <v-card-title class="d-flex flex-column">
-                  <div class="d-flex justify-center">
-                    <v-tooltip top color="black">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn class="" v-bind="attrs" icon v-on="on" @click="sendVerification"
-                          ><v-icon>mdi-refresh</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Resend Code</span>
-                      <!-- <span>Expand</span> -->
-                    </v-tooltip>
-                  </div>
+        <div class="d-flex flex-row mt-5 mb-5">
+          <!-- MOBILE PHONE NUMBER VERIFICATION -->
+          <validation-provider v-slot="{ errors }" slim rules="required">
+            <v-text-field
+              v-model="phoneNumber"
+              v-mask="'(###) ###-####'"
+              prepend-icon="mdi-cellphone-iphone"
+              outlined
+              rounded
+              prefix="+1 "
+              :error-messages="errors"
+              label="Confirm mobile phone number"
+            ></v-text-field>
+          </validation-provider>
 
-                  <div class="overline font-weight-bold">Enter text verification code sent</div>
-                </v-card-title>
-
-                <v-divider></v-divider>
-
-                <v-container class="d-flex justify-center">
-                  <div class="d-flex flex-column justify-center align-center">
-                    <v-text-field
-                      v-model="verificationCode"
-                      class="justify-center module-default__sms-verification ma-2"
-                      x-large
-                      rounded
-                      outlined
-                      hide-details
-                    ></v-text-field>
-                    <v-btn
-                      class="ma-2"
-                      x-large
-                      dark
-                      rounded
-                      depressed
-                      @click="verifyPhoneNumber.process()"
-                      >Verify</v-btn
-                    >
-                    <v-progress-circular
-                      v-if="verifyPhoneNumber.loading.value"
-                      indeterminate
-                      color="primary"
-                    ></v-progress-circular>
-                    <v-alert
-                      v-if="verifyPhoneNumber.success.value || verifyPhoneNumber.error.value"
-                      class="mt-3"
-                      :type="verifyPhoneNumber.success.value ? 'success' : 'error'"
-                      >{{ verifyPhoneNumber.message.value }}</v-alert
-                    >
-
-                    <div class="d-flex justify-center">
-                      <v-btn icon @click="verifyNumberDialog = false"
-                        ><v-icon>mdi-close</v-icon></v-btn
+          <v-dialog v-model="verifyNumberDialog" persistent max-width="375px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                rounded
+                class="ml-3"
+                v-bind="attrs"
+                outlined
+                x-large
+                depressed
+                :disabled="phoneNumber.length !== 14"
+                v-on="on"
+                @click="sendVerification"
+                ><v-icon v-if="phoneVerified" color="green" left>mdi-check-bold</v-icon
+                >Verify</v-btn
+              >
+            </template>
+            <v-card>
+              <v-card-title class="d-flex flex-column">
+                <div class="d-flex justify-center">
+                  <v-tooltip top color="black">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn class="" v-bind="attrs" icon v-on="on" @click="sendVerification"
+                        ><v-icon>mdi-refresh</v-icon></v-btn
                       >
-                    </div>
+                    </template>
+                    <span>Resend Code</span>
+                    <!-- <span>Expand</span> -->
+                  </v-tooltip>
+                </div>
+
+                <div class="overline font-weight-bold">Enter text verification code sent</div>
+              </v-card-title>
+
+              <v-divider></v-divider>
+
+              <v-container class="d-flex justify-center">
+                <div class="d-flex flex-column justify-center align-center">
+                  <v-text-field
+                    v-model="verificationCode"
+                    class="justify-center module-default__sms-verification ma-2"
+                    x-large
+                    rounded
+                    outlined
+                    hide-details
+                  ></v-text-field>
+                  <v-btn
+                    class="ma-2"
+                    x-large
+                    dark
+                    rounded
+                    depressed
+                    @click="verifyPhoneNumber.process()"
+                    >Verify</v-btn
+                  >
+                  <v-progress-circular
+                    v-if="verifyPhoneNumber.loading.value"
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                  <v-alert
+                    v-if="verifyPhoneNumber.success.value || verifyPhoneNumber.error.value"
+                    class="mt-3"
+                    :type="verifyPhoneNumber.success.value ? 'success' : 'error'"
+                    >{{ verifyPhoneNumber.message.value }}</v-alert
+                  >
+
+                  <div class="d-flex justify-center">
+                    <v-btn icon @click="verifyNumberDialog = false"
+                      ><v-icon>mdi-close</v-icon></v-btn
+                    >
                   </div>
-                </v-container>
-              </v-card>
-            </v-dialog>
-          </div>
+                </div>
+              </v-container>
+            </v-card>
+          </v-dialog>
+        </div>
       </v-form>
       <div class="module-default__license-button mt-12">
         <!-- <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
@@ -454,9 +455,10 @@
                           color="green"
                           x-large
                           rounded
-                          dark
+                          :dark="sponsorshipLink.length > 0"
                           depressed
                           class="ma-4"
+                          :disabled="!sponsorshipLink.length"
                           :loading="useClaimLink.loading.value"
                           @click="useClaimLink.process"
                           >Start Program</v-btn
@@ -464,7 +466,7 @@
                         <v-alert
                           v-if="useClaimLink.success.value || useClaimLink.error.value"
                           class="mt-3"
-                          :type="success ? 'success' : 'error'"
+                          :type="useClaimLink.success.value ? 'success' : 'error'"
                           >{{ useClaimLink.message.value }}</v-alert
                         >
                       </div>
@@ -864,12 +866,16 @@ export default defineComponent({
     };
     const sponsorshipLink = ref('');
     const useClaimLink = async () => {
-      return props.mongoUser.callFunction(
+      const resp = await props.mongoUser.callFunction(
         'claimLink',
         props.userDoc.data._id,
-        sponsorshipLink.value,
+        sponsorshipLink.value.split('/').pop(),
         programDoc.value.data._id.toString()
       );
+      if (resp.status === 'error')
+        throw new Error(`Please try again. Error code: ${resp.errorCode}`);
+      ctx.emit('usedToken');
+      ctx.emit('nextPage');
     };
     const saveBirthday = (birthday: string) => {
       props.db
