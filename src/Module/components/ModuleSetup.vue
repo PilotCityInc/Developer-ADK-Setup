@@ -366,12 +366,13 @@
       </div>
       <div class="module-setup__license-button mt-12">
         <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
-        <v-btn class="mr-2" x-large outlined depressed :loading="saveLoading" @click="saveProgram"
+        <v-btn rounded class="mr-2" x-large outlined depressed :loading="saveLoading" @click="saveProgram"
           >Save</v-btn
         >
         <v-btn
           class="ml-2"
           x-large
+          rounded
           :dark="!invalid"
           depressed
           :disabled="invalid"
