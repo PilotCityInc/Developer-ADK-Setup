@@ -384,7 +384,7 @@
           v-if="status.length"
           dense
           class="mt-3 white--text presets__alert"
-          :type="status.includes('Saved') ? 'green' : 'red'"
+          :type="status.includes('Saved') ? 'green' : 'green'"
           >{{ status }}</v-alert
         >
       </div>
@@ -1095,7 +1095,7 @@ export default defineComponent({
       licenseData.licenseLoading = true;
       try {
         await props.licenseProgram();
-        status.value = 'Success, Checking out...';
+        status.value = 'Success, onward...';
       } catch (err) {
         status.value = `Uh of, try again later ${err}`;
       }
