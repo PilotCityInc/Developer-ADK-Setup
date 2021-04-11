@@ -710,13 +710,9 @@
           </v-card>
         </v-dialog>
       </div>
-      <v-alert
-        v-if="success || error"
-        dense
-        class="mt-3 white--text presets__alert"
-        :color="success ? 'green' : 'red'"
-        >{{ message }}</v-alert
-      >
+      <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
+        message
+      }}</v-alert>
     </v-container>
   </ValidationObserver>
 </template>
@@ -813,21 +809,17 @@ export default defineComponent({
     const phoneVerified = ref(!!props.userDoc.data.phoneVerified);
     const verifyNumberDialog = ref(false);
     function sendVerification() {
-      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: phoneNumber.value
-      });
+      props.mongoUser.callFunction('twilioSend', phoneNumber.value);
     }
     const verificationCode = ref('');
     async function verifyPhoneNumber() {
-      const resp = await axios.post(
-        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
-        {
-          to: phoneNumber.value,
-          code: verificationCode.value,
-          userID: props.userDoc.data._id.toString()
-        }
+      const resp = await props.mongoUser.callFunction(
+        'twilioVerify',
+        phoneNumber.value,
+        verificationCode.value,
+        props.userDoc.data._id.toString()
       );
-      if (resp.data.status === 'error') throw new Error('Verification failed, try again later');
+      if (resp.status === 'error') throw new Error('Verification failed. Please try again.');
       else {
         verifyNumberDialog.value = false;
         phoneVerified.value = true;
@@ -936,20 +928,20 @@ export default defineComponent({
       ...loading(async () => {
         studentDocument.value.data.accessSkills = accessSkills.value;
         await studentDocument.value.update();
-      }, 'Success'),
+      }, 'Saved'),
       studentUseToken: {
         ...loading(async () => {
           await studentUseToken();
           studentDocument.value.data.accessSkills = accessSkills.value;
           console.log(accessSkills.value);
           await studentDocument.value.update();
-        }, "Let's get this program started")
+        }, "You've been added to this program!")
       },
       studentDocument,
       verificationCode,
       sponsorshipLink,
       useClaimLink: {
-        ...loading(useClaimLink, 'You are successfully sponsored')
+        ...loading(useClaimLink, 'Successfully retrieved token from link')
       },
       getTokens,
       birthdayMenu: false,
