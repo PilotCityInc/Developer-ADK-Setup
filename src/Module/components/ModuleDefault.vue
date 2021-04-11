@@ -465,7 +465,8 @@
                         >
                         <v-alert
                           v-if="useClaimLink.success.value || useClaimLink.error.value"
-                          class="mt-3"
+                          class="ma-4"
+                          dense
                           :type="useClaimLink.success.value ? 'success' : 'error'"
                           >{{ useClaimLink.message.value }}</v-alert
                         >
@@ -877,7 +878,7 @@ export default defineComponent({
         programDoc.value.data._id.toString()
       );
       if (resp.status === 'error')
-        throw new Error(`Please try again. Error code: ${resp.errorCode}`);
+        throw new Error(`This code is out of sponsorships, talk to sponsor (${resp.errorCode})`);
       ctx.emit('usedToken');
       ctx.emit('nextPage');
     };
