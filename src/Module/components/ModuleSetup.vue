@@ -382,8 +382,9 @@
         >
         <v-alert
           v-if="status.length"
-          class="mt-3"
-          :type="status.includes('Saved') ? 'success' : 'error'"
+          dense
+          class="mt-3 white--text presets__alert"
+          :type="status.includes('Saved') ? 'green' : 'red'"
           >{{ status }}</v-alert
         >
       </div>
