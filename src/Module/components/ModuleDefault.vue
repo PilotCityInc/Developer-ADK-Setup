@@ -415,7 +415,7 @@
                   ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
                 >
 
-                <v-dialog v-model="dialog3" persistent max-width="475px">
+                <v-dialog v-model="dialog3" persistent max-width="500px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       class="mt-2 mb-2"
