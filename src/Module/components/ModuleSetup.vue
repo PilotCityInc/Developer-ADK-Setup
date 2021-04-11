@@ -1067,10 +1067,10 @@ export default defineComponent({
       saveData.saveLoading = true;
       try {
         await programDoc.value.update();
-        status.value = 'Saved';
+        status.value = 'Success';
       } catch (err) {
         console.log(err);
-        status.value = `${'Something went wrong, try again later\n'}${err}`;
+        status.value = `${'Uh oh, try again later'}${err}`;
       }
       saveData.saveLoading = false;
     }
@@ -1094,9 +1094,9 @@ export default defineComponent({
       licenseData.licenseLoading = true;
       try {
         await props.licenseProgram();
-        status.value = 'Saved Successfully, redirecting to checkout';
+        status.value = 'Success, Checking out...';
       } catch (err) {
-        status.value = `Something went wrong, try again later\n ${err}`;
+        status.value = `Uh of, try again later ${err}`;
       }
       licenseData.licenseLoading = false;
     }

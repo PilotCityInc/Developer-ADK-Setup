@@ -710,9 +710,13 @@
           </v-card>
         </v-dialog>
       </div>
-      <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
-        message
-      }}</v-alert>
+      <v-alert
+        v-if="success || error"
+        dense
+        class="mt-3 white--text presets__alert"
+        :color="success ? 'green' : 'red'"
+        >{{ message }}</v-alert
+      >
     </v-container>
   </ValidationObserver>
 </template>
@@ -823,7 +827,7 @@ export default defineComponent({
           userID: props.userDoc.data._id.toString()
         }
       );
-      if (resp.data.status === 'error') throw new Error('Verification failed. Please try again.');
+      if (resp.data.status === 'error') throw new Error('Verification failed, try again later');
       else {
         verifyNumberDialog.value = false;
         phoneVerified.value = true;
@@ -932,20 +936,20 @@ export default defineComponent({
       ...loading(async () => {
         studentDocument.value.data.accessSkills = accessSkills.value;
         await studentDocument.value.update();
-      }, 'Saved'),
+      }, 'Success'),
       studentUseToken: {
         ...loading(async () => {
           await studentUseToken();
           studentDocument.value.data.accessSkills = accessSkills.value;
           console.log(accessSkills.value);
           await studentDocument.value.update();
-        }, "You've been added to this program!")
+        }, "Let's get this program started")
       },
       studentDocument,
       verificationCode,
       sponsorshipLink,
       useClaimLink: {
-        ...loading(useClaimLink, 'Successfully retrieved token from link')
+        ...loading(useClaimLink, 'You are successfully sponsored')
       },
       getTokens,
       birthdayMenu: false,

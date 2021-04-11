@@ -137,13 +137,13 @@ export default defineComponent({
     });
 
     if (props.userType === 'organizer') {
-      page.currentPage = 'setup';
+      page.currentPage = 'Setup';
     } else {
       page.currentPage = 'preview';
     }
 
     const moduleName = computed(() => {
-      if (page.currentPage === 'setup') return 'Setup Program';
+      if (page.currentPage === 'Setup') return 'Setup Program';
       return 'Start Program';
     });
     const getComponent = computed(() => {
