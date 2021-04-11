@@ -467,7 +467,7 @@
                           v-if="useClaimLink.success.value || useClaimLink.error.value"
                           class="ma-4"
                           dense
-                          :type="useClaimLink.success.value ? 'success' : 'error'"
+                          :type="useClaimLink.success.value ? 'green' : 'red'"
                           >{{ useClaimLink.message.value }}</v-alert
                         >
                       </div>
