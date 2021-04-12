@@ -1,39 +1,6 @@
 <template>
   <ValidationObserver>
     <v-container class="module-default pa-0 align-center">
-      <!-- <div class="module-default__instructions">
-      <v-expansion-panels v-model="showInstructions" class="module-default__instructions" flat>
-        <v-expansion-panel>
-          <v-expansion-panel-header
-            v-show="showInstructions"
-            hide-actions
-            class="pa-0"
-            @click="showInstructions = true"
-          >
-            <template v-slot="{ open }">
-              <v-scroll-y-transition hide-on-leave>
-                <div v-if="!open" class="d-flex flex-column justify-center">
-                  <v-icon color="grey lighten-2" class="d-flex justify-center">
-                    mdi-chevron-down
-                  </v-icon>
-                  <div color="grey lighten-2" class="module-default__collapse-title">
-                    INSTRUCTIONS
-                  </div>
-                </div>
-              </v-scroll-y-transition>
-            </template>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <Instruct readonly />
-            <div @click="showInstructions = true">
-              <div class="module-default__collapse-title">CLOSE</div>
-              <v-icon color="grey lighten-2" class="d-flex justify-center"> mdi-chevron-up </v-icon>
-            </div>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </div> -->
-
       <v-progress-linear
         class="mt-3"
         color="#dedede"
@@ -416,7 +383,12 @@
                   x-large
                   rounded
                   depressed
-                  @click="$router.push({ name: 'portfolio', params: { tab: 'payment' } })"
+                  @click="
+                    $router.push({
+                      name: 'portfolio',
+                      params: { tab: 'payment' }
+                    })
+                  "
                   ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
                 >
 
@@ -775,6 +747,10 @@ export default defineComponent({
     mongoUser: {
       required: true,
       type: Object as () => User
+    },
+    getStudentDoc: {
+      required: true,
+      type: Object as () => any
     }
   },
 
@@ -868,6 +844,7 @@ export default defineComponent({
         programId: programDoc.value.data._id
       });
       ctx.emit('usedToken');
+      await props.getStudentDoc();
       ctx.emit('nextPage');
     };
     const sponsorshipLink = ref('');
@@ -881,6 +858,7 @@ export default defineComponent({
       if (resp.status === 'error')
         throw new Error(`This code is out of sponsorships, talk to sponsor (${resp.errorCode})`);
       ctx.emit('usedToken');
+      await props.getStudentDoc();
       ctx.emit('nextPage');
     };
     const saveBirthday = (birthday: string) => {
@@ -937,12 +915,14 @@ export default defineComponent({
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(async () => {
         studentDocument.value.data.accessSkills = accessSkills.value;
+        await props.getStudentDoc();
         await props.studentDoc.update();
       }, 'Success'),
       studentUseToken: {
         ...loading(async () => {
           await studentUseToken();
           studentDocument.value.data.accessSkills = accessSkills.value;
+          await props.getStudentDoc();
           await props.studentDoc.update();
         }, "Let's get this program started")
       },
@@ -952,6 +932,7 @@ export default defineComponent({
       useClaimLink: {
         ...loading(async () => {
           await useClaimLink();
+          await props.getStudentDoc();
           await props.studentDoc.update();
         }, 'You are successfully sponsored')
       },

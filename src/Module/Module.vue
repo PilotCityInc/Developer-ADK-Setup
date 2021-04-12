@@ -58,6 +58,7 @@
             :user-doc="userDoc"
             :mongo-user="mongoUser"
             :user-type="userType"
+            :get-student-doc="getStudentDoc"
             @inputStudentDoc="studentDocument = $event"
             @nextPage="$emit('nextPage')"
             @usedToken="$emit('usedToken')"
@@ -122,6 +123,10 @@ export default defineComponent({
     mongoUser: {
       required: true,
       type: Object as () => User
+    },
+    getStudentDoc: {
+      required: true,
+      type: Object
     }
   },
   setup(props, ctx) {
