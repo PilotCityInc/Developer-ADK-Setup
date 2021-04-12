@@ -744,8 +744,7 @@ export default defineComponent({
       type: Object as () => User
     },
     getStudentDoc: {
-      required: true,
-      type: Object as () => any
+      required: true
     }
   },
 
