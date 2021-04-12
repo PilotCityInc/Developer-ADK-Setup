@@ -841,8 +841,10 @@ export default defineComponent({
           program_id: programDoc.value.data._id
         },
         {
-          ...studentDocument.value.data,
-          accessSkills: accessSkills.value
+          $set: {
+            ...studentDocument.value.data,
+            accessSkills: accessSkills.value
+          }
         }
       );
     };
