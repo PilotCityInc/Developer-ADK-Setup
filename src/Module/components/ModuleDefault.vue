@@ -841,7 +841,7 @@ export default defineComponent({
           program_id: programDoc.value.data._id
         },
         {
-          ...studentDocument.value,
+          ...studentDocument.value.data,
           accessSkills: accessSkills.value
         }
       );
