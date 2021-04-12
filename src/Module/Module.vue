@@ -7,7 +7,7 @@
       </v-btn>
     </div> -->
     <div class="module__navbar">
-      <v-btn
+      <!-- <v-btn
         v-if="currentPage != 'preview' && userType === 'organizer'"
         class="module__navbar-button"
         dark
@@ -27,7 +27,7 @@
         color="green"
         @click="currentPage = 'setup'"
         >Student View</v-btn
-      >
+      > -->
     </div>
     <div class="module__container" :style="{ 'border-color': getColor }">
       <div class="module__title">
@@ -137,13 +137,13 @@ export default defineComponent({
     });
 
     if (props.userType === 'organizer') {
-      page.currentPage = 'setup';
+      page.currentPage = 'Setup';
     } else {
       page.currentPage = 'preview';
     }
 
     const moduleName = computed(() => {
-      if (page.currentPage === 'setup') return 'Setup Program';
+      if (page.currentPage === 'Setup') return 'Setup Program';
       return 'Start Program';
     });
     const getComponent = computed(() => {

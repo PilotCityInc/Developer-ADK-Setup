@@ -42,11 +42,15 @@
         buffer-value="100"
         stream
       />
-      <div class="module-edit__container">
+      <v-form v-model="checkoutFormCompleted" class="mt-12">
         <span class="module-default__question-title mt-12">
           Are you open to winning unpaid or paid work experiences?
         </span>
-        <v-radio-group v-model="studentDocument.data.rewards" hide-details>
+        <v-radio-group
+          v-model="studentDocument.data.rewards"
+          hide-details
+          :rules="[rules.required]"
+        >
           <v-radio
             v-if="programDoc.data.rewards.length === 0 || programDoc.data.rewards.length === 2"
             label="Yes"
@@ -66,6 +70,7 @@
               programDoc.data.rewards[0] === 'Unpaid Work Experience' &&
               programDoc.data.rewards.length === 1
             "
+            value="yes"
           >
             <template v-slot:label>
               <div>
@@ -126,6 +131,7 @@
                 :value="requiredSkills"
                 :label="requiredSkills"
                 :error-messages="errors"
+                :rules="[rules.allSkillsSelected]"
                 required
               >
                 {{ requiredSkills }}
@@ -142,7 +148,10 @@
           <span class="module-default__question-title"
             >Do you live or work in any of the priority jurisdictions?
           </span>
-          <v-radio-group v-model="studentDocument.data.studentLocation" hide-details
+          <v-radio-group
+            v-model="studentDocument.data.studentLocation"
+            hide-details
+            :rules="[rules.required]"
             ><v-radio
               v-for="(requiredResidency, itemIndex) in programDoc.data.requiredResidency"
               :key="itemIndex"
@@ -222,6 +231,7 @@
                 :disabled="phoneNumber.length !== 14"
                 v-on="on"
                 @click="sendVerification"
+                ><v-icon v-if="phoneVerified" color="green" left>mdi-check-bold</v-icon
                 >Verify</v-btn
               >
             </template>
@@ -285,16 +295,23 @@
             </v-card>
           </v-dialog>
         </div>
-      </div>
-
+      </v-form>
       <div class="module-default__license-button mt-12">
-        <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
+        <!-- <v-btn v-if="studentDoc._id" class="mr-2" x-large outlined depressed @click="process()"
           >Save</v-btn
-        >
+        > -->
 
         <v-dialog v-model="dialog" persistent max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" class="ml-2" x-large dark depressed v-on="on"
+            <v-btn
+              v-bind="attrs"
+              class="ml-2 font-weight-bold"
+              x-large
+              rounded
+              :dark="enableProgramCheckout && !studentDoc._id"
+              depressed
+              :disabled="!enableProgramCheckout || studentDoc._id"
+              v-on="on"
               >Program Checkout</v-btn
             >
           </template>
@@ -322,8 +339,9 @@
                       class="mt-2 mb-2 font-weight-black"
                       x-large
                       rounded
-                      dark
+                      :dark="getTokens.message.value > 0"
                       depressed
+                      :disabled="getTokens.message.value === 0"
                       v-bind="attrs"
                       @click="dialog2 = true"
                       v-on="on"
@@ -391,11 +409,18 @@
                   </v-card>
                 </v-dialog>
 
-                <!-- <v-btn color="blue" class="mt-2 mb-2" outlined x-large rounded depressed
+                <v-btn
+                  color="blue"
+                  class="mt-2 mb-2"
+                  outlined
+                  x-large
+                  rounded
+                  depressed
+                  @click="$router.push({ name: 'portfolio', params: { tab: 'payment' } })"
                   ><v-icon left>mdi-cash-usd</v-icon>Buy 1 Token</v-btn
-                > -->
+                >
 
-                <v-dialog v-model="dialog3" persistent max-width="475px">
+                <v-dialog v-model="dialog3" persistent max-width="500px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       class="mt-2 mb-2"
@@ -435,17 +460,19 @@
                           color="green"
                           x-large
                           rounded
-                          dark
+                          :dark="sponsorshipLink.length > 0"
                           depressed
                           class="ma-4"
+                          :disabled="!sponsorshipLink.length"
                           :loading="useClaimLink.loading.value"
                           @click="useClaimLink.process"
                           >Start Program</v-btn
                         >
                         <v-alert
                           v-if="useClaimLink.success.value || useClaimLink.error.value"
-                          class="mt-3"
-                          :type="success ? 'success' : 'error'"
+                          class="ma-4"
+                          dense
+                          :type="useClaimLink.success.value ? 'green' : 'red'"
                           >{{ useClaimLink.message.value }}</v-alert
                         >
                       </div>
@@ -454,7 +481,7 @@
                 </v-dialog>
 
                 <v-dialog v-model="dialog6" persistent max-width="450px">
-                  <!-- <template v-slot:activator="{ on, attrs }">
+                  <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       class="mt-2 mb-2"
                       x-large
@@ -467,7 +494,7 @@
                       v-on="on"
                       ><v-icon left>mdi-trophy</v-icon>Get Sponsored</v-btn
                     >
-                  </template> -->
+                  </template>
                   <v-card>
                     <v-card-title><v-icon x-large color="red">mdi-trophy</v-icon></v-card-title>
                     <v-card-title>
@@ -482,17 +509,18 @@
 
                     <v-container>
                       <div class="d-flex justify-center flex-column">
-                        <v-text-field
-                          v-model="studentDocument.data.studentResidence"
-                          rules="required"
-                          prepend-icon="mdi-map-marker-radius"
-                          class="ma-2"
-                          rounded
-                          label="City of Residence"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-                        <!-- <v-text-field
+                        <v-form v-model="applyForSponsorshipValid">
+                          <v-text-field
+                            v-model="studentDocument.data.studentResidence"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-map-marker-radius"
+                            class="ma-2"
+                            rounded
+                            label="City of Residence"
+                            hide-details
+                            outlined
+                          ></v-text-field>
+                          <!-- <v-text-field
                         class="ma-2"
                         rounded
                         label="County"
@@ -506,127 +534,126 @@
                         hide-details
                         outlined
                       ></v-text-field> -->
-                        <v-text-field
-                          v-model="studentDocument.data.studentSchool"
-                          rules="required"
-                          prepend-icon="mdi-notebook"
-                          class="ma-2"
-                          rounded
-                          label="School"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-
-                        <validation-provider v-slot="{ errors }" slim rules="required">
-                          <v-combobox
-                            v-model="studentDocument.data.studentEthnicity"
+                          <v-text-field
+                            v-model="studentDocument.data.studentSchool"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-notebook"
+                            class="ma-2"
                             rounded
-                            :items="ethnicityCulture"
-                            :error-messages="errors"
-                            prepend-icon="mdi-account-group"
-                            label="Ethnicity & Culture"
-                            multiple
-                            small-chips
+                            label="School"
                             hide-details
                             outlined
-                            class="ma-2"
-                          >
-                            <template v-slot:no-data>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>
-                                    Press <kbd>enter</kbd> to add reward
-                                    <!-- <strong>{{ rewardSearch }}</strong
-                    >". -->
-                                  </v-list-item-title>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </template>
-                            <template v-slot:selection="{ attrs, item, parent, selected }">
-                              <v-chip
-                                v-bind="attrs"
-                                :input-value="selected"
-                                label
-                                small
-                                @click="parent.selectItem(item)"
-                              >
-                                <span class="">
-                                  {{ item }}
-                                </span>
-                                <v-icon small> mdi-close </v-icon>
-                              </v-chip>
-                            </template>
-                          </v-combobox>
-                        </validation-provider>
+                          ></v-text-field>
 
-                        <validation-provider v-slot="{ errors }" slim>
-                          <v-combobox
-                            v-model="studentDocument.data.studentFollowingOptions"
-                            rounded
-                            :items="eligibilityOptions"
-                            :search-input="eligibilitySearch"
-                            :error-messages="errors"
-                            prepend-icon="mdi-check-box-multiple-outline"
-                            label="Do you have any of the following?"
-                            multiple
-                            small-chips
-                            hide-details
-                            outlined
-                            class="ma-2"
-                          >
-                            <template v-slot:no-data>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>
-                                    Press <kbd>enter</kbd> to add reward
-                                    <!-- <strong>{{ rewardSearch }}</strong
-                    >". -->
-                                  </v-list-item-title>
-                                </v-list-item-content>
-                              </v-list-item>
-                            </template>
-                            <template v-slot:selection="{ attrs, item, parent, selected }">
-                              <v-chip
-                                v-bind="attrs"
-                                :input-value="selected"
-                                label
-                                small
-                                @click="parent.selectItem(item)"
-                              >
-                                <span class="">
-                                  {{ item }}
-                                </span>
-                                <v-icon small> mdi-close </v-icon>
-                              </v-chip>
-                            </template>
-                          </v-combobox>
-                        </validation-provider>
-
-                        <v-text-field
-                          v-model="studentDocument.data.learntPilotcity"
-                          rules="required"
-                          prepend-icon="mdi-telegram"
-                          class="ma-2"
-                          rounded
-                          label="How did you hear about PilotCity?"
-                          hide-details
-                          outlined
-                        ></v-text-field>
-                        <v-dialog v-model="dialogApply" persistent max-width="500px">
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                              class="ma-2"
-                              color="red"
-                              x-large
+                          <validation-provider v-slot="{ errors }" slim rules="required">
+                            <v-combobox
+                              v-model="studentDocument.data.studentEthnicity"
                               rounded
-                              dark
-                              depressed
-                              v-bind="attrs"
-                              @click="dialogApply = true"
-                              v-on="on"
-                              >Apply</v-btn
+                              :items="ethnicityCulture"
+                              :error-messages="errors"
+                              prepend-icon="mdi-account-group"
+                              label="Ethnicity & Culture"
+                              multiple
+                              small-chips
+                              hide-details
+                              outlined
+                              class="ma-2"
                             >
-                          </template>
+                              <template v-slot:no-data>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>
+                                      Press <kbd>enter</kbd> to add reward
+                                      <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                                    </v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </template>
+                              <template v-slot:selection="{ attrs, item, parent, selected }">
+                                <v-chip
+                                  v-bind="attrs"
+                                  :input-value="selected"
+                                  label
+                                  small
+                                  @click="parent.selectItem(item)"
+                                >
+                                  <span class="">
+                                    {{ item }}
+                                  </span>
+                                  <v-icon small> mdi-close </v-icon>
+                                </v-chip>
+                              </template>
+                            </v-combobox>
+                          </validation-provider>
+
+                          <validation-provider v-slot="{ errors }" slim>
+                            <v-combobox
+                              v-model="studentDocument.data.studentFollowingOptions"
+                              rounded
+                              :items="eligibilityOptions"
+                              :search-input="eligibilitySearch"
+                              :error-messages="errors"
+                              prepend-icon="mdi-check-box-multiple-outline"
+                              label="Do you have any of the following?"
+                              multiple
+                              small-chips
+                              hide-details
+                              outlined
+                              class="ma-2"
+                            >
+                              <template v-slot:no-data>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>
+                                      Press <kbd>enter</kbd> to add reward
+                                      <!-- <strong>{{ rewardSearch }}</strong
+                    >". -->
+                                    </v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </template>
+                              <template v-slot:selection="{ attrs, item, parent, selected }">
+                                <v-chip
+                                  v-bind="attrs"
+                                  :input-value="selected"
+                                  label
+                                  small
+                                  @click="parent.selectItem(item)"
+                                >
+                                  <span class="">
+                                    {{ item }}
+                                  </span>
+                                  <v-icon small> mdi-close </v-icon>
+                                </v-chip>
+                              </template>
+                            </v-combobox>
+                          </validation-provider>
+
+                          <v-text-field
+                            v-model="studentDocument.data.learntPilotcity"
+                            :rules="[rules.required]"
+                            prepend-icon="mdi-telegram"
+                            class="ma-2"
+                            rounded
+                            label="How did you hear about PilotCity?"
+                            hide-details
+                            outlined
+                          ></v-text-field>
+                          <v-btn
+                            class="mx-auto"
+                            style="width: 100%"
+                            color="red"
+                            x-large
+                            rounded
+                            :dark="applyForSponsorshipValid"
+                            depressed
+                            :disabled="!applyForSponsorshipValid"
+                            @click="applyForSponsorship"
+                            >Apply</v-btn
+                          >
+                        </v-form>
+                        <v-dialog v-model="dialogApply" persistent max-width="500px">
                           <v-card>
                             <v-card-title>
                               <v-container class="d-flex flex-column justify-center">
@@ -641,10 +668,24 @@
                             <v-divider></v-divider>
                             <v-container>
                               <div class="justify-center flex-column d-flex mt-3 mb-3">
-                                <v-btn x-large rounded dark depressed class="ma-3">
+                                <v-btn
+                                  x-large
+                                  rounded
+                                  dark
+                                  depressed
+                                  class="ma-3"
+                                  @click="$router.push({ name: 'portfolio' })"
+                                >
                                   Go to My Programs
                                 </v-btn>
-                                <v-btn x-large rounded outlined depressed class="ma-3">
+                                <v-btn
+                                  x-large
+                                  rounded
+                                  outlined
+                                  depressed
+                                  class="ma-3"
+                                  @click="$router.push({ name: 'explore' })"
+                                >
                                   Explore more programs
                                 </v-btn>
                               </div>
@@ -675,9 +716,13 @@
           </v-card>
         </v-dialog>
       </div>
-      <v-alert v-if="success || error" class="mt-3" :type="success ? 'success' : 'error'">{{
-        message
-      }}</v-alert>
+      <v-alert
+        v-if="success || error"
+        dense
+        class="mt-3 white--text presets__alert"
+        :color="success ? 'green' : 'red'"
+        >{{ message }}</v-alert
+      >
     </v-container>
   </ValidationObserver>
 </template>
@@ -759,34 +804,35 @@ export default defineComponent({
       'inputStudentDoc'
     );
     const birthdate = ref('');
-    props.db
-      .collection('StudentPortfolio')
-      .findOne({ _id: props.userDoc.data._id })
-      .then(doc => {
-        birthdate.value = doc.date;
-      });
+    if (props.db.collection)
+      props.db
+        .collection('StudentPortfolio')
+        .findOne({ _id: props.userDoc.data._id })
+        .then(doc => {
+          birthdate.value = doc.date;
+          studentDocument.value.data.studentResidence = doc.home.city;
+          studentDocument.value.data.studentSchool = doc.school.name;
+          studentDocument.value.data.studentEthnicity = doc.ethnicity;
+        });
 
     const phoneNumber = ref(props.userDoc.data.phoneNumber);
+    const phoneVerified = ref(!!props.userDoc.data.phoneVerified);
     const verifyNumberDialog = ref(false);
     function sendVerification() {
-      axios.post('https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/send', {
-        to: phoneNumber.value
-      });
+      props.mongoUser.callFunction('twilioSend', phoneNumber.value);
     }
     const verificationCode = ref('');
     async function verifyPhoneNumber() {
-      const resp = await axios.post(
-        'https://g2q3zhdkn6.execute-api.us-west-1.amazonaws.com/dev/v1/twilio/verify',
-        {
-          to: phoneNumber.value,
-          code: verificationCode.value,
-          userID: props.userDoc.data._id.toString()
-        }
+      const resp = await props.mongoUser.callFunction(
+        'twilioVerify',
+        phoneNumber.value,
+        verificationCode.value,
+        props.userDoc.data._id.toString()
       );
-      if (resp.data.status === 'error') throw new Error('Verification failed. Please try again.');
+      if (resp.status === 'error') throw new Error('Verification failed. Please try again.');
       else {
-        // (resp.data.status === 'success')
         verifyNumberDialog.value = false;
+        phoneVerified.value = true;
         props.db
           .collection('User')
           .findOneAndUpdate(
@@ -826,12 +872,16 @@ export default defineComponent({
     };
     const sponsorshipLink = ref('');
     const useClaimLink = async () => {
-      return props.mongoUser.callFunction(
+      const resp = await props.mongoUser.callFunction(
         'claimLink',
         props.userDoc.data._id,
-        sponsorshipLink.value,
+        sponsorshipLink.value.split('/').pop(),
         programDoc.value.data._id.toString()
       );
+      if (resp.status === 'error')
+        throw new Error(`This code is out of sponsorships, talk to sponsor (${resp.errorCode})`);
+      ctx.emit('usedToken');
+      ctx.emit('nextPage');
     };
     const saveBirthday = (birthday: string) => {
       props.db
@@ -839,9 +889,46 @@ export default defineComponent({
         .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
     };
     const accessSkills = ref(studentDocument.value.data.accessSkills || []);
+    const dialogApply = ref(false);
+    const applyForSponsorship = async () => {
+      const data = {
+        participant_id: props.userDoc.data._id,
+        firstName: props.userDoc.data.firstName,
+        lastName: props.userDoc.data.lastName,
+        program_id: programDoc.value.data._id,
+        city: studentDocument.value.data.studentResidence,
+        school: studentDocument.value.data.studentSchool,
+        ethnicityCulture: studentDocument.value.data.studentEthnicity,
+        qualifications: studentDocument.value.data.studentFollowingOptions,
+        referredBy: studentDocument.value.data.learntPilotcity,
+        phoneNumber: phoneNumber.value,
+        birthday: birthdate.value,
+        rewards: studentDocument.value.data.rewards,
+        accessSkills: accessSkills.value,
+        studentLocation: studentDocument.value.data.studentLocation,
+        status: 'pending'
+      };
+      await props.db.collection('SponsorRequest').insertOne(data);
+      dialogApply.value = true;
+    };
+    const rules = ref({
+      required: value => !!value || 'Required.',
+      allSkillsSelected: value =>
+        (value && value.length === programDoc.value.data.requiredSkills.length) || 'Required.'
+    });
+    const checkoutFormCompleted = ref(false);
+    const enableProgramCheckout = computed(
+      () => checkoutFormCompleted.value && phoneVerified.value
+    );
     return {
+      checkoutFormCompleted,
+      enableProgramCheckout,
+      rules,
+      applyForSponsorship,
+      applyForSponsorshipValid: false,
       accessSkills,
       phoneNumber,
+      phoneVerified,
       birthdate,
       programDoc,
       saveBirthday,
@@ -850,21 +937,23 @@ export default defineComponent({
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(async () => {
         studentDocument.value.data.accessSkills = accessSkills.value;
-        await studentDocument.value.update();
-      }, 'Saved'),
+        await props.studentDoc.update();
+      }, 'Success'),
       studentUseToken: {
         ...loading(async () => {
           await studentUseToken();
           studentDocument.value.data.accessSkills = accessSkills.value;
-          console.log(accessSkills.value);
-          await studentDocument.value.update();
-        }, "You've been added to this program!")
+          await props.studentDoc.update();
+        }, "Let's get this program started")
       },
       studentDocument,
       verificationCode,
       sponsorshipLink,
       useClaimLink: {
-        ...loading(useClaimLink, 'Successfully retrieved token from link')
+        ...loading(async () => {
+          await useClaimLink();
+          await props.studentDoc.update();
+        }, 'You are successfully sponsored')
       },
       getTokens,
       birthdayMenu: false,
@@ -878,7 +967,7 @@ export default defineComponent({
       dialog3: false,
       dialog5: false,
       dialog6: false,
-      dialogApply: false,
+      dialogApply,
       eligibilityOptions: [
         'I receive Free or Reduced School Lunch',
         'I live without my parents',

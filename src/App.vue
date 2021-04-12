@@ -29,6 +29,9 @@ export default Vue.extend({
   setup() {
     const programDocStub = ref({
       data: {
+        requiredSkills: ['a', 'b', 'c'],
+        rewards: [],
+        requiredResidency: ['adsf'],
         participants: [new ObjectId(1)],
         adks: [
           {
@@ -58,7 +61,7 @@ export default Vue.extend({
         _id: new ObjectId(1)
       }
     };
-    const userType = ref('organizer');
+    const userType = ref('participant');
     const licenseProgram = () => {};
     const mongoUser = {};
     return {

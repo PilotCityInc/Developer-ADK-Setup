@@ -366,12 +366,13 @@
       </div>
       <div class="module-setup__license-button mt-12">
         <!-- LINK LICENSE PROGRAM TO STRIPE WITH DISCOUNT CODE -->
-        <v-btn class="mr-2" x-large outlined depressed :loading="saveLoading" @click="saveProgram"
+        <v-btn rounded class="mr-2" x-large outlined depressed :loading="saveLoading" @click="saveProgram"
           >Save</v-btn
         >
         <v-btn
           class="ml-2"
           x-large
+          rounded
           :dark="!invalid"
           depressed
           :disabled="invalid"
@@ -381,8 +382,9 @@
         >
         <v-alert
           v-if="status.length"
-          class="mt-3"
-          :type="status.includes('Saved') ? 'success' : 'error'"
+          dense
+          class="mt-3 white--text presets__alert"
+          :type="status.includes('Saved') ? 'green' : 'green'"
           >{{ status }}</v-alert
         >
       </div>
@@ -1066,10 +1068,10 @@ export default defineComponent({
       saveData.saveLoading = true;
       try {
         await programDoc.value.update();
-        status.value = 'Saved';
+        status.value = 'Success';
       } catch (err) {
         console.log(err);
-        status.value = `${'Something went wrong, try again later\n'}${err}`;
+        status.value = `${'Uh oh, try again later'}${err}`;
       }
       saveData.saveLoading = false;
     }
@@ -1093,9 +1095,9 @@ export default defineComponent({
       licenseData.licenseLoading = true;
       try {
         await props.licenseProgram();
-        status.value = 'Saved Successfully, redirecting to checkout';
+        status.value = 'Success, onward...';
       } catch (err) {
-        status.value = `Something went wrong, try again later\n ${err}`;
+        status.value = `Uh of, try again later ${err}`;
       }
       licenseData.licenseLoading = false;
     }
