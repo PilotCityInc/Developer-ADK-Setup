@@ -125,8 +125,7 @@ export default defineComponent({
       type: Object as () => User
     },
     getStudentDoc: {
-      required: true,
-      type: Object
+      required: true
     }
   },
   setup(props, ctx) {
