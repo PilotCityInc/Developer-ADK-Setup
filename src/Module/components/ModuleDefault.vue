@@ -416,7 +416,7 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
-                          v-model.trim="i.sponsorshipLink"
+                          v-model.trim="sponsorshipLink"
                           class="ma-4"
                           rounded
                           hide-details
@@ -744,7 +744,8 @@ export default defineComponent({
       type: Object as () => User
     },
     getStudentDoc: {
-      required: true
+      required: true,
+      type: Object as () => any
     }
   },
 
@@ -832,30 +833,12 @@ export default defineComponent({
       )
     };
     getTokens.process();
-    const accessSkills = ref(studentDocument.value.data.accessSkills || []);
-
-    const saveProgram = () => {
-      return props.db.collection('Student').findOneAndUpdate(
-        {
-          participant_id: props.userDoc.data._id,
-          program_id: programDoc.value.data._id
-        },
-        {
-          $set: {
-            ...studentDocument.value.data,
-            accessSkills: accessSkills.value
-          }
-        }
-      );
-    };
-
     const studentUseToken = async () => {
       await props.mongoUser.callFunction('useToken', {
         participantId: props.userDoc.data._id,
         programId: programDoc.value.data._id
       });
       ctx.emit('usedToken');
-      await saveProgram();
       await props.getStudentDoc();
       ctx.emit('nextPage');
     };
@@ -870,7 +853,6 @@ export default defineComponent({
       if (resp.status === 'error')
         throw new Error(`This code is out of sponsorships, talk to sponsor (${resp.errorCode})`);
       ctx.emit('usedToken');
-      await saveProgram();
       await props.getStudentDoc();
       ctx.emit('nextPage');
     };
@@ -879,6 +861,7 @@ export default defineComponent({
         .collection('StudentPortfolio')
         .findOneAndUpdate({ _id: props.userDoc.data._id }, { $set: { date: birthday } });
     };
+    const accessSkills = ref(studentDocument.value.data.accessSkills || []);
     const dialogApply = ref(false);
     const applyForSponsorship = async () => {
       const data = {
@@ -927,7 +910,6 @@ export default defineComponent({
       verifyPhoneNumber: { ...loading(verifyPhoneNumber, 'Verified') },
       ...loading(async () => {
         studentDocument.value.data.accessSkills = accessSkills.value;
-        await saveProgram();
         await props.getStudentDoc();
         await props.studentDoc.update();
       }, 'Success'),
@@ -935,7 +917,6 @@ export default defineComponent({
         ...loading(async () => {
           await studentUseToken();
           studentDocument.value.data.accessSkills = accessSkills.value;
-          await saveProgram();
           await props.getStudentDoc();
           await props.studentDoc.update();
         }, "Let's get this program started")
@@ -946,7 +927,6 @@ export default defineComponent({
       useClaimLink: {
         ...loading(async () => {
           await useClaimLink();
-          await saveProgram();
           await props.getStudentDoc();
           await props.studentDoc.update();
         }, 'You are successfully sponsored')
