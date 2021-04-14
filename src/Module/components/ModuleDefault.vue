@@ -416,7 +416,7 @@
                     <v-container>
                       <div class="d-flex justify-center flex-column">
                         <v-text-field
-                          v-model="sponsorshipLink"
+                          v-model.trim="i.sponsorshipLink"
                           class="ma-4"
                           rounded
                           hide-details
