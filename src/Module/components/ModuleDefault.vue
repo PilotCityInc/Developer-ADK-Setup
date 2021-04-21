@@ -161,7 +161,7 @@
           <v-date-picker
             ref="picker"
             v-model="birthdate"
-            max="2008-01-01"
+            max="2008-04-12"
             min="1992-01-01"
             @input="
               birthdayMenu = false;
